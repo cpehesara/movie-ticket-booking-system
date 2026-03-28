@@ -23,7 +23,6 @@ spring:
     open-in-view: false
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
         jdbc:
           time_zone: UTC
@@ -31,47 +30,41 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
-    baseline-on-migrate: true
+    baseline-on-migrate: false
 
-# MQTT Configuration
+# ── JWT ──
+# Secret MUST be Base64-encoded (JwtTokenProvider uses Decoders.BASE64)
+jwt:
+  secret: ${JWT_SECRET:Y2luZW1hLXNlYXQtbWFuYWdlbWVudC1zZWNyZXQta2V5LXRoYXQtaXMtYXQtbGVhc3QtMjU2LWJpdHMtbG9uZw==}
+  expiration-ms: 900000
+  refresh-expiration-days: 7
+
+# ── MQTT ──
 mqtt:
+  enable: false
   broker-url: ${MQTT_BROKER_URL:tcp://localhost:1883}
   client-id: ${MQTT_CLIENT_ID:cinema-backend}
-  username: ${MQTT_USERNAME:}
-  password: ${MQTT_PASSWORD:}
-  topics:
-    seat-command: cinema/screen/{screenId}/seat/command
-    seat-status: cinema/screen/{screenId}/seat/status
-    heartbeat: cinema/screen/{screenId}/heartbeat
 
-# JWT Configuration
-jwt:
-  secret: ${JWT_SECRET:aVeryLongSecretKeyThatIsAtLeast256BitsForHS256AlgorithmSecurity2026}
-  expiration-ms: 86400000
-  refresh-expiration-ms: 604800000
-
-# WebSocket
-websocket:
-  endpoint: /ws
-  seat-topic: /topic/seats
-
-# Booking
+# ── Booking ──
 booking:
   reservation-ttl-minutes: 7
+  expiry-check-interval-ms: 60000
 
-# Server
+# ── Server ──
 server:
   port: ${SERVER_PORT:8080}
   servlet:
     context-path: /
 
-# CORS
+# ── CORS ──
 cors:
   allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
 
-# Logging
+# ── Logging ──
 logging:
   level:
-    com.cinema.seatmanagement: INFO
+    com.cinema.seatmanagement: DEBUG
     org.springframework.security: INFO
     org.hibernate.SQL: WARN
+    org.springframework.web.socket: INFO
+    org.springframework.integration.mqtt: INFO

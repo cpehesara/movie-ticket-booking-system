@@ -1,4 +1,8 @@
 package com.cinema.seatmanagement.exception;
 
-public class TokenRefreshException {
+public class TokenRefreshException extends RuntimeException {
+
+    public TokenRefreshException(String message) {
+        super(message);
+    }
 }

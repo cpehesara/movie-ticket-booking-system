@@ -1,4 +1,8 @@
 package com.cinema.seatmanagement.exception;
 
-public class BookingExpiredException {
+public class BookingExpiredException extends RuntimeException {
+
+    public BookingExpiredException(String message) {
+        super(message);
+    }
 }

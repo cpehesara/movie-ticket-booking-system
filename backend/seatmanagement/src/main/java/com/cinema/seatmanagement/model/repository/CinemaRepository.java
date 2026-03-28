@@ -1,4 +1,9 @@
 package com.cinema.seatmanagement.model.repository;
 
-public interface CinemaRepository {
+import com.cinema.seatmanagement.model.entity.Cinema;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface CinemaRepository extends JpaRepository<Cinema, Long> {
 }
