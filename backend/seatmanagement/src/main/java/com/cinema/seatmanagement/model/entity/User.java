@@ -1,4 +1,4 @@
 package com.cinema.seatmanagement.model.entity;
 
-public class Staff {
+public class User {
 }

@@ -1,4 +1,4 @@
 package com.cinema.seatmanagement.model.repository;
 
-public interface StaffRepository {
+public interface StaffProfileRepository {
 }

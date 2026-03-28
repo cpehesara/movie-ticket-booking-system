@@ -1,0 +1,101 @@
+Folder PATH listing
+Volume serial number is D426-A62F
+D:.
+|   App.tsx
+|   frontStr.txt
+|   index.css
+|   index.tsx
+|   react-app-env.d.ts
+|   
++---assets
+|   \---images
++---model
+|   +---api
+|   |       adminApi.ts
+|   |       authApi.ts
+|   |       bookingApi.ts
+|   |       checkinApi.ts
+|   |       movieApi.ts
+|   |       seatApi.ts
+|   |       userApi.ts
+|   |       
+|   +---services
+|   |       axiosInstance.ts
+|   |       webSocketService.ts
+|   |       
+|   \---types
+|           auth.types.ts
+|           booking.types.ts
+|           common.types.ts
+|           movie.types.ts
+|           seat.types.ts
+|           showtime.types.ts
+|           user.types.ts
+|           
++---styles
+|       index.css
+|       
++---view
+|   +---components
+|   |   +---common
+|   |   |       Button.tsx
+|   |   |       ErrorBoundary.tsx
+|   |   |       Loading.tsx
+|   |   |       Modal.tsx
+|   |   |       
+|   |   +---layout
+|   |   |       Footer.tsx
+|   |   |       Header.tsx
+|   |   |       Sidebar.tsx
+|   |   |       
+|   |   \---seat-map
+|   |           SeatCell.tsx
+|   |           SeatGrid.tsx
+|   |           SeatLegend.tsx
+|   |           
+|   +---pages
+|   |   +---admin
+|   |   |       AdminDashboard.tsx
+|   |   |       KioskManagementPage.tsx
+|   |   |       MovieManagementPage.tsx
+|   |   |       ShowtimeManagementPage.tsx
+|   |   |       StaffManagementPage.tsx
+|   |   |       
+|   |   +---auth
+|   |   |       LoginPage.tsx
+|   |   |       RegisterPage.tsx
+|   |   |       
+|   |   +---customer
+|   |   |       BookingHistoryPage.tsx
+|   |   |       BookingPage.tsx
+|   |   |       MovieListPage.tsx
+|   |   |       ProfilePage.tsx
+|   |   |       
+|   |   +---display
+|   |   |       HallDisplayPage.tsx
+|   |   |       
+|   |   \---kiosk
+|   |           CheckinPage.tsx
+|   |           
+|   \---routes
+|           AppRoutes.tsx
+|           ProtectedRoute.tsx
+|           RoleBasedRoute.tsx
+|           
+\---viewmodel
+    |   store.ts
+    |   
+    +---hooks
+    |       useAuth.ts
+    |       useBookingTimer.ts
+    |       useWebSocket.ts
+    |       
+    \---slices
+            adminSlice.ts
+            authSlice.ts
+            bookingSlice.ts
+            checkinSlice.ts
+            movieSlice.ts
+            seatSlice.ts
+            userSlice.ts
+            
