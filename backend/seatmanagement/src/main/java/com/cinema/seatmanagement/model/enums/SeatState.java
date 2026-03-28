@@ -1,4 +1,10 @@
 package com.cinema.seatmanagement.model.enums;
 
-public class SeatState {
+public enum SeatState {
+    AVAILABLE,
+    RESERVED,
+    BOOKED,
+    OCCUPIED,
+    CANCELLED,
+    MAINTENANCE
 }

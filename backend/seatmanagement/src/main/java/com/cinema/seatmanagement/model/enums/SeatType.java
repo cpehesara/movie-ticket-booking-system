@@ -1,4 +1,8 @@
 package com.cinema.seatmanagement.model.enums;
 
-public class SeatType {
+public enum SeatType {
+    STANDARD,
+    VIP,
+    COUPLE,
+    WHEELCHAIR
 }

@@ -1,4 +1,8 @@
 package com.cinema.seatmanagement.model.enums;
 
-public class PaymentStatus {
+public enum PaymentStatus {
+    PENDING,
+    COMPLETED,
+    FAILED,
+    REFUNDED
 }
