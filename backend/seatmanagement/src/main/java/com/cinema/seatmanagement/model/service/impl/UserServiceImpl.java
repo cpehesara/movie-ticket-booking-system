@@ -22,22 +22,25 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
+    private final UserRepository            userRepository;
     private final CustomerProfileRepository customerProfileRepository;
-    private final StaffProfileRepository staffProfileRepository;
-    private final UserMapper userMapper;
+    private final StaffProfileRepository    staffProfileRepository;
+    private final UserMapper                userMapper;
 
     @Override
     @Transactional(readOnly = true)
     public UserResponse getCurrentUser(Long userId) {
-        User user = findUserOrThrow(userId);
+        // Entity graph: loads profiles in one query — no lazy hits in UserMapper
+        User user = userRepository.findWithProfilesById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
         return userMapper.toResponse(user);
     }
 
     @Override
     @Transactional
     public UserResponse updateProfile(Long userId, UpdateProfileRequest request) {
-        User user = findUserOrThrow(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
 
         if (request.getFullName() != null && !request.getFullName().isBlank()) {
             user.setFullName(request.getFullName());
@@ -46,7 +49,10 @@ public class UserServiceImpl implements UserService {
 
         if (user.getRole() == UserRole.CUSTOMER && request.getPhone() != null) {
             CustomerProfile profile = customerProfileRepository.findByUserId(userId)
-                    .orElseGet(() -> CustomerProfile.builder().user(user).build());
+                    .orElseGet(() -> CustomerProfile.builder()
+                            .user(user)
+                            .loyaltyPoints(0)
+                            .build());
             profile.setPhone(request.getPhone());
             customerProfileRepository.save(profile);
         }
@@ -57,7 +63,10 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public List<UserResponse> getAllStaff() {
-        return userRepository.findByRole(UserRole.ADMIN).stream()
+        // Original bug: only returned ADMIN — MANAGER and OPERATOR were silently excluded.
+        // Fixed: findByRoleIn covers all three staff roles.
+        return userRepository.findByRoleIn(List.of(UserRole.ADMIN, UserRole.MANAGER, UserRole.OPERATOR))
+                .stream()
                 .map(userMapper::toResponse)
                 .collect(Collectors.toList());
     }
@@ -73,13 +82,10 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deactivateUser(Long userId) {
-        User user = findUserOrThrow(userId);
-        user.setIsActive(false);
-        userRepository.save(user);
-    }
-
-    private User findUserOrThrow(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+        if (!userRepository.existsById(userId)) {
+            throw new EntityNotFoundException("User not found with id: " + userId);
+        }
+        // Bulk UPDATE — no need to load the full User entity just to flip one boolean
+        userRepository.deactivateById(userId);
     }
 }

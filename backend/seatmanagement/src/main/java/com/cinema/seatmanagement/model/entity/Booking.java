@@ -11,12 +11,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "booking")
+@Table(
+        name = "booking",
+        indexes = {
+                @Index(name = "idx_booking_user_id",     columnList = "user_id"),
+                @Index(name = "idx_booking_showtime_id", columnList = "showtime_id"),
+                @Index(name = "idx_booking_status",      columnList = "status"),
+                @Index(name = "idx_booking_booked_at",   columnList = "booked_at"),
+                /* Composite: expiry scheduler queries PENDING bookings older than cutoff */
+                @Index(name = "idx_booking_status_booked_at", columnList = "status, booked_at")
+        }
+)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@NamedEntityGraphs({
+        @NamedEntityGraph(
+                name = "Booking.withSeatsAndShowtime",
+                attributeNodes = {
+                        @NamedAttributeNode("bookingSeats"),
+                        @NamedAttributeNode(value = "showtime", subgraph = "showtime.withMovie"),
+                },
+                subgraphs = {
+                        @NamedSubgraph(
+                                name = "showtime.withMovie",
+                                attributeNodes = { @NamedAttributeNode("movie"), @NamedAttributeNode("screen") }
+                        )
+                }
+        )
+})
 public class Booking {
 
     @Id
@@ -49,6 +74,10 @@ public class Booking {
     @Column(name = "checked_in_at")
     private LocalDateTime checkedInAt;
 
+    /**
+     * JPA optimistic locking: prevents concurrent updates from silently overwriting
+     * each other. Any stale update throws OptimisticLockException → 409 to client.
+     */
     @Version
     @Builder.Default
     private Integer version = 0;

@@ -7,7 +7,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "refresh_token")
+@Table(
+        name = "refresh_token",
+        indexes = {
+                @Index(name = "idx_refresh_token_user_id",    columnList = "user_id"),
+                @Index(name = "idx_refresh_token_expires_at", columnList = "expires_at")
+        }
+)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,6 +29,7 @@ public class RefreshToken {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    /** UUID token string — unique index provided by the unique = true constraint */
     @Column(nullable = false, unique = true, length = 500)
     private String token;
 

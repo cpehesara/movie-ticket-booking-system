@@ -1,5 +1,6 @@
 package com.cinema.seatmanagement.controller;
 
+import com.cinema.seatmanagement.model.enums.PaymentMethod;
 import com.cinema.seatmanagement.model.service.interfaces.BookingService;
 import com.cinema.seatmanagement.model.service.interfaces.PaymentService;
 import com.cinema.seatmanagement.security.JwtTokenProvider;
@@ -19,8 +20,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookingController {
 
-    private final BookingService bookingService;
-    private final PaymentService paymentService;
+    private final BookingService   bookingService;
+    private final PaymentService   paymentService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping
@@ -32,8 +33,12 @@ public class BookingController {
         Long userId = extractUserId(authHeader);
         BookingResponse response = bookingService.createBooking(userId, request);
 
+        // Inline payment: if a paymentMethod is provided, process immediately.
+        // Converts the String from the DTO to the typed PaymentMethod enum here —
+        // at the controller boundary — so service/repo layers never see raw strings.
         if (request.getPaymentMethod() != null && !request.getPaymentMethod().isBlank()) {
-            paymentService.processPayment(response.getId(), request.getPaymentMethod());
+            PaymentMethod method = parsePaymentMethod(request.getPaymentMethod());
+            paymentService.processPayment(response.getId(), method);
             response = bookingService.getBookingById(response.getId());
         }
 
@@ -46,15 +51,13 @@ public class BookingController {
             @RequestHeader("Authorization") String authHeader
     ) {
         Long userId = extractUserId(authHeader);
-        List<BookingResponse> bookings = bookingService.getBookingsByUser(userId);
-        return ResponseEntity.ok(bookings);
+        return ResponseEntity.ok(bookingService.getBookingsByUser(userId));
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<BookingResponse> getBookingById(@PathVariable Long id) {
-        BookingResponse response = bookingService.getBookingById(id);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(bookingService.getBookingById(id));
     }
 
     @PostMapping("/{id}/cancel")
@@ -64,12 +67,25 @@ public class BookingController {
             @PathVariable Long id
     ) {
         Long userId = extractUserId(authHeader);
-        BookingResponse response = bookingService.cancelBooking(id, userId);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(bookingService.cancelBooking(id, userId));
     }
 
+    // ── Private helpers ───────────────────────────────────────────────────
+
     private Long extractUserId(String authHeader) {
-        String token = authHeader.replace("Bearer ", "");
-        return jwtTokenProvider.getUserIdFromToken(token);
+        return jwtTokenProvider.getUserIdFromToken(authHeader.substring(7));
+    }
+
+    /**
+     * Converts String → PaymentMethod with a meaningful error message.
+     * IllegalArgumentException is caught by GlobalExceptionHandler → 400.
+     */
+    private PaymentMethod parsePaymentMethod(String raw) {
+        try {
+            return PaymentMethod.valueOf(raw.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(
+                    "Invalid payment method: '" + raw + "'. Accepted values: CARD, CASH, MOBILE, ONLINE_BANKING, QR_CODE");
+        }
     }
 }

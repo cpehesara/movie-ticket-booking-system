@@ -10,7 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "movie")
+@Table(
+        name = "movie",
+        indexes = {
+                @Index(name = "idx_movie_genre",        columnList = "genre"),
+                @Index(name = "idx_movie_language",     columnList = "language"),
+                @Index(name = "idx_movie_release_date", columnList = "release_date"),
+                @Index(name = "idx_movie_is_active",    columnList = "is_active")
+        }
+)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -37,14 +45,23 @@ public class Movie {
     @Column(length = 30)
     private String language;
 
+    /** e.g. PG, PG-13, R, U */
     @Column(length = 10)
     private String rating;
 
     @Column(name = "poster_url", length = 500)
     private String posterUrl;
 
+    @Column(name = "trailer_url", length = 500)
+    private String trailerUrl;
+
     @Column(name = "release_date")
     private LocalDate releaseDate;
+
+    /** Soft-delete flag: false = pulled from listing but data retained */
+    @Column(name = "is_active")
+    @Builder.Default
+    private Boolean isActive = true;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

@@ -1,6 +1,7 @@
 package com.cinema.seatmanagement.mqtt;
 
 import com.cinema.seatmanagement.model.enums.SeatState;
+import com.cinema.seatmanagement.util.AppConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
@@ -20,21 +21,33 @@ public class MqttPublisher {
             @Autowired(required = false) MqttPahoMessageHandler mqttOutboundHandler
     ) {
         this.mqttOutboundHandler = mqttOutboundHandler;
-
         if (mqttOutboundHandler == null) {
-            log.warn("MQTT is disabled. LED commands will be logged but not sent. Set mqtt.enabled=true to enable.");
+            log.warn("[MQTT] Disabled — LED commands will be logged only. Set mqtt.enabled=true to activate.");
         }
     }
 
+    /**
+     * Publishes a SET_LED command to the ESP32 firmware over MQTT.
+     *
+     * Topic: cinema/screen/{screenId}/seat/command  (from AppConstants)
+     * Payload: {"action":"SET_LED","ledIndex":N,"color":"GREEN"}
+     *
+     * Color constants come from AppConstants to ensure they match the
+     * firmware's expected strings exactly — no typos in individual service classes.
+     *
+     * @param screenId  DB id of the screen (used as MQTT topic segment)
+     * @param ledIndex  0-based LED position on the WS2812B strip
+     * @param seatState current seat state — determines LED color
+     */
     public void publishSeatCommand(Long screenId, Integer ledIndex, SeatState seatState) {
         try {
-            String topic = "cinema/screen/" + screenId + "/seat/command";
+            String topic = String.format(AppConstants.MQTT_SEAT_COMMAND_TOPIC, screenId);
             String color = mapStateToColor(seatState);
-
-            String json = "{\"action\":\"SET_LED\",\"ledIndex\":" + ledIndex + ",\"color\":\"" + color + "\"}";
+            String json  = "{\"action\":\"SET_LED\",\"ledIndex\":"
+                    + ledIndex + ",\"color\":\"" + color + "\"}";
 
             if (mqttOutboundHandler == null) {
-                log.debug("MQTT disabled — would send: topic={}, payload={}", topic, json);
+                log.debug("[MQTT] Disabled — would publish: topic={} payload={}", topic, json);
                 return;
             }
 
@@ -45,21 +58,31 @@ public class MqttPublisher {
                     .build();
 
             mqttOutboundHandler.handleMessage(message);
-            log.info("Published MQTT command: topic={}, ledIndex={}, color={}", topic, ledIndex, color);
+            log.info("[MQTT] Published SET_LED: screenId={} ledIndex={} color={}", screenId, ledIndex, color);
 
         } catch (Exception e) {
-            log.error("Failed to publish MQTT seat command: screenId={}, ledIndex={}", screenId, ledIndex, e);
+            // Never crash the calling service — MQTT failures are logged, not propagated.
+            // Seat state change has already been persisted; LED will re-sync on next heartbeat.
+            log.error("[MQTT] Failed to publish seat command: screenId={} ledIndex={} error={}",
+                    screenId, ledIndex, e.getMessage(), e);
         }
     }
 
+    /**
+     * Maps SeatState to the LED color string expected by the ESP32 firmware.
+     * Uses AppConstants to keep the strings in one place.
+     *
+     * CANCELLED uses GREEN (same as AVAILABLE) — a cancelled seat is open for
+     * a new booking; showing RED would be misleading to customers in the hall.
+     */
     private String mapStateToColor(SeatState state) {
         return switch (state) {
-            case AVAILABLE -> "GREEN";
-            case RESERVED -> "YELLOW";
-            case BOOKED -> "BLUE";
-            case OCCUPIED -> "RED";
-            case MAINTENANCE -> "WHITE";
-            case CANCELLED -> "GREEN";
+            case AVAILABLE   -> AppConstants.LED_GREEN;
+            case RESERVED    -> AppConstants.LED_YELLOW;
+            case BOOKED      -> AppConstants.LED_BLUE;
+            case OCCUPIED    -> AppConstants.LED_RED;
+            case MAINTENANCE -> AppConstants.LED_WHITE;
+            case CANCELLED   -> AppConstants.LED_GREEN;
         };
     }
 }

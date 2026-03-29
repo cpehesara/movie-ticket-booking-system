@@ -15,19 +15,36 @@ public class MovieController {
 
     private final MovieService movieService;
 
+    /**
+     * Supports four filter combinations:
+     *   ?search=inception              → title search
+     *   ?genre=ACTION                  → by genre
+     *   ?language=English              → by language
+     *   ?genre=ACTION&language=English → both (most specific)
+     *   (none)                         → all active movies
+     *
+     * Priority: search > genre+language > genre > language > all.
+     * The original didn't support the genre+language combo — added here.
+     */
     @GetMapping
     public ResponseEntity<List<MovieResponse>> getAllMovies(
             @RequestParam(required = false) String genre,
             @RequestParam(required = false) String language,
             @RequestParam(required = false) String search
     ) {
+        boolean hasSearch   = search   != null && !search.isBlank();
+        boolean hasGenre    = genre    != null && !genre.isBlank();
+        boolean hasLanguage = language != null && !language.isBlank();
+
         List<MovieResponse> movies;
 
-        if (search != null && !search.isBlank()) {
+        if (hasSearch) {
             movies = movieService.searchMovies(search);
-        } else if (genre != null && !genre.isBlank()) {
+        } else if (hasGenre && hasLanguage) {
+            movies = movieService.getMoviesByGenreAndLanguage(genre, language);
+        } else if (hasGenre) {
             movies = movieService.getMoviesByGenre(genre);
-        } else if (language != null && !language.isBlank()) {
+        } else if (hasLanguage) {
             movies = movieService.getMoviesByLanguage(language);
         } else {
             movies = movieService.getAllMovies();
@@ -38,7 +55,6 @@ public class MovieController {
 
     @GetMapping("/{id}")
     public ResponseEntity<MovieResponse> getMovieById(@PathVariable Long id) {
-        MovieResponse movie = movieService.getMovieById(id);
-        return ResponseEntity.ok(movie);
+        return ResponseEntity.ok(movieService.getMovieById(id));
     }
 }

@@ -9,7 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "screen")
+@Table(
+        name = "screen",
+        indexes = {
+                @Index(name = "idx_screen_cinema_id", columnList = "cinema_id"),
+                @Index(name = "idx_screen_name",      columnList = "name")
+        }
+)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -36,6 +42,15 @@ public class Screen {
 
     @Column(name = "cols_count", nullable = false)
     private Integer colsCount;
+
+    /** Unique ID sent to ESP32 over MQTT. Decoupled from PK so it never changes
+     *  even if rows are migrated. Format: "SCREEN-{id}-{cinema_id}" set at insert. */
+    @Column(name = "mqtt_screen_ref", unique = true, length = 50)
+    private String mqttScreenRef;
+
+    @Column(name = "is_active")
+    @Builder.Default
+    private Boolean isActive = true;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

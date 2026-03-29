@@ -10,6 +10,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserMapper {
 
+    /**
+     * Safe to call without triggering lazy loads ONLY when the caller used
+     * userRepository.findWithProfilesById() / findWithProfilesByEmail()
+     * (which load profiles via @EntityGraph in one JOIN).
+     *
+     * If called with a plain findById() result, the getCustomerProfile() /
+     * getStaffProfile() calls below will trigger lazy loads — one extra query
+     * each. The @EntityGraph methods in UserRepository exist precisely to
+     * prevent this in the hot paths (login, getCurrentUser).
+     */
     public UserResponse toResponse(User user) {
         UserResponse.UserResponseBuilder builder = UserResponse.builder()
                 .id(user.getId())
@@ -22,6 +32,7 @@ public class UserMapper {
         if (user.getRole() == UserRole.CUSTOMER && user.getCustomerProfile() != null) {
             CustomerProfile profile = user.getCustomerProfile();
             builder.phone(profile.getPhone());
+            builder.loyaltyPoints(profile.getLoyaltyPoints());
         }
 
         if (user.getRole() != UserRole.CUSTOMER && user.getStaffProfile() != null) {

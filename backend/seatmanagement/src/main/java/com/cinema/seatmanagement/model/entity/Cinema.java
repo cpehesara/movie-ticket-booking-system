@@ -9,7 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "cinema")
+@Table(
+        name = "cinema",
+        indexes = {
+                @Index(name = "idx_cinema_name", columnList = "name")
+        }
+)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,6 +31,16 @@ public class Cinema {
 
     @Column(length = 255)
     private String location;
+
+    @Column(name = "contact_email", length = 100)
+    private String contactEmail;
+
+    @Column(name = "contact_phone", length = 20)
+    private String contactPhone;
+
+    @Column(name = "is_active")
+    @Builder.Default
+    private Boolean isActive = true;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

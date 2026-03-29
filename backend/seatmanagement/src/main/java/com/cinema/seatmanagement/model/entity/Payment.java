@@ -1,5 +1,6 @@
 package com.cinema.seatmanagement.model.entity;
 
+import com.cinema.seatmanagement.model.enums.PaymentMethod;
 import com.cinema.seatmanagement.model.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,7 +9,14 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "payment")
+@Table(
+        name = "payment",
+        indexes = {
+                @Index(name = "idx_payment_booking_id",       columnList = "booking_id"),
+                @Index(name = "idx_payment_status",           columnList = "status"),
+                @Index(name = "idx_payment_transaction_ref",  columnList = "transaction_ref")
+        }
+)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -27,10 +35,14 @@ public class Payment {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
 
+    /**
+     * Typed enum instead of raw String — prevents invalid values at the Java layer.
+     */
+    @Enumerated(EnumType.STRING)
     @Column(name = "payment_method", length = 30)
-    private String paymentMethod;
+    private PaymentMethod paymentMethod;
 
-    @Column(name = "transaction_ref", length = 100)
+    @Column(name = "transaction_ref", unique = true, length = 100)
     private String transactionRef;
 
     @Enumerated(EnumType.STRING)
@@ -40,4 +52,7 @@ public class Payment {
 
     @Column(name = "paid_at")
     private LocalDateTime paidAt;
+
+    @Column(name = "failure_reason", length = 255)
+    private String failureReason;
 }

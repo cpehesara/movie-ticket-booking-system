@@ -9,12 +9,28 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "users")
+@Table(
+        name = "users",
+        indexes = {
+                @Index(name = "idx_users_email",    columnList = "email"),
+                @Index(name = "idx_users_role",     columnList = "role"),
+                @Index(name = "idx_users_is_active",columnList = "is_active")
+        }
+)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@NamedEntityGraphs({
+        @NamedEntityGraph(
+                name = "User.withProfiles",
+                attributeNodes = {
+                        @NamedAttributeNode("customerProfile"),
+                        @NamedAttributeNode("staffProfile")
+                }
+        )
+})
 public class User {
 
     @Id

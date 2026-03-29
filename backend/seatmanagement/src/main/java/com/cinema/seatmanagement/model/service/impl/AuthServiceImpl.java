@@ -32,13 +32,13 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private final UserRepository userRepository;
-    private final CustomerProfileRepository customerProfileRepository;
-    private final StaffProfileRepository staffProfileRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
-    private final CinemaRepository cinemaRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final UserRepository             userRepository;
+    private final CustomerProfileRepository  customerProfileRepository;
+    private final StaffProfileRepository     staffProfileRepository;
+    private final RefreshTokenRepository     refreshTokenRepository;
+    private final CinemaRepository           cinemaRepository;
+    private final PasswordEncoder            passwordEncoder;
+    private final JwtTokenProvider           jwtTokenProvider;
 
     @Value("${jwt.refresh-expiration-days:7}")
     private int refreshExpirationDays;
@@ -62,6 +62,7 @@ public class AuthServiceImpl implements AuthService {
         CustomerProfile profile = CustomerProfile.builder()
                 .user(user)
                 .phone(request.getPhone())
+                .loyaltyPoints(0)
                 .build();
         customerProfileRepository.save(profile);
 
@@ -71,6 +72,8 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public AuthResponse login(LoginRequest request) {
+        // Entity graph fetch: loads user + profiles in one query, avoids lazy-load
+        // hits when buildAuthResponse maps roles/profile data
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new AuthenticationFailedException("Invalid email or password"));
 
@@ -97,6 +100,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         User user = storedToken.getUser();
+        // Rotate: old token is deleted, new one issued — prevents replay attacks
         refreshTokenRepository.delete(storedToken);
 
         return buildAuthResponse(user);
@@ -111,18 +115,21 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public AuthResponse registerStaff(RegisterRequest request, String role, Long cinemaId) {
+    public AuthResponse registerStaff(RegisterRequest request, UserRole role, Long cinemaId) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new AuthenticationFailedException("Email already registered");
         }
 
-        UserRole userRole = UserRole.valueOf(role.toUpperCase());
+        // Validate role is a staff role — customers cannot be registered via this path
+        if (role == UserRole.CUSTOMER) {
+            throw new IllegalArgumentException("Use /auth/register for customer accounts");
+        }
 
         User user = User.builder()
                 .email(request.getEmail())
                 .passwordHash(passwordEncoder.encode(request.getPassword()))
                 .fullName(request.getFullName())
-                .role(userRole)
+                .role(role)
                 .isActive(true)
                 .build();
         user = userRepository.save(user);
@@ -137,9 +144,11 @@ public class AuthServiceImpl implements AuthService {
         return buildAuthResponse(user);
     }
 
+    // ── Private helpers ───────────────────────────────────────────────────
+
     private AuthResponse buildAuthResponse(User user) {
-        String accessToken = jwtTokenProvider.generateToken(user);
-        String refreshToken = createRefreshToken(user);
+        String accessToken  = jwtTokenProvider.generateToken(user);
+        String refreshToken = createAndPersistRefreshToken(user);
 
         return AuthResponse.builder()
                 .accessToken(accessToken)
@@ -151,15 +160,16 @@ public class AuthServiceImpl implements AuthService {
                 .build();
     }
 
-    private String createRefreshToken(User user) {
+    private String createAndPersistRefreshToken(User user) {
         String token = UUID.randomUUID().toString();
 
-        RefreshToken refreshToken = RefreshToken.builder()
-                .user(user)
-                .token(token)
-                .expiresAt(LocalDateTime.now().plusDays(refreshExpirationDays))
-                .build();
-        refreshTokenRepository.save(refreshToken);
+        refreshTokenRepository.save(
+                RefreshToken.builder()
+                        .user(user)
+                        .token(token)
+                        .expiresAt(LocalDateTime.now().plusDays(refreshExpirationDays))
+                        .build()
+        );
 
         return token;
     }

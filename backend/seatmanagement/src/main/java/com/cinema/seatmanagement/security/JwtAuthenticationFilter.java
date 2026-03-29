@@ -1,5 +1,6 @@
 package com.cinema.seatmanagement.security;
 
+import com.cinema.seatmanagement.util.AppConstants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,34 +30,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
-        String authHeader = request.getHeader("Authorization");
+        // Use AppConstants — single source of truth for header name and prefix
+        String authHeader = request.getHeader(AppConstants.AUTH_HEADER);
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith(AppConstants.BEARER_PREFIX)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token = authHeader.substring(7);
+        String token = authHeader.substring(AppConstants.BEARER_PREFIX.length());
 
         if (!jwtTokenProvider.validateToken(token)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        Long userId = jwtTokenProvider.getUserIdFromToken(token);
-        String role = jwtTokenProvider.getRoleFromToken(token);
-        String email = jwtTokenProvider.getEmailFromToken(token);
-
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role);
+        Long   userId = jwtTokenProvider.getUserIdFromToken(token);
+        String role   = jwtTokenProvider.getRoleFromToken(token);
+        String email  = jwtTokenProvider.getEmailFromToken(token);
 
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(
                         userId,
                         email,
-                        Collections.singletonList(authority)
+                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role))
                 );
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         filterChain.doFilter(request, response);
@@ -64,7 +63,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        String path = request.getServletPath();
-        return path.startsWith("/api/auth/");
+        // Auth endpoints are public — skip JWT validation entirely
+        return request.getServletPath().startsWith("/api/auth/");
     }
 }

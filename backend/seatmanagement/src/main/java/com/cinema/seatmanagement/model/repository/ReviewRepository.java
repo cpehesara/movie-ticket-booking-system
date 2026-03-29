@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-    List<Review> findByMovieId(Long movieId);
+    List<Review> findByMovieIdOrderByCreatedAtDesc(Long movieId);
 
     List<Review> findByUserId(Long userId);
 
@@ -19,4 +19,16 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     @Query("SELECT AVG(r.rating) FROM Review r WHERE r.movie.id = :movieId")
     Double findAverageRatingByMovieId(@Param("movieId") Long movieId);
+
+    /** Review count — used by MovieMapper without fetching the full list */
+    long countByMovieId(Long movieId);
+
+    /** Rating distribution for the movie detail page (bar chart) */
+    @Query("""
+        SELECT r.rating, COUNT(r) FROM Review r
+        WHERE r.movie.id = :movieId
+        GROUP BY r.rating
+        ORDER BY r.rating
+        """)
+    List<Object[]> findRatingDistributionByMovieId(@Param("movieId") Long movieId);
 }

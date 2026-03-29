@@ -7,7 +7,12 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "customer_profile")
+@Table(
+        name = "customer_profile",
+        indexes = {
+                @Index(name = "idx_customer_profile_user_id", columnList = "user_id")
+        }
+)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,6 +30,11 @@ public class CustomerProfile {
 
     @Column(length = 20)
     private String phone;
+
+    /** Loyalty points accumulated through bookings */
+    @Column(name = "loyalty_points")
+    @Builder.Default
+    private Integer loyaltyPoints = 0;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

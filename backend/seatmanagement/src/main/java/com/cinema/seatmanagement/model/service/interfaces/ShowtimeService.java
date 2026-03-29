@@ -20,4 +20,11 @@ public interface ShowtimeService {
     ShowtimeResponse updateShowtime(Long id, Showtime showtime);
 
     void cancelShowtime(Long id);
+
+    /**
+     * Called by ShowtimeScheduler every minute.
+     * Advances SCHEDULED → IN_PROGRESS and IN_PROGRESS → COMPLETED
+     * based on start/end times. Triggers seat release on completion.
+     */
+    void advanceShowtimeStatuses();
 }

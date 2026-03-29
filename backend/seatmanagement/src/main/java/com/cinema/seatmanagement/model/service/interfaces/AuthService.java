@@ -1,5 +1,6 @@
 package com.cinema.seatmanagement.model.service.interfaces;
 
+import com.cinema.seatmanagement.model.enums.UserRole;
 import com.cinema.seatmanagement.view.dto.request.LoginRequest;
 import com.cinema.seatmanagement.view.dto.request.RefreshTokenRequest;
 import com.cinema.seatmanagement.view.dto.request.RegisterRequest;
@@ -15,5 +16,6 @@ public interface AuthService {
 
     void logout(String refreshToken);
 
-    AuthResponse registerStaff(RegisterRequest request, String role, Long cinemaId);
+    /** Typed role parameter — removes valueOf() guesswork from the controller */
+    AuthResponse registerStaff(RegisterRequest request, UserRole role, Long cinemaId);
 }

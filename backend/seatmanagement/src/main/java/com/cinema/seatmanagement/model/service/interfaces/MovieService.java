@@ -15,6 +15,9 @@ public interface MovieService {
 
     List<MovieResponse> getMoviesByLanguage(String language);
 
+    /** Combined filter — most specific public query; covered by idx_movie_genre + idx_movie_language */
+    List<MovieResponse> getMoviesByGenreAndLanguage(String genre, String language);
+
     List<MovieResponse> searchMovies(String keyword);
 
     MovieResponse createMovie(Movie movie);

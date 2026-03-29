@@ -18,14 +18,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MovieServiceImpl implements MovieService {
 
-    private final MovieRepository movieRepository;
+    private final MovieRepository  movieRepository;
     private final ReviewRepository reviewRepository;
-    private final MovieMapper movieMapper;
+    private final MovieMapper      movieMapper;
 
     @Override
     @Transactional(readOnly = true)
     public List<MovieResponse> getAllMovies() {
-        return movieRepository.findAll().stream()
+        return movieRepository.findByIsActiveTrueOrderByReleaseDateDesc().stream()
                 .map(this::mapWithRating)
                 .collect(Collectors.toList());
     }
@@ -33,14 +33,15 @@ public class MovieServiceImpl implements MovieService {
     @Override
     @Transactional(readOnly = true)
     public MovieResponse getMovieById(Long id) {
-        Movie movie = findMovieOrThrow(id);
+        Movie movie = movieRepository.findByIdAndIsActiveTrue(id)
+                .orElseThrow(() -> new EntityNotFoundException("Movie not found with id: " + id));
         return mapWithRating(movie);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<MovieResponse> getMoviesByGenre(String genre) {
-        return movieRepository.findByGenre(genre).stream()
+        return movieRepository.findByGenreAndIsActiveTrue(genre).stream()
                 .map(this::mapWithRating)
                 .collect(Collectors.toList());
     }
@@ -48,7 +49,15 @@ public class MovieServiceImpl implements MovieService {
     @Override
     @Transactional(readOnly = true)
     public List<MovieResponse> getMoviesByLanguage(String language) {
-        return movieRepository.findByLanguage(language).stream()
+        return movieRepository.findByLanguageAndIsActiveTrue(language).stream()
+                .map(this::mapWithRating)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<MovieResponse> getMoviesByGenreAndLanguage(String genre, String language) {
+        return movieRepository.findByGenreAndLanguageAndIsActiveTrue(genre, language).stream()
                 .map(this::mapWithRating)
                 .collect(Collectors.toList());
     }
@@ -56,7 +65,7 @@ public class MovieServiceImpl implements MovieService {
     @Override
     @Transactional(readOnly = true)
     public List<MovieResponse> searchMovies(String keyword) {
-        return movieRepository.searchByTitle(keyword).stream()
+        return movieRepository.searchByTitleActive(keyword).stream()
                 .map(this::mapWithRating)
                 .collect(Collectors.toList());
     }
@@ -64,8 +73,8 @@ public class MovieServiceImpl implements MovieService {
     @Override
     @Transactional
     public MovieResponse createMovie(Movie movie) {
-        Movie saved = movieRepository.save(movie);
-        return movieMapper.toResponse(saved);
+        movie.setIsActive(true);
+        return movieMapper.toResponse(movieRepository.save(movie));
     }
 
     @Override
@@ -80,19 +89,18 @@ public class MovieServiceImpl implements MovieService {
         existing.setLanguage(updated.getLanguage());
         existing.setRating(updated.getRating());
         existing.setPosterUrl(updated.getPosterUrl());
+        existing.setTrailerUrl(updated.getTrailerUrl());
         existing.setReleaseDate(updated.getReleaseDate());
 
-        Movie saved = movieRepository.save(existing);
-        return mapWithRating(saved);
+        return mapWithRating(movieRepository.save(existing));
     }
 
     @Override
     @Transactional
     public void deleteMovie(Long id) {
-        if (!movieRepository.existsById(id)) {
-            throw new EntityNotFoundException("Movie not found with id: " + id);
-        }
-        movieRepository.deleteById(id);
+        Movie movie = findMovieOrThrow(id);
+        movie.setIsActive(false);  // Soft delete — preserves booking history
+        movieRepository.save(movie);
     }
 
     private Movie findMovieOrThrow(Long id) {

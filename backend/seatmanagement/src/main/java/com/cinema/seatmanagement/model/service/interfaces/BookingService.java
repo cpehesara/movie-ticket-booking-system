@@ -21,5 +21,10 @@ public interface BookingService {
 
     BookingResponse cancelBooking(Long bookingId, Long userId);
 
+    /**
+     * Called by @Scheduled every ${booking.expiry-check-interval-ms} ms.
+     * Marks stale PENDING bookings as EXPIRED and returns their seats to AVAILABLE.
+     * Also fires audit log entries and WebSocket/MQTT broadcasts per seat.
+     */
     void releaseExpiredReservations();
 }

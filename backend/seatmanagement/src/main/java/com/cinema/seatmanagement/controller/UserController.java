@@ -15,15 +15,15 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+    private final UserService      userService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<UserResponse> getCurrentUser(@RequestHeader("Authorization") String authHeader) {
-        Long userId = extractUserId(authHeader);
-        UserResponse response = userService.getCurrentUser(userId);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<UserResponse> getCurrentUser(
+            @RequestHeader("Authorization") String authHeader
+    ) {
+        return ResponseEntity.ok(userService.getCurrentUser(extractUserId(authHeader)));
     }
 
     @PutMapping("/me")
@@ -32,13 +32,15 @@ public class UserController {
             @RequestHeader("Authorization") String authHeader,
             @Valid @RequestBody UpdateProfileRequest request
     ) {
-        Long userId = extractUserId(authHeader);
-        UserResponse response = userService.updateProfile(userId, request);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(userService.updateProfile(extractUserId(authHeader), request));
     }
 
+    /**
+     * Strips "Bearer " prefix with substring(7) — consistent with all other
+     * controllers. The original used authHeader.replace("Bearer ", "") which
+     * would corrupt tokens that happen to contain that substring elsewhere.
+     */
     private Long extractUserId(String authHeader) {
-        String token = authHeader.replace("Bearer ", "");
-        return jwtTokenProvider.getUserIdFromToken(token);
+        return jwtTokenProvider.getUserIdFromToken(authHeader.substring(7));
     }
 }
