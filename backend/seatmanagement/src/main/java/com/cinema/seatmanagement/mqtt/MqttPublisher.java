@@ -22,29 +22,33 @@ public class MqttPublisher {
     ) {
         this.mqttOutboundHandler = mqttOutboundHandler;
         if (mqttOutboundHandler == null) {
-            log.warn("[MQTT] Disabled — LED commands will be logged only. Set mqtt.enabled=true to activate.");
+            log.warn("[MQTT] Disabled — LED commands will be logged only.");
         }
     }
 
     /**
-     * Publishes a SET_LED command to the ESP32 firmware over MQTT.
+     * Publishes a SET_LED command to the ESP32.
      *
-     * Topic: cinema/screen/{screenId}/seat/command  (from AppConstants)
-     * Payload: {"action":"SET_LED","ledIndex":N,"color":"GREEN"}
+     * Demo LED state mapping (matches the Arduino sketch's applyLedState()):
      *
-     * Color constants come from AppConstants to ensure they match the
-     * firmware's expected strings exactly — no typos in individual service classes.
+     *   AVAILABLE   → "OFF"        LED is off — seat free
+     *   RESERVED    → "BLINK_SLOW" Slow blink — seat is reserved, awaiting payment
+     *   BOOKED      → "BLINK_SLOW" Slow blink — paid, customer not arrived yet
+     *   OCCUPIED    → "BLINK_FAST" Fast blink — customer checked in, guiding to seat!
+     *   CANCELLED   → "CONFIRM"    Solid 3s then off — customer confirmed at seat
+     *   MAINTENANCE → "ON"         Solid on — seat blocked by admin
      *
-     * @param screenId  DB id of the screen (used as MQTT topic segment)
-     * @param ledIndex  0-based LED position on the WS2812B strip
-     * @param seatState current seat state — determines LED color
+     * Note: CANCELLED is repurposed here to trigger the CONFIRM effect because
+     * SeatArrivalServiceImpl calls publishSeatCommand(..., SeatState.CANCELLED)
+     * as a signal. The booking is immediately set to COMPLETED after that call,
+     * so the CANCELLED seat state is never persisted — it is purely a MQTT signal.
      */
     public void publishSeatCommand(Long screenId, Integer ledIndex, SeatState seatState) {
         try {
-            String topic = String.format(AppConstants.MQTT_SEAT_COMMAND_TOPIC, screenId);
-            String color = mapStateToColor(seatState);
-            String json  = "{\"action\":\"SET_LED\",\"ledIndex\":"
-                    + ledIndex + ",\"color\":\"" + color + "\"}";
+            String topic      = String.format(AppConstants.MQTT_SEAT_COMMAND_TOPIC, screenId);
+            String ledStateStr = mapStateToLedState(seatState);
+            String json       = "{\"action\":\"SET_LED\",\"ledIndex\":"
+                    + ledIndex + ",\"state\":\"" + ledStateStr + "\"}";
 
             if (mqttOutboundHandler == null) {
                 log.debug("[MQTT] Disabled — would publish: topic={} payload={}", topic, json);
@@ -58,31 +62,24 @@ public class MqttPublisher {
                     .build();
 
             mqttOutboundHandler.handleMessage(message);
-            log.info("[MQTT] Published SET_LED: screenId={} ledIndex={} color={}", screenId, ledIndex, color);
+            log.info("[MQTT] SET_LED: screenId={} ledIndex={} state={}",
+                    screenId, ledIndex, ledStateStr);
 
         } catch (Exception e) {
-            // Never crash the calling service — MQTT failures are logged, not propagated.
-            // Seat state change has already been persisted; LED will re-sync on next heartbeat.
-            log.error("[MQTT] Failed to publish seat command: screenId={} ledIndex={} error={}",
+            // Never crash the calling service — LED re-syncs on next heartbeat
+            log.error("[MQTT] Failed to publish: screenId={} ledIndex={} error={}",
                     screenId, ledIndex, e.getMessage(), e);
         }
     }
 
-    /**
-     * Maps SeatState to the LED color string expected by the ESP32 firmware.
-     * Uses AppConstants to keep the strings in one place.
-     *
-     * CANCELLED uses GREEN (same as AVAILABLE) — a cancelled seat is open for
-     * a new booking; showing RED would be misleading to customers in the hall.
-     */
-    private String mapStateToColor(SeatState state) {
+    private String mapStateToLedState(SeatState state) {
         return switch (state) {
-            case AVAILABLE   -> AppConstants.LED_GREEN;
-            case RESERVED    -> AppConstants.LED_YELLOW;
-            case BOOKED      -> AppConstants.LED_BLUE;
-            case OCCUPIED    -> AppConstants.LED_RED;
-            case MAINTENANCE -> AppConstants.LED_WHITE;
-            case CANCELLED   -> AppConstants.LED_GREEN;
+            case AVAILABLE   -> "OFF";
+            case RESERVED    -> "BLINK_SLOW";
+            case BOOKED      -> "BLINK_SLOW";
+            case OCCUPIED    -> "BLINK_FAST";   // ← fast blink = "find your seat!"
+            case CANCELLED   -> "CONFIRM";       // ← repurposed: seat arrival confirmed
+            case MAINTENANCE -> "ON";            // ← solid on = blocked
         };
     }
 }

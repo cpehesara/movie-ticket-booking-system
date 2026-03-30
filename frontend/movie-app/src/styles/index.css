@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities;/* This file is intentionally minimal.
+   All styles are handled via Tailwind utility classes in components.
+   Global base styles live in src/index.css which imports Tailwind layers.
+
+   Add any global custom CSS here if needed beyond what Tailwind provides.
+*/
+
+/* Scrollbar styling for dark theme */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #111; }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #555; }
+
+/* Smooth font rendering */
+html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+/* Prevent flash of unstyled QR scanner video */
+#qr-scanner-region video { border-radius: 12px; }
