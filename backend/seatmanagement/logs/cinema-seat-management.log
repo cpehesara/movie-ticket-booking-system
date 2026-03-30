@@ -77,3 +77,15 @@
 2026-03-30 20:12:55 [cinema-scheduler-1] INFO  c.c.s.m.s.impl.ShowtimeServiceImpl - Showtime scheduler: 0 started, 1 completed
 2026-03-30 20:17:55 [MessageBroker-3] INFO  o.s.w.s.c.WebSocketMessageBrokerStats - WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[unknown], outboundChannel[unknown], sockJsScheduler[pool size = 5, active threads = 1, queued tasks = 0, completed tasks = 4]
 2026-03-30 20:47:55 [MessageBroker-2] INFO  o.s.w.s.c.WebSocketMessageBrokerStats - WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[unknown], outboundChannel[unknown], sockJsScheduler[pool size = 6, active threads = 1, queued tasks = 0, completed tasks = 5]
+2026-03-30 21:11:58 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2026-03-30 21:11:58 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@7ff55b28]]
+2026-03-30 21:11:58 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2026-03-30 21:11:58 [SpringApplicationShutdownHook] INFO  o.s.i.endpoint.EventDrivenConsumer - Removing {logging-channel-adapter:_org.springframework.integration.errorLogger} as a subscriber to the 'errorChannel' channel
+2026-03-30 21:11:58 [SpringApplicationShutdownHook] INFO  o.s.i.c.PublishSubscribeChannel - Channel 'cinema-seat-management.errorChannel' has 0 subscriber(s).
+2026-03-30 21:11:58 [SpringApplicationShutdownHook] INFO  o.s.i.endpoint.EventDrivenConsumer - stopped bean '_org.springframework.integration.errorLogger'
+2026-03-30 21:11:58 [SpringApplicationShutdownHook] INFO  o.s.i.endpoint.EventDrivenConsumer - Removing {service-activator:mqttSubscriber.handleMessage.serviceActivator} as a subscriber to the 'mqttInputChannel' channel
+2026-03-30 21:11:58 [SpringApplicationShutdownHook] INFO  o.s.i.channel.DirectChannel - Channel 'cinema-seat-management.mqttInputChannel' has 0 subscriber(s).
+2026-03-30 21:11:58 [SpringApplicationShutdownHook] INFO  o.s.i.endpoint.EventDrivenConsumer - stopped bean 'mqttSubscriber.handleMessage.serviceActivator'
+2026-03-30 21:11:58 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-03-30 21:11:58 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Shutdown initiated...
+2026-03-30 21:11:58 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Shutdown completed.
