@@ -25,7 +25,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final KioskApiKeyFilter       kioskApiKeyFilter;
+    private final KioskApiKeyFilter kioskApiKeyFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -34,30 +34,32 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Public auth endpoints
+                        // ── Public auth ──────────────────────────────────
                         .requestMatchers("/api/auth/**").permitAll()
 
-                        // Public read endpoints
+                        // ── Public read (movies, showtimes, seat maps) ───
                         .requestMatchers(HttpMethod.GET, "/api/movies/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/showtimes/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/seats/**").permitAll()
 
-                        // WebSocket
+                        // ── WebSocket ────────────────────────────────────
                         .requestMatchers("/ws/**").permitAll()
 
-                        // Swagger
+                        // ── Swagger ──────────────────────────────────────
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
 
-                        // Kiosk endpoints — auth via X-API-Key header, not JWT
+                        // ── Kiosk endpoints (API Key auth, not JWT) ──────
+                        //    KioskApiKeyFilter authenticates these via X-API-Key header
                         .requestMatchers("/api/checkin/**").permitAll()
-                        .requestMatchers("/api/seat-arrival/**").permitAll()
+                        .requestMatchers("/api/seat-arrival/**").permitAll()  // ← IoT Step 2
 
-                        // Admin endpoints
+                        // ── Admin ────────────────────────────────────────
                         .requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "MANAGER")
 
-                        // Everything else requires authentication
+                        // ── Everything else requires auth ────────────────
                         .anyRequest().authenticated()
                 )
+                // Kiosk API Key filter runs before JWT filter so X-API-Key takes precedence
                 .addFilterBefore(kioskApiKeyFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -70,8 +72,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
-            throws Exception {
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 }
