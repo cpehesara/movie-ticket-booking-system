@@ -16,6 +16,10 @@ public interface AuthService {
 
     void logout(String refreshToken);
 
-    /** Typed role parameter — removes valueOf() guesswork from the controller */
+    /**
+     * Registers a staff member (ADMIN / MANAGER / OPERATOR).
+     * The role is passed as the enum type so the compiler enforces valid values
+     * at the call site rather than discovering invalid strings at runtime.
+     */
     AuthResponse registerStaff(RegisterRequest request, UserRole role, Long cinemaId);
 }

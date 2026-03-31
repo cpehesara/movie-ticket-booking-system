@@ -104,21 +104,30 @@ const LedSeat: React.FC<LedSeatProps> = ({ seat, inTransit, onHover }) => {
         width: 44,
         height: 44,
         backgroundColor: inTransit ? '#f97316' : ledBg[seat.seatState],
-        opacity: dimmed ? 0.25 : 1,
+        opacity: dimmed ? 0.2 : 1,
         boxShadow: inTransit
           ? inTransitGlow
           : dimmed ? 'none' : ledGlow[seat.seatState],
-        transition: 'all 0.4s ease',
+        transition: 'background-color 0.4s ease, box-shadow 0.4s ease, opacity 0.4s ease',
       }}
     >
+      {/* In-transit: triple-ring blink — mirrors physical LED WHITE_PULSE */}
       {inTransit && (
-        <span
-          className="absolute inset-0 rounded-full animate-ping"
-          style={{
-            backgroundColor: 'rgba(251,146,60,0.3)',
-            animationDuration: '0.9s',
-          }}
-        />
+        <>
+          <span
+            className="absolute inset-0 rounded-full animate-ping"
+            style={{ backgroundColor: 'rgba(251,146,60,0.35)', animationDuration: '0.85s' }}
+          />
+          <span
+            className="absolute inset-[-6px] rounded-full animate-ping"
+            style={{ backgroundColor: 'rgba(251,146,60,0.15)', animationDuration: '0.85s', animationDelay: '0.28s' }}
+          />
+          {/* Blink overlay: simulates LED strip blinking */}
+          <span
+            className="absolute inset-0 rounded-full animate-led-blink"
+            style={{ backgroundColor: '#f97316' }}
+          />
+        </>
       )}
       <span
         className="relative z-10 font-mono font-bold text-white"
@@ -420,6 +429,43 @@ export const IoTMonitorPage: React.FC = () => {
               </Button>
             </div>
           </div>
+
+          {/* ── In-transit alert banner ────────────────────────────── */}
+          {inTransitSeatIds.length > 0 && (
+            <div
+              className="flex items-center gap-3 rounded-xl px-4 py-3 mb-4 animate-slide-up"
+              style={{
+                backgroundColor: 'rgba(251,146,60,0.07)',
+                border: '1px solid rgba(251,146,60,0.3)',
+                boxShadow: '0 0 24px rgba(251,146,60,0.08)',
+              }}
+            >
+              <div className="relative flex-shrink-0">
+                <div
+                  className="w-4 h-4 rounded-full animate-led-blink"
+                  style={{ backgroundColor: '#f97316' }}
+                />
+                <div
+                  className="absolute inset-0 rounded-full animate-ping"
+                  style={{ backgroundColor: 'rgba(249,115,22,0.4)', animationDuration: '0.85s' }}
+                />
+              </div>
+              <div className="flex-1">
+                <p style={{ color: '#fb923c', fontSize: '0.8rem', fontWeight: 700 }}>
+                  {inTransitSeatIds.length} seat{inTransitSeatIds.length > 1 ? 's' : ''} blinking — customer{inTransitSeatIds.length > 1 ? 's' : ''} in transit
+                </p>
+                <p style={{ color: '#78350f', fontSize: '0.68rem', marginTop: '1px' }}>
+                  LED strip is in WHITE_PULSE mode — guiding to seat
+                </p>
+              </div>
+              <span
+                className="text-xs font-mono px-2 py-1 rounded-full font-bold"
+                style={{ backgroundColor: 'rgba(251,146,60,0.15)', color: '#fb923c' }}
+              >
+                {inTransitSeatIds.length}
+              </span>
+            </div>
+          )}
 
           {/* ── Stats bar ──────────────────────────────────────────── */}
           {stats && (

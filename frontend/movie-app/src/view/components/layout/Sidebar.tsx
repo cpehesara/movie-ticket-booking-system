@@ -4,13 +4,15 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../../viewmodel/store';
 
 const links = [
-  { to: '/admin',             label: 'Dashboard',        icon: '▤',  end: true  },
-  { to: '/admin/movies',      label: 'Movies',           icon: '▶'              },
-  { to: '/admin/showtimes',   label: 'Showtimes',        icon: '◷'              },
-  { to: '/admin/bookings',    label: 'Bookings',         icon: '◈'              },
-  { to: '/admin/iot-monitor', label: 'IoT Monitor',      icon: '◉',  iot: true  },
-  { to: '/admin/staff',       label: 'Staff',            icon: '◎'              },
-  { to: '/admin/kiosks',      label: 'Kiosks',           icon: '⬜'             },
+  { to: '/admin',                label: 'Dashboard',        icon: '▤',  end: true  },
+  { to: '/admin/movies',         label: 'Movies',           icon: '▶'              },
+  { to: '/admin/showtimes',      label: 'Showtimes',        icon: '◷'              },
+  { to: '/admin/bookings',       label: 'Bookings',         icon: '◈'              },
+  { to: '/admin/iot-monitor',    label: 'IoT Monitor',      icon: '◉',  iot: true  },
+  { to: '/admin/seat-qr-codes',  label: 'QR Stickers',      icon: '▣'              },
+  { to: '/admin/staff',          label: 'Staff',            icon: '◎'              },
+  { to: '/admin/kiosks',         label: 'Kiosks',           icon: '⬜'             },
+  { to: '/admin/manual',         label: 'User Manual',      icon: '◇'              },
 ];
 
 export const Sidebar: React.FC = () => {

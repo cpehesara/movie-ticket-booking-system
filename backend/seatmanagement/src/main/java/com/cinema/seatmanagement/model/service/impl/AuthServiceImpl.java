@@ -32,13 +32,13 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private final UserRepository             userRepository;
-    private final CustomerProfileRepository  customerProfileRepository;
-    private final StaffProfileRepository     staffProfileRepository;
-    private final RefreshTokenRepository     refreshTokenRepository;
-    private final CinemaRepository           cinemaRepository;
-    private final PasswordEncoder            passwordEncoder;
-    private final JwtTokenProvider           jwtTokenProvider;
+    private final UserRepository userRepository;
+    private final CustomerProfileRepository customerProfileRepository;
+    private final StaffProfileRepository staffProfileRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final CinemaRepository cinemaRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Value("${jwt.refresh-expiration-days:7}")
     private int refreshExpirationDays;
@@ -61,7 +61,6 @@ public class AuthServiceImpl implements AuthService {
 
         CustomerProfile profile = CustomerProfile.builder()
                 .user(user)
-                .phone(request.getPhone())
                 .loyaltyPoints(0)
                 .build();
         customerProfileRepository.save(profile);
@@ -72,17 +71,15 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public AuthResponse login(LoginRequest request) {
-        // Entity graph fetch: loads user + profiles in one query, avoids lazy-load
-        // hits when buildAuthResponse maps roles/profile data
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new AuthenticationFailedException("Invalid email or password"));
 
-        if (!user.getIsActive()) {
-            throw new AuthenticationFailedException("Account is deactivated");
-        }
-
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
             throw new AuthenticationFailedException("Invalid email or password");
+        }
+
+        if (!user.getIsActive()) {
+            throw new AuthenticationFailedException("Account is deactivated");
         }
 
         return buildAuthResponse(user);
@@ -96,11 +93,10 @@ public class AuthServiceImpl implements AuthService {
 
         if (storedToken.getExpiresAt().isBefore(LocalDateTime.now())) {
             refreshTokenRepository.delete(storedToken);
-            throw new TokenRefreshException("Refresh token has expired. Please login again.");
+            throw new TokenRefreshException("Refresh token has expired");
         }
 
         User user = storedToken.getUser();
-        // Rotate: old token is deleted, new one issued — prevents replay attacks
         refreshTokenRepository.delete(storedToken);
 
         return buildAuthResponse(user);
@@ -120,9 +116,10 @@ public class AuthServiceImpl implements AuthService {
             throw new AuthenticationFailedException("Email already registered");
         }
 
-        // Validate role is a staff role — customers cannot be registered via this path
+        // Role is already the correct enum type — no valueOf conversion needed.
+        // Validation that it is a staff role (not CUSTOMER) is enforced here.
         if (role == UserRole.CUSTOMER) {
-            throw new IllegalArgumentException("Use /auth/register for customer accounts");
+            throw new IllegalArgumentException("Cannot register a staff member with CUSTOMER role");
         }
 
         User user = User.builder()
@@ -137,18 +134,19 @@ public class AuthServiceImpl implements AuthService {
         StaffProfile profile = StaffProfile.builder()
                 .user(user)
                 .cinema(cinemaRepository.findById(cinemaId)
-                        .orElseThrow(() -> new EntityNotFoundException("Cinema not found with id: " + cinemaId)))
+                        .orElseThrow(() -> new EntityNotFoundException(
+                                "Cinema not found with id: " + cinemaId)))
                 .build();
         staffProfileRepository.save(profile);
 
         return buildAuthResponse(user);
     }
 
-    // ── Private helpers ───────────────────────────────────────────────────
+    // ── Private helpers ───────────────────────────────────────────────────────
 
     private AuthResponse buildAuthResponse(User user) {
         String accessToken  = jwtTokenProvider.generateToken(user);
-        String refreshToken = createAndPersistRefreshToken(user);
+        String refreshToken = createRefreshToken(user);
 
         return AuthResponse.builder()
                 .accessToken(accessToken)
@@ -160,16 +158,15 @@ public class AuthServiceImpl implements AuthService {
                 .build();
     }
 
-    private String createAndPersistRefreshToken(User user) {
+    private String createRefreshToken(User user) {
         String token = UUID.randomUUID().toString();
 
-        refreshTokenRepository.save(
-                RefreshToken.builder()
-                        .user(user)
-                        .token(token)
-                        .expiresAt(LocalDateTime.now().plusDays(refreshExpirationDays))
-                        .build()
-        );
+        RefreshToken refreshToken = RefreshToken.builder()
+                .user(user)
+                .token(token)
+                .expiresAt(LocalDateTime.now().plusDays(refreshExpirationDays))
+                .build();
+        refreshTokenRepository.save(refreshToken);
 
         return token;
     }

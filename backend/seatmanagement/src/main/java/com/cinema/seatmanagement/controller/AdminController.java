@@ -6,9 +6,10 @@ import com.cinema.seatmanagement.model.entity.Screen;
 import com.cinema.seatmanagement.model.entity.Showtime;
 import com.cinema.seatmanagement.model.enums.UserRole;
 import com.cinema.seatmanagement.model.repository.KioskRepository;
+import com.cinema.seatmanagement.model.repository.MovieRepository;
 import com.cinema.seatmanagement.model.repository.ScreenRepository;
+import com.cinema.seatmanagement.model.repository.UserRepository;
 import com.cinema.seatmanagement.model.service.interfaces.*;
-import com.cinema.seatmanagement.security.JwtTokenProvider;
 import com.cinema.seatmanagement.view.dto.request.RegisterRequest;
 import com.cinema.seatmanagement.view.dto.request.SeatStateUpdateRequest;
 import com.cinema.seatmanagement.view.dto.response.AuthResponse;
@@ -22,12 +23,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -35,28 +39,28 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AdminController {
 
-    private final MovieService     movieService;
-    private final ShowtimeService  showtimeService;
-    private final BookingService   bookingService;
-    private final SeatService      seatService;
-    private final UserService      userService;
-    private final AuthService      authService;
-    private final KioskRepository  kioskRepository;
+    private final MovieService movieService;
+    private final ShowtimeService showtimeService;
+    private final BookingService bookingService;
+    private final SeatService seatService;
+    private final UserService userService;
+    private final AuthService authService;
+    private final KioskRepository kioskRepository;
     private final ScreenRepository screenRepository;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final MovieRepository movieRepository;
+    private final UserRepository userRepository;
 
-    // ── Movie Management ──────────────────────────────────────────────────
+    // ── Movie Management ──────────────────────────────────────────────────────
 
     @PostMapping("/movies")
     public ResponseEntity<MovieResponse> createMovie(@RequestBody Movie movie) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(movieService.createMovie(movie));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(movieService.createMovie(movie));
     }
 
     @PutMapping("/movies/{id}")
     public ResponseEntity<MovieResponse> updateMovie(
-            @PathVariable Long id,
-            @RequestBody Movie movie
-    ) {
+            @PathVariable Long id, @RequestBody Movie movie) {
         return ResponseEntity.ok(movieService.updateMovie(id, movie));
     }
 
@@ -66,18 +70,17 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
-    // ── Showtime Management ───────────────────────────────────────────────
+    // ── Showtime Management ───────────────────────────────────────────────────
 
     @PostMapping("/showtimes")
     public ResponseEntity<ShowtimeResponse> createShowtime(@RequestBody Showtime showtime) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(showtimeService.createShowtime(showtime));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(showtimeService.createShowtime(showtime));
     }
 
     @PutMapping("/showtimes/{id}")
     public ResponseEntity<ShowtimeResponse> updateShowtime(
-            @PathVariable Long id,
-            @RequestBody Showtime showtime
-    ) {
+            @PathVariable Long id, @RequestBody Showtime showtime) {
         return ResponseEntity.ok(showtimeService.updateShowtime(id, showtime));
     }
 
@@ -87,20 +90,49 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
-    // ── Seat State Override ───────────────────────────────────────────────
+    // ── Screen Listing ────────────────────────────────────────────────────────
+
+    @GetMapping("/screens")
+    public ResponseEntity<List<Map<String, Object>>> getAllScreens() {
+        List<Map<String, Object>> screens = screenRepository.findAll()
+                .stream()
+                .map(screen -> {
+                    Map<String, Object> dto = new HashMap<>();
+                    dto.put("id",         screen.getId());
+                    dto.put("name",       screen.getName());
+                    dto.put("totalSeats", screen.getTotalSeats());
+                    dto.put("cinemaName", screen.getCinema() != null
+                            ? screen.getCinema().getName() : "");
+                    dto.put("cinemaId",   screen.getCinema() != null
+                            ? screen.getCinema().getId() : null);
+                    return dto;
+                })
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(screens);
+    }
+
+    // ── Seat State Override ───────────────────────────────────────────────────
 
     @PatchMapping("/seats/{seatId}/state")
     public ResponseEntity<Void> updateSeatState(
-            @RequestHeader("Authorization") String authHeader,
             @PathVariable Long seatId,
-            @Valid @RequestBody SeatStateUpdateRequest request
+            @Valid @RequestBody SeatStateUpdateRequest request,
+            @AuthenticationPrincipal UserDetails principal
     ) {
-        Long actorId = jwtTokenProvider.getUserIdFromToken(authHeader.substring(7));
-        seatService.updateSeatState(seatId, request.getShowtimeId(), request.getNewState(), actorId);
+        Long actingUserId = userRepository.findByEmail(principal.getUsername())
+                .map(u -> u.getId())
+                .orElse(null);
+
+        seatService.updateSeatState(
+                seatId,
+                request.getShowtimeId(),
+                request.getNewState(),
+                actingUserId
+        );
         return ResponseEntity.ok().build();
     }
 
-    // ── Booking Overview ──────────────────────────────────────────────────
+    // ── Booking Overview ──────────────────────────────────────────────────────
 
     @GetMapping("/bookings")
     public ResponseEntity<List<BookingResponse>> getAllBookings() {
@@ -108,21 +140,27 @@ public class AdminController {
     }
 
     @GetMapping("/bookings/showtime/{showtimeId}")
-    public ResponseEntity<List<BookingResponse>> getBookingsByShowtime(@PathVariable Long showtimeId) {
+    public ResponseEntity<List<BookingResponse>> getBookingsByShowtime(
+            @PathVariable Long showtimeId) {
         return ResponseEntity.ok(bookingService.getBookingsByShowtime(showtimeId));
     }
 
-    // ── Staff Management ──────────────────────────────────────────────────
+    // ── Staff Management ──────────────────────────────────────────────────────
 
     @PostMapping("/staff")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AuthResponse> registerStaff(
             @Valid @RequestBody RegisterRequest request,
-            @RequestParam UserRole role,            // Typed enum — invalid values return 400 automatically
+            @RequestParam String role,
             @RequestParam Long cinemaId
     ) {
-        AuthResponse response = authService.registerStaff(request, role, cinemaId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        // The compiled AuthService interface requires UserRole, not String.
+        // Convert here so the call site matches the interface exactly.
+        // valueOf() throws IllegalArgumentException for unknown values,
+        // which Spring maps to 400 Bad Request automatically.
+        UserRole userRole = UserRole.valueOf(role.toUpperCase());
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(authService.registerStaff(request, userRole, cinemaId));
     }
 
     @GetMapping("/staff")
@@ -142,7 +180,7 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
-    // ── Kiosk Management ─────────────────────────────────────────────────
+    // ── Kiosk Management ─────────────────────────────────────────────────────
 
     @PostMapping("/kiosks")
     @PreAuthorize("hasRole('ADMIN')")
@@ -151,37 +189,23 @@ public class AdminController {
             @RequestParam(required = false) String name
     ) {
         Screen screen = screenRepository.findById(screenId)
-                .orElseThrow(() -> new EntityNotFoundException("Screen not found with id: " + screenId));
+                .orElseThrow(() -> new EntityNotFoundException("Screen not found: " + screenId));
 
-        String apiKey = "KIOSK-" + UUID.randomUUID().toString();
+        String apiKey = "KIOSK-" + UUID.randomUUID();
 
-        Kiosk kiosk = kioskRepository.save(
-                Kiosk.builder()
-                        .screen(screen)
-                        .apiKey(apiKey)
-                        .name(name != null ? name : "Kiosk-" + screenId)
-                        .isActive(true)
-                        .build()
-        );
+        Kiosk kiosk = Kiosk.builder()
+                .screen(screen)
+                .apiKey(apiKey)
+                .name(name != null ? name : "Kiosk-" + screenId)
+                .isActive(true)
+                .build();
+        kiosk = kioskRepository.save(kiosk);
 
         Map<String, Object> response = new HashMap<>();
         response.put("kioskId",  kiosk.getId());
         response.put("screenId", screenId);
         response.put("apiKey",   apiKey);
         response.put("name",     kiosk.getName());
-
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
-
-    // ── LED Re-sync (ESP32 reconnect) ─────────────────────────────────────
-
-    @PostMapping("/screens/{screenId}/resync-leds")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'OPERATOR')")
-    public ResponseEntity<Void> resyncLeds(
-            @PathVariable Long screenId,
-            @RequestParam Long showtimeId
-    ) {
-        seatService.resyncLedsForShowtime(showtimeId);
-        return ResponseEntity.ok().build();
     }
 }
