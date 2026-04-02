@@ -25,10 +25,14 @@ export const adminApi = {
     axiosInstance.delete(`/admin/movies/${id}`),
 
   // ── Showtimes ───────────────────────────────────────────────────────────────
-  createShowtime: (data: Partial<ShowtimeResponse>) =>
-    axiosInstance.post<ShowtimeResponse>('/admin/showtimes', data).then(r => r.data),
-  updateShowtime: (id: number, data: Partial<ShowtimeResponse>) =>
-    axiosInstance.put<ShowtimeResponse>(`/admin/showtimes/${id}`, data).then(r => r.data),
+  createShowtime: (data: Partial<ShowtimeResponse>) => {
+    const payload = { ...data, movie: { id: data.movieId }, screen: { id: data.screenId } };
+    return axiosInstance.post<ShowtimeResponse>('/admin/showtimes', payload).then(r => r.data);
+  },
+  updateShowtime: (id: number, data: Partial<ShowtimeResponse>) => {
+    const payload = { ...data, movie: { id: data.movieId }, screen: { id: data.screenId } };
+    return axiosInstance.put<ShowtimeResponse>(`/admin/showtimes/${id}`, payload).then(r => r.data);
+  },
   cancelShowtime: (id: number) =>
     axiosInstance.delete(`/admin/showtimes/${id}`),
 
