@@ -3942,3 +3942,92 @@ Unconditional classes:
 2026-04-02 14:48:07 [restartedMain] WARN  c.c.s.mqtt.MqttPublisher - MQTT is disabled. LED commands will be logged only. Set mqtt.enabled=true in application.yml to enable ESP32 integration.
 2026-04-02 14:48:08 [restartedMain] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
 2026-04-02 14:48:08 [restartedMain] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 1 endpoint beneath base path '/actuator'
+2026-04-02 14:48:09 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2026-04-02 14:48:09 [restartedMain] INFO  o.s.i.endpoint.EventDrivenConsumer - Adding {logging-channel-adapter:_org.springframework.integration.errorLogger} as a subscriber to the 'errorChannel' channel
+2026-04-02 14:48:09 [restartedMain] INFO  o.s.i.c.PublishSubscribeChannel - Channel 'cinema-seat-management.errorChannel' has 1 subscriber(s).
+2026-04-02 14:48:09 [restartedMain] INFO  o.s.i.endpoint.EventDrivenConsumer - started bean '_org.springframework.integration.errorLogger'
+2026-04-02 14:48:09 [restartedMain] INFO  o.s.i.endpoint.EventDrivenConsumer - Adding {service-activator:mqttSubscriber.handleMessage.serviceActivator} as a subscriber to the 'mqttInputChannel' channel
+2026-04-02 14:48:09 [restartedMain] INFO  o.s.i.channel.DirectChannel - Channel 'cinema-seat-management.mqttInputChannel' has 1 subscriber(s).
+2026-04-02 14:48:09 [restartedMain] INFO  o.s.i.endpoint.EventDrivenConsumer - started bean 'mqttSubscriber.handleMessage.serviceActivator'
+2026-04-02 14:48:09 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-04-02 14:48:09 [restartedMain] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2026-04-02 14:48:09 [restartedMain] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@530eb5c]]
+2026-04-02 14:48:09 [restartedMain] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2026-04-02 14:48:09 [restartedMain] INFO  c.c.s.SeatmanagementApplication - Started SeatmanagementApplication in 5.301 seconds (process running for 13417.474)
+2026-04-02 14:48:09 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation delta:
+
+
+==========================
+CONDITION EVALUATION DELTA
+==========================
+
+
+Positive matches:
+-----------------
+
+   CacheMetricsAutoConfiguration matched:
+      - @ConditionalOnBean (types: org.springframework.cache.CacheManager; SearchStrategy: all) found bean 'cacheManager' (OnBeanCondition)
+
+   CacheMetricsRegistrarConfiguration matched:
+      - @ConditionalOnBean (types: org.springframework.boot.actuate.metrics.cache.CacheMeterBinderProvider,io.micrometer.core.instrument.MeterRegistry; SearchStrategy: all) found beans 'caffeineCacheMeterBinderProvider', 'simpleMeterRegistry' (OnBeanCondition)
+
+   IntegrationAutoConfiguration.IntegrationTaskSchedulerConfiguration matched:
+      - @ConditionalOnBean (types: org.springframework.boot.task.TaskSchedulerBuilder; SearchStrategy: all) found bean 'taskSchedulerBuilder'; @ConditionalOnMissingBean (names: taskScheduler; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   WebSocketMessagingAutoConfiguration.WebSocketMessageConverterConfiguration matched:
+      - @ConditionalOnClass found required classes 'com.fasterxml.jackson.databind.ObjectMapper', 'org.springframework.messaging.simp.config.AbstractMessageBrokerConfiguration' (OnClassCondition)
+      - @ConditionalOnBean (types: org.springframework.web.socket.config.annotation.DelegatingWebSocketMessageBrokerConfiguration,com.fasterxml.jackson.databind.ObjectMapper; SearchStrategy: all) found beans 'jacksonObjectMapper', 'org.springframework.web.socket.config.annotation.DelegatingWebSocketMessageBrokerConfiguration' (OnBeanCondition)
+
+
+Negative matches:
+-----------------
+
+   ManagementWebSecurityAutoConfiguration:
+      Did not match:
+         - AllNestedConditions 1 matched 1 did not; NestedCondition on DefaultWebSecurityCondition.Beans @ConditionalOnMissingBean (types: org.springframework.security.web.SecurityFilterChain; SearchStrategy: all) found beans of type 'org.springframework.security.web.SecurityFilterChain' securityFilterChain; NestedCondition on DefaultWebSecurityCondition.Classes @ConditionalOnClass found required classes 'org.springframework.security.web.SecurityFilterChain', 'org.springframework.security.config.annotation.web.builders.HttpSecurity' (DefaultWebSecurityCondition)
+      Matched:
+         - found 'session' scope (OnWebApplicationCondition)
+
+   MqttConfig:
+      Did not match:
+         - @ConditionalOnProperty (mqtt.enabled=true) found different value in property 'mqtt.enabled' (OnPropertyCondition)
+
+   MqttConnectionManager:
+      Did not match:
+         - @ConditionalOnProperty (mqtt.enabled=true) found different value in property 'mqtt.enabled' (OnPropertyCondition)
+
+   SpringBootWebSecurityConfiguration.WebSecurityEnablerConfiguration:
+      Did not match:
+         - @ConditionalOnMissingBean (names: springSecurityFilterChain; SearchStrategy: all) found beans named springSecurityFilterChain (OnBeanCondition)
+      Matched:
+         - @ConditionalOnClass found required class 'org.springframework.security.config.annotation.web.configuration.EnableWebSecurity' (OnClassCondition)
+
+   TaskExecutorConfigurations.TaskExecutorConfiguration:
+      Did not match:
+         - @ConditionalOnMissingBean (types: java.util.concurrent.Executor; SearchStrategy: all) found beans of type 'java.util.concurrent.Executor' auditTaskExecutor, emailTaskExecutor, clientInboundChannelExecutor, clientOutboundChannelExecutor, brokerChannelExecutor (OnBeanCondition)
+
+   TaskSchedulingConfigurations.TaskSchedulerConfiguration:
+      Did not match:
+         - @ConditionalOnMissingBean (types: org.springframework.scheduling.TaskScheduler,java.util.concurrent.ScheduledExecutorService; SearchStrategy: all) found beans of type 'org.springframework.scheduling.TaskScheduler' messageBrokerTaskScheduler (OnBeanCondition)
+
+   UserDetailsServiceAutoConfiguration:
+      Did not match:
+         - @ConditionalOnMissingBean (types: org.springframework.security.authentication.AuthenticationManager,org.springframework.security.authentication.AuthenticationProvider,org.springframework.security.core.userdetails.UserDetailsService,org.springframework.security.authentication.AuthenticationManagerResolver,org.springframework.security.oauth2.jwt.JwtDecoder; SearchStrategy: all) found beans of type 'org.springframework.security.authentication.AuthenticationManager' authenticationManager and found beans of type 'org.springframework.security.core.userdetails.UserDetailsService' customUserDetailsService (OnBeanCondition)
+      Matched:
+         - @ConditionalOnClass found required class 'org.springframework.security.authentication.AuthenticationManager' (OnClassCondition)
+         - AnyNestedCondition 1 matched 2 did not; NestedCondition on UserDetailsServiceAutoConfiguration.MissingAlternativeOrUserPropertiesConfigured.PasswordConfigured @ConditionalOnProperty (spring.security.user.password) did not find property 'password'; NestedCondition on UserDetailsServiceAutoConfiguration.MissingAlternativeOrUserPropertiesConfigured.NameConfigured @ConditionalOnProperty (spring.security.user.name) did not find property 'name'; NestedCondition on UserDetailsServiceAutoConfiguration.MissingAlternativeOrUserPropertiesConfigured.MissingAlternative @ConditionalOnMissingClass did not find unwanted classes 'org.springframework.security.oauth2.client.registration.ClientRegistrationRepository', 'org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector', 'org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository' (UserDetailsServiceAutoConfiguration.MissingAlternativeOrUserPropertiesConfigured)
+
+
+Exclusions:
+-----------
+
+    None
+
+
+Unconditional classes:
+----------------------
+
+    None
+
+
+
