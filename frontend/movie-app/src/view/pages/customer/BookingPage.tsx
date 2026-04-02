@@ -42,14 +42,7 @@ export const BookingPage: React.FC = () => {
     dispatch(createBooking({ showtimeId: id, seatIds: selectedSeatIds, paymentMethod: 'CARD' }));
   };
 
-  // Compute per-seat pricing (base × type multiplier)
-  const priceMultiplier: Record<string, number> = { STANDARD: 1, VIP: 1.5, COUPLE: 2, WHEELCHAIR: 1 };
-  const basePrice  = 0; // displayed as estimated; real price from backend
   const selectedSeats = (seatMap?.seats ?? []).filter(s => selectedSeatIds.includes(s.seatId));
-  const estimatedTotal = selectedSeats.reduce((sum, s) => {
-    const price = (seatMap ? basePrice : 0) * (priceMultiplier[s.seatType] ?? 1);
-    return sum + price;
-  }, 0);
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#080b10' }}>

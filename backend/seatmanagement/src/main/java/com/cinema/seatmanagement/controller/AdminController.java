@@ -93,18 +93,23 @@ public class AdminController {
     // ── Screen Listing ────────────────────────────────────────────────────────
 
     @GetMapping("/screens")
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public ResponseEntity<List<Map<String, Object>>> getAllScreens() {
-        List<Map<String, Object>> screens = screenRepository.findAll()
+        List<Map<String, Object>> screens = screenRepository.findAllWithCinema()
                 .stream()
                 .map(screen -> {
                     Map<String, Object> dto = new HashMap<>();
                     dto.put("id",         screen.getId());
                     dto.put("name",       screen.getName());
                     dto.put("totalSeats", screen.getTotalSeats());
-                    dto.put("cinemaName", screen.getCinema() != null
-                            ? screen.getCinema().getName() : "");
-                    dto.put("cinemaId",   screen.getCinema() != null
-                            ? screen.getCinema().getId() : null);
+                    
+                    if (screen.getCinema() != null) {
+                        dto.put("cinemaName", screen.getCinema().getName());
+                        dto.put("cinemaId",   screen.getCinema().getId());
+                    } else {
+                        dto.put("cinemaName", "Unknown Cinema");
+                        dto.put("cinemaId",   null);
+                    }
                     return dto;
                 })
                 .collect(Collectors.toList());

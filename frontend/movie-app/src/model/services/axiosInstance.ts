@@ -10,16 +10,16 @@ const axiosInstance = axios.create({
 // Attach JWT on every request
 axiosInstance.interceptors.request.use((config) => {
   const token = localStorage.getItem('accessToken');
-  if (token) config.headers.Authorization = `Bearer ${token}`;
+  if (token) config.headers.set('Authorization', `Bearer ${token}`);
   return config;
 });
 
-// Auto-refresh on 401
+// Auto-refresh on 401 or 403 (e.g. role upgraded in DB but token stale)
 axiosInstance.interceptors.response.use(
   (res) => res,
   async (error) => {
     const original = error.config;
-    if (error.response?.status === 401 && !original._retry) {
+    if ((error.response?.status === 401 || error.response?.status === 403) && !original._retry) {
       original._retry = true;
       const refreshToken = localStorage.getItem('refreshToken');
       if (refreshToken) {
@@ -27,7 +27,7 @@ axiosInstance.interceptors.response.use(
           const { data } = await axios.post(`${BASE_URL}/auth/refresh`, { refreshToken });
           localStorage.setItem('accessToken', data.accessToken);
           localStorage.setItem('refreshToken', data.refreshToken);
-          original.headers.Authorization = `Bearer ${data.accessToken}`;
+          original.headers.set('Authorization', `Bearer ${data.accessToken}`);
           return axiosInstance(original);
         } catch {
           localStorage.clear();

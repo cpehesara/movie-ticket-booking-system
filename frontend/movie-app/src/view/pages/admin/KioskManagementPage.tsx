@@ -4,7 +4,6 @@ import { useToast } from '../../components/common/Toast';
 import { Header } from '../../components/layout/Header';
 import { Sidebar } from '../../components/layout/Sidebar';
 import { Button } from '../../components/common/Button';
-import { Modal } from '../../components/common/Modal';
 
 export const KioskManagementPage: React.FC = () => {
   const { showToast } = useToast();

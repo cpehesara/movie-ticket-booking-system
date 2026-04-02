@@ -1,0 +1,28 @@
+# [Build Settings]
+# These settings tell Netlify how to compile your React app.
+[build]
+  # The directory that contains the deploy-ready HTML/CSS/JS.
+  # Use "dist" for Vite or "build" for Create React App.
+  publish = "dist"
+
+  # The command to run to build your project.
+  command = "npm run build"
+
+# [Redirects]
+# This is CRITICAL for React apps using React Router.
+# It redirects all traffic to index.html so the app can handle routing internally.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# [Headers]
+# Optional: Enhance security and performance with custom headers.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Cache-Control = "public, max-age=0, must-revalidate"

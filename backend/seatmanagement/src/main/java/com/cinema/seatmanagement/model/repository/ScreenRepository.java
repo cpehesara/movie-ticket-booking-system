@@ -12,6 +12,10 @@ import java.util.Optional;
 @Repository
 public interface ScreenRepository extends JpaRepository<Screen, Long> {
 
+    @org.springframework.data.jpa.repository.EntityGraph(attributePaths = {"cinema"})
+    @Query("SELECT s FROM Screen s")
+    List<Screen> findAllWithCinema();
+
     List<Screen> findByCinemaId(Long cinemaId);
 
     List<Screen> findByCinemaIdAndIsActiveTrue(Long cinemaId);

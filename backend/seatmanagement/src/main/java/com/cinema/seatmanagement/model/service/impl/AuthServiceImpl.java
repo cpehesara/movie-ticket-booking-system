@@ -49,12 +49,14 @@ public class AuthServiceImpl implements AuthService {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new AuthenticationFailedException("Email already registered");
         }
+        
+        boolean hasUsers = userRepository.count() > 0;
 
         User user = User.builder()
                 .email(request.getEmail())
                 .passwordHash(passwordEncoder.encode(request.getPassword()))
                 .fullName(request.getFullName())
-                .role(UserRole.CUSTOMER)
+                .role(!hasUsers ? UserRole.ADMIN : UserRole.CUSTOMER)
                 .isActive(true)
                 .build();
         user = userRepository.save(user);
