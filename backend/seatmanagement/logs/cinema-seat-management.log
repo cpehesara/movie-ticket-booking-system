@@ -3194,3 +3194,751 @@ org.springframework.web.servlet.resource.NoResourceFoundException: No static res
 2026-04-02 10:15:06 [http-nio-8080-exec-10] INFO  c.c.s.w.WebSocketEventListener - [WS] Session o5qzvmmk subscribed to showtimeId=1 | viewers=1
 2026-04-02 10:17:30 [http-nio-8080-exec-2] INFO  c.c.s.w.WebSocketEventListener - [WS] Session o5qzvmmk unsubscribed from showtimeId=1
 2026-04-02 10:17:30 [http-nio-8080-exec-5] DEBUG c.c.s.w.WebSocketEventListener - [WS] Client disconnected — sessionId=o5qzvmmk (no showtime subscription)
+2026-04-02 10:32:39 [MessageBroker-5] INFO  o.s.w.s.c.WebSocketMessageBrokerStats - WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 2 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(2)-CONNECTED(2)-DISCONNECT(2)], stompBrokerRelay[null], inboundChannel[unknown], outboundChannel[unknown], sockJsScheduler[pool size = 16, active threads = 1, queued tasks = 1, completed tasks = 276]
+2026-04-02 10:36:18 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2026-04-02 10:36:18 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@176bc612]]
+2026-04-02 10:36:18 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2026-04-02 10:36:18 [SpringApplicationShutdownHook] INFO  o.s.i.endpoint.EventDrivenConsumer - Removing {logging-channel-adapter:_org.springframework.integration.errorLogger} as a subscriber to the 'errorChannel' channel
+2026-04-02 10:36:18 [SpringApplicationShutdownHook] INFO  o.s.i.c.PublishSubscribeChannel - Channel 'cinema-seat-management.errorChannel' has 0 subscriber(s).
+2026-04-02 10:36:18 [SpringApplicationShutdownHook] INFO  o.s.i.endpoint.EventDrivenConsumer - stopped bean '_org.springframework.integration.errorLogger'
+2026-04-02 10:36:18 [SpringApplicationShutdownHook] INFO  o.s.i.endpoint.EventDrivenConsumer - Removing {service-activator:mqttSubscriber.handleMessage.serviceActivator} as a subscriber to the 'mqttInputChannel' channel
+2026-04-02 10:36:18 [SpringApplicationShutdownHook] INFO  o.s.i.channel.DirectChannel - Channel 'cinema-seat-management.mqttInputChannel' has 0 subscriber(s).
+2026-04-02 10:36:18 [SpringApplicationShutdownHook] INFO  o.s.i.endpoint.EventDrivenConsumer - stopped bean 'mqttSubscriber.handleMessage.serviceActivator'
+2026-04-02 10:36:18 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-04-02 10:36:18 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Shutdown initiated...
+2026-04-02 10:36:18 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Shutdown completed.
+2026-04-02 10:36:34 [main] INFO  c.c.s.SeatmanagementApplicationTests - Starting SeatmanagementApplicationTests using Java 21.0.8 with PID 27360 (started by USER in D:\github\cinema-management-system\movie-ticket-booking-system\backend\seatmanagement)
+2026-04-02 10:36:34 [main] DEBUG c.c.s.SeatmanagementApplicationTests - Running with Spring Boot v3.3.5, Spring v6.1.14
+2026-04-02 10:36:34 [main] INFO  c.c.s.SeatmanagementApplicationTests - The following 1 profile is active: "dev"
+2026-04-02 10:36:35 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-02 10:36:36 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 169 ms. Found 15 JPA repository interfaces.
+2026-04-02 10:36:36 [main] INFO  o.s.i.c.DefaultConfiguringBeanFactoryPostProcessor - No bean named 'errorChannel' has been explicitly defined. Therefore, a default PublishSubscribeChannel will be created.
+2026-04-02 10:36:36 [main] INFO  o.s.i.c.DefaultConfiguringBeanFactoryPostProcessor - No bean named 'integrationHeaderChannelRegistry' has been explicitly defined. Therefore, a default DefaultHeaderChannelRegistry will be created.
+2026-04-02 10:36:37 [main] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Starting...
+2026-04-02 10:36:37 [main] INFO  com.zaxxer.hikari.pool.HikariPool - CinemaHikariPool - Added connection org.postgresql.jdbc.PgConnection@647af13d
+2026-04-02 10:36:37 [main] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Start completed.
+2026-04-02 10:36:37 [main] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:postgresql://localhost:5432/cinema_db (PostgreSQL 18.1)
+2026-04-02 10:36:37 [main] WARN  o.f.c.i.database.base.Database - Flyway upgrade recommended: PostgreSQL 18.1 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 16.
+2026-04-02 10:36:37 [main] INFO  o.f.core.internal.command.DbValidate - Successfully validated 3 migrations (execution time 00:00.047s)
+2026-04-02 10:36:37 [main] INFO  o.f.core.internal.command.DbMigrate - Current version of schema "public": 3
+2026-04-02 10:36:37 [main] INFO  o.f.core.internal.command.DbMigrate - Schema "public" is up to date. No migration necessary.
+2026-04-02 10:36:38 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-04-02 10:36:38 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-04-02 10:36:38 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-04-02 10:36:38 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-02 10:36:38 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-04-02 10:36:39 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-02 10:36:39 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-02 10:36:40 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-04-02 10:36:41 [main] WARN  c.c.s.mqtt.MqttPublisher - MQTT is disabled. LED commands will be logged only. Set mqtt.enabled=true in application.yml to enable ESP32 integration.
+2026-04-02 10:36:42 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-04-02 10:36:43 [main] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 1 endpoint beneath base path '/actuator'
+2026-04-02 10:36:44 [main] INFO  o.s.i.endpoint.EventDrivenConsumer - Adding {logging-channel-adapter:_org.springframework.integration.errorLogger} as a subscriber to the 'errorChannel' channel
+2026-04-02 10:36:44 [main] INFO  o.s.i.c.PublishSubscribeChannel - Channel 'cinema-seat-management.errorChannel' has 1 subscriber(s).
+2026-04-02 10:36:44 [main] INFO  o.s.i.endpoint.EventDrivenConsumer - started bean '_org.springframework.integration.errorLogger'
+2026-04-02 10:36:44 [main] INFO  o.s.i.endpoint.EventDrivenConsumer - Adding {service-activator:mqttSubscriber.handleMessage.serviceActivator} as a subscriber to the 'mqttInputChannel' channel
+2026-04-02 10:36:44 [main] INFO  o.s.i.channel.DirectChannel - Channel 'cinema-seat-management.mqttInputChannel' has 1 subscriber(s).
+2026-04-02 10:36:44 [main] INFO  o.s.i.endpoint.EventDrivenConsumer - started bean 'mqttSubscriber.handleMessage.serviceActivator'
+2026-04-02 10:36:44 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2026-04-02 10:36:44 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@6c37a904]]
+2026-04-02 10:36:44 [main] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2026-04-02 10:36:44 [main] INFO  c.c.s.SeatmanagementApplicationTests - Started SeatmanagementApplicationTests in 9.927 seconds (process running for 11.02)
+2026-04-02 10:36:44 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2026-04-02 10:36:44 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@6c37a904]]
+2026-04-02 10:36:44 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2026-04-02 10:36:44 [SpringApplicationShutdownHook] INFO  o.s.i.endpoint.EventDrivenConsumer - Removing {logging-channel-adapter:_org.springframework.integration.errorLogger} as a subscriber to the 'errorChannel' channel
+2026-04-02 10:36:44 [SpringApplicationShutdownHook] INFO  o.s.i.c.PublishSubscribeChannel - Channel 'cinema-seat-management.errorChannel' has 0 subscriber(s).
+2026-04-02 10:36:44 [SpringApplicationShutdownHook] INFO  o.s.i.endpoint.EventDrivenConsumer - stopped bean '_org.springframework.integration.errorLogger'
+2026-04-02 10:36:44 [SpringApplicationShutdownHook] INFO  o.s.i.endpoint.EventDrivenConsumer - Removing {service-activator:mqttSubscriber.handleMessage.serviceActivator} as a subscriber to the 'mqttInputChannel' channel
+2026-04-02 10:36:44 [SpringApplicationShutdownHook] INFO  o.s.i.channel.DirectChannel - Channel 'cinema-seat-management.mqttInputChannel' has 0 subscriber(s).
+2026-04-02 10:36:44 [SpringApplicationShutdownHook] INFO  o.s.i.endpoint.EventDrivenConsumer - stopped bean 'mqttSubscriber.handleMessage.serviceActivator'
+2026-04-02 10:36:44 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-04-02 10:36:44 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Shutdown initiated...
+2026-04-02 10:36:44 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Shutdown completed.
+2026-04-02 10:37:10 [restartedMain] INFO  c.c.s.SeatmanagementApplication - Starting SeatmanagementApplication using Java 21.0.8 with PID 26332 (D:\github\cinema-management-system\movie-ticket-booking-system\backend\seatmanagement\target\classes started by USER in D:\github\cinema-management-system\movie-ticket-booking-system\backend\seatmanagement)
+2026-04-02 10:37:10 [restartedMain] DEBUG c.c.s.SeatmanagementApplication - Running with Spring Boot v3.3.5, Spring v6.1.14
+2026-04-02 10:37:10 [restartedMain] INFO  c.c.s.SeatmanagementApplication - The following 1 profile is active: "dev"
+2026-04-02 10:37:10 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-04-02 10:37:10 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-04-02 10:37:11 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-02 10:37:11 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 146 ms. Found 15 JPA repository interfaces.
+2026-04-02 10:37:11 [restartedMain] INFO  o.s.i.c.DefaultConfiguringBeanFactoryPostProcessor - No bean named 'errorChannel' has been explicitly defined. Therefore, a default PublishSubscribeChannel will be created.
+2026-04-02 10:37:11 [restartedMain] INFO  o.s.i.c.DefaultConfiguringBeanFactoryPostProcessor - No bean named 'integrationHeaderChannelRegistry' has been explicitly defined. Therefore, a default DefaultHeaderChannelRegistry will be created.
+2026-04-02 10:37:12 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-04-02 10:37:12 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-04-02 10:37:12 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-04-02 10:37:12 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-04-02 10:37:12 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2226 ms
+2026-04-02 10:37:12 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Starting...
+2026-04-02 10:37:13 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - CinemaHikariPool - Added connection org.postgresql.jdbc.PgConnection@3641ed45
+2026-04-02 10:37:13 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Start completed.
+2026-04-02 10:37:13 [restartedMain] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:postgresql://localhost:5432/cinema_db (PostgreSQL 18.1)
+2026-04-02 10:37:13 [restartedMain] WARN  o.f.c.i.database.base.Database - Flyway upgrade recommended: PostgreSQL 18.1 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 16.
+2026-04-02 10:37:13 [restartedMain] INFO  o.f.core.internal.command.DbValidate - Successfully validated 3 migrations (execution time 00:00.044s)
+2026-04-02 10:37:13 [restartedMain] INFO  o.f.core.internal.command.DbMigrate - Current version of schema "public": 3
+2026-04-02 10:37:13 [restartedMain] INFO  o.f.core.internal.command.DbMigrate - Schema "public" is up to date. No migration necessary.
+2026-04-02 10:37:13 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-04-02 10:37:13 [restartedMain] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-04-02 10:37:13 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-04-02 10:37:14 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-02 10:37:14 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-04-02 10:37:16 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-02 10:37:16 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-02 10:37:16 [restartedMain] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-04-02 10:37:17 [restartedMain] DEBUG c.c.s.s.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2026-04-02 10:37:17 [restartedMain] DEBUG c.c.s.security.KioskApiKeyFilter - Filter 'kioskApiKeyFilter' configured for use
+2026-04-02 10:37:17 [restartedMain] WARN  c.c.s.mqtt.MqttPublisher - MQTT is disabled. LED commands will be logged only. Set mqtt.enabled=true in application.yml to enable ESP32 integration.
+2026-04-02 10:37:18 [restartedMain] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-04-02 10:37:18 [restartedMain] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 1 endpoint beneath base path '/actuator'
+2026-04-02 10:37:19 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2026-04-02 10:37:19 [restartedMain] INFO  o.s.i.endpoint.EventDrivenConsumer - Adding {logging-channel-adapter:_org.springframework.integration.errorLogger} as a subscriber to the 'errorChannel' channel
+2026-04-02 10:37:19 [restartedMain] INFO  o.s.i.c.PublishSubscribeChannel - Channel 'cinema-seat-management.errorChannel' has 1 subscriber(s).
+2026-04-02 10:37:19 [restartedMain] INFO  o.s.i.endpoint.EventDrivenConsumer - started bean '_org.springframework.integration.errorLogger'
+2026-04-02 10:37:19 [restartedMain] INFO  o.s.i.endpoint.EventDrivenConsumer - Adding {service-activator:mqttSubscriber.handleMessage.serviceActivator} as a subscriber to the 'mqttInputChannel' channel
+2026-04-02 10:37:19 [restartedMain] INFO  o.s.i.channel.DirectChannel - Channel 'cinema-seat-management.mqttInputChannel' has 1 subscriber(s).
+2026-04-02 10:37:19 [restartedMain] INFO  o.s.i.endpoint.EventDrivenConsumer - started bean 'mqttSubscriber.handleMessage.serviceActivator'
+2026-04-02 10:37:19 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-04-02 10:37:19 [restartedMain] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2026-04-02 10:37:19 [restartedMain] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@77a7b6aa]]
+2026-04-02 10:37:19 [restartedMain] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2026-04-02 10:37:19 [restartedMain] INFO  c.c.s.SeatmanagementApplication - Started SeatmanagementApplication in 10.043 seconds (process running for 10.445)
+2026-04-02 10:38:19 [MessageBroker-1] INFO  o.s.w.s.c.WebSocketMessageBrokerStats - WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[unknown], outboundChannel[unknown], sockJsScheduler[pool size = 1, active threads = 1, queued tasks = 0, completed tasks = 0]
+2026-04-02 10:40:01 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-04-02 10:40:01 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-04-02 10:40:01 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 4 ms
+2026-04-02 10:42:25 [cinema-scheduler-3] INFO  c.c.s.w.WebSocketEventListener - [WS] Client connected — sessionId=swuz10vs
+2026-04-02 10:42:25 [http-nio-8080-exec-8] INFO  c.c.s.w.WebSocketEventListener - [WS] Session swuz10vs subscribed to showtimeId=1 | viewers=1
+2026-04-02 11:03:46 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 1 deletion, 0 modifications)
+2026-04-02 11:03:46 [Thread-5] INFO  c.c.s.w.WebSocketEventListener - [WS] Client disconnected — sessionId=swuz10vs showtimeId=1
+2026-04-02 11:03:46 [Thread-5] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2026-04-02 11:03:46 [Thread-5] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@77a7b6aa]]
+2026-04-02 11:03:46 [Thread-5] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2026-04-02 11:03:46 [Thread-5] INFO  o.s.i.endpoint.EventDrivenConsumer - Removing {logging-channel-adapter:_org.springframework.integration.errorLogger} as a subscriber to the 'errorChannel' channel
+2026-04-02 11:03:46 [Thread-5] INFO  o.s.i.c.PublishSubscribeChannel - Channel 'cinema-seat-management.errorChannel' has 0 subscriber(s).
+2026-04-02 11:03:46 [Thread-5] INFO  o.s.i.endpoint.EventDrivenConsumer - stopped bean '_org.springframework.integration.errorLogger'
+2026-04-02 11:03:46 [Thread-5] INFO  o.s.i.endpoint.EventDrivenConsumer - Removing {service-activator:mqttSubscriber.handleMessage.serviceActivator} as a subscriber to the 'mqttInputChannel' channel
+2026-04-02 11:03:46 [Thread-5] INFO  o.s.i.channel.DirectChannel - Channel 'cinema-seat-management.mqttInputChannel' has 0 subscriber(s).
+2026-04-02 11:03:46 [Thread-5] INFO  o.s.i.endpoint.EventDrivenConsumer - stopped bean 'mqttSubscriber.handleMessage.serviceActivator'
+2026-04-02 11:03:46 [Thread-5] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-04-02 11:03:46 [Thread-5] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Shutdown initiated...
+2026-04-02 11:03:46 [Thread-5] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Shutdown completed.
+2026-04-02 11:03:46 [restartedMain] INFO  c.c.s.SeatmanagementApplication - Starting SeatmanagementApplication using Java 21.0.8 with PID 26332 (D:\github\cinema-management-system\movie-ticket-booking-system\backend\seatmanagement\target\classes started by USER in D:\github\cinema-management-system\movie-ticket-booking-system\backend\seatmanagement)
+2026-04-02 11:03:46 [restartedMain] DEBUG c.c.s.SeatmanagementApplication - Running with Spring Boot v3.3.5, Spring v6.1.14
+2026-04-02 11:03:46 [restartedMain] INFO  c.c.s.SeatmanagementApplication - The following 1 profile is active: "dev"
+2026-04-02 11:03:46 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-02 11:03:47 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 67 ms. Found 15 JPA repository interfaces.
+2026-04-02 11:03:47 [restartedMain] INFO  o.s.i.c.DefaultConfiguringBeanFactoryPostProcessor - No bean named 'errorChannel' has been explicitly defined. Therefore, a default PublishSubscribeChannel will be created.
+2026-04-02 11:03:47 [restartedMain] INFO  o.s.i.c.DefaultConfiguringBeanFactoryPostProcessor - No bean named 'integrationHeaderChannelRegistry' has been explicitly defined. Therefore, a default DefaultHeaderChannelRegistry will be created.
+2026-04-02 11:03:47 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-04-02 11:03:47 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-04-02 11:03:47 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-04-02 11:03:47 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-04-02 11:03:47 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 995 ms
+2026-04-02 11:03:47 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Starting...
+2026-04-02 11:03:47 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - CinemaHikariPool - Added connection org.postgresql.jdbc.PgConnection@35f94cf4
+2026-04-02 11:03:47 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Start completed.
+2026-04-02 11:03:47 [restartedMain] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:postgresql://localhost:5432/cinema_db (PostgreSQL 18.1)
+2026-04-02 11:03:47 [restartedMain] WARN  o.f.c.i.database.base.Database - Flyway upgrade recommended: PostgreSQL 18.1 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 16.
+2026-04-02 11:03:47 [restartedMain] INFO  o.f.core.internal.command.DbValidate - Successfully validated 3 migrations (execution time 00:00.008s)
+2026-04-02 11:03:47 [restartedMain] INFO  c.c.s.SeatmanagementApplication - Starting SeatmanagementApplication using Java 21.0.8 with PID 11396 (D:\github\cinema-management-system\movie-ticket-booking-system\backend\seatmanagement\target\classes started by USER in D:\github\cinema-management-system\movie-ticket-booking-system\backend\seatmanagement)
+2026-04-02 11:03:47 [restartedMain] DEBUG c.c.s.SeatmanagementApplication - Running with Spring Boot v3.3.5, Spring v6.1.14
+2026-04-02 11:03:47 [restartedMain] INFO  c.c.s.SeatmanagementApplication - The following 1 profile is active: "dev"
+2026-04-02 11:03:47 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-04-02 11:03:47 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-04-02 11:03:47 [restartedMain] INFO  o.f.core.internal.command.DbMigrate - Current version of schema "public": 3
+2026-04-02 11:03:47 [restartedMain] INFO  o.f.core.internal.command.DbMigrate - Schema "public" is up to date. No migration necessary.
+2026-04-02 11:03:47 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-04-02 11:03:47 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-04-02 11:03:47 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-02 11:03:47 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-04-02 11:03:48 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-02 11:03:48 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-02 11:03:48 [restartedMain] DEBUG c.c.s.s.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2026-04-02 11:03:48 [restartedMain] DEBUG c.c.s.security.KioskApiKeyFilter - Filter 'kioskApiKeyFilter' configured for use
+2026-04-02 11:03:49 [restartedMain] WARN  c.c.s.mqtt.MqttPublisher - MQTT is disabled. LED commands will be logged only. Set mqtt.enabled=true in application.yml to enable ESP32 integration.
+2026-04-02 11:03:49 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-02 11:03:49 [restartedMain] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-04-02 11:03:49 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 208 ms. Found 15 JPA repository interfaces.
+2026-04-02 11:03:49 [restartedMain] INFO  o.s.i.c.DefaultConfiguringBeanFactoryPostProcessor - No bean named 'errorChannel' has been explicitly defined. Therefore, a default PublishSubscribeChannel will be created.
+2026-04-02 11:03:49 [restartedMain] INFO  o.s.i.c.DefaultConfiguringBeanFactoryPostProcessor - No bean named 'integrationHeaderChannelRegistry' has been explicitly defined. Therefore, a default DefaultHeaderChannelRegistry will be created.
+2026-04-02 11:03:49 [restartedMain] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 1 endpoint beneath base path '/actuator'
+2026-04-02 11:03:50 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2026-04-02 11:03:50 [restartedMain] INFO  o.s.i.endpoint.EventDrivenConsumer - Adding {logging-channel-adapter:_org.springframework.integration.errorLogger} as a subscriber to the 'errorChannel' channel
+2026-04-02 11:03:50 [restartedMain] INFO  o.s.i.c.PublishSubscribeChannel - Channel 'cinema-seat-management.errorChannel' has 1 subscriber(s).
+2026-04-02 11:03:50 [restartedMain] INFO  o.s.i.endpoint.EventDrivenConsumer - started bean '_org.springframework.integration.errorLogger'
+2026-04-02 11:03:50 [restartedMain] INFO  o.s.i.endpoint.EventDrivenConsumer - Adding {service-activator:mqttSubscriber.handleMessage.serviceActivator} as a subscriber to the 'mqttInputChannel' channel
+2026-04-02 11:03:50 [restartedMain] INFO  o.s.i.channel.DirectChannel - Channel 'cinema-seat-management.mqttInputChannel' has 1 subscriber(s).
+2026-04-02 11:03:50 [restartedMain] INFO  o.s.i.endpoint.EventDrivenConsumer - started bean 'mqttSubscriber.handleMessage.serviceActivator'
+2026-04-02 11:03:50 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-04-02 11:03:50 [restartedMain] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2026-04-02 11:03:50 [restartedMain] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@7ef18373]]
+2026-04-02 11:03:50 [restartedMain] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2026-04-02 11:03:50 [restartedMain] INFO  c.c.s.SeatmanagementApplication - Started SeatmanagementApplication in 4.406 seconds (process running for 1601.571)
+2026-04-02 11:03:50 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+2026-04-02 11:03:51 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-04-02 11:03:51 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-04-02 11:03:51 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-04-02 11:03:51 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-04-02 11:03:51 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 3418 ms
+2026-04-02 11:03:51 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Starting...
+2026-04-02 11:03:51 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-04-02 11:03:51 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-04-02 11:03:51 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-04-02 11:03:51 [cinema-scheduler-3] INFO  c.c.s.w.WebSocketEventListener - [WS] Client connected — sessionId=bkbmcto2
+2026-04-02 11:03:51 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 2 class path changes (1 addition, 0 deletions, 1 modification)
+2026-04-02 11:03:51 [Thread-8] DEBUG c.c.s.w.WebSocketEventListener - [WS] Client disconnected — sessionId=bkbmcto2 (no showtime subscription)
+2026-04-02 11:03:51 [Thread-8] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2026-04-02 11:03:51 [Thread-8] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@7ef18373]]
+2026-04-02 11:03:51 [Thread-8] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2026-04-02 11:03:52 [Thread-8] INFO  o.s.i.endpoint.EventDrivenConsumer - Removing {logging-channel-adapter:_org.springframework.integration.errorLogger} as a subscriber to the 'errorChannel' channel
+2026-04-02 11:03:52 [Thread-8] INFO  o.s.i.c.PublishSubscribeChannel - Channel 'cinema-seat-management.errorChannel' has 0 subscriber(s).
+2026-04-02 11:03:52 [Thread-8] INFO  o.s.i.endpoint.EventDrivenConsumer - stopped bean '_org.springframework.integration.errorLogger'
+2026-04-02 11:03:52 [Thread-8] INFO  o.s.i.endpoint.EventDrivenConsumer - Removing {service-activator:mqttSubscriber.handleMessage.serviceActivator} as a subscriber to the 'mqttInputChannel' channel
+2026-04-02 11:03:52 [Thread-8] INFO  o.s.i.channel.DirectChannel - Channel 'cinema-seat-management.mqttInputChannel' has 0 subscriber(s).
+2026-04-02 11:03:52 [Thread-8] INFO  o.s.i.endpoint.EventDrivenConsumer - stopped bean 'mqttSubscriber.handleMessage.serviceActivator'
+2026-04-02 11:03:52 [Thread-8] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-04-02 11:03:52 [Thread-8] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Shutdown initiated...
+2026-04-02 11:03:52 [Thread-8] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Shutdown completed.
+2026-04-02 11:03:52 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - CinemaHikariPool - Added connection org.postgresql.jdbc.PgConnection@32992203
+2026-04-02 11:03:52 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Start completed.
+2026-04-02 11:03:52 [restartedMain] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:postgresql://localhost:5432/cinema_db (PostgreSQL 18.1)
+2026-04-02 11:03:52 [restartedMain] WARN  o.f.c.i.database.base.Database - Flyway upgrade recommended: PostgreSQL 18.1 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 16.
+2026-04-02 11:03:52 [restartedMain] INFO  o.f.core.internal.command.DbValidate - Successfully validated 3 migrations (execution time 00:00.034s)
+2026-04-02 11:03:52 [restartedMain] INFO  o.f.core.internal.command.DbMigrate - Current version of schema "public": 3
+2026-04-02 11:03:52 [restartedMain] INFO  o.f.core.internal.command.DbMigrate - Schema "public" is up to date. No migration necessary.
+2026-04-02 11:03:52 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-04-02 11:03:52 [restartedMain] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-04-02 11:03:52 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-04-02 11:03:52 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-02 11:03:52 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-04-02 11:03:53 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-02 11:03:53 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-02 11:03:54 [restartedMain] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-04-02 11:03:54 [restartedMain] DEBUG c.c.s.s.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2026-04-02 11:03:54 [restartedMain] DEBUG c.c.s.security.KioskApiKeyFilter - Filter 'kioskApiKeyFilter' configured for use
+2026-04-02 11:03:55 [restartedMain] WARN  c.c.s.mqtt.MqttPublisher - MQTT is disabled. LED commands will be logged only. Set mqtt.enabled=true in application.yml to enable ESP32 integration.
+2026-04-02 11:03:56 [restartedMain] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-04-02 11:03:56 [restartedMain] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 1 endpoint beneath base path '/actuator'
+2026-04-02 11:03:57 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2026-04-02 11:03:57 [restartedMain] INFO  o.s.i.endpoint.EventDrivenConsumer - Adding {logging-channel-adapter:_org.springframework.integration.errorLogger} as a subscriber to the 'errorChannel' channel
+2026-04-02 11:03:57 [restartedMain] INFO  o.s.i.c.PublishSubscribeChannel - Channel 'cinema-seat-management.errorChannel' has 1 subscriber(s).
+2026-04-02 11:03:57 [restartedMain] INFO  o.s.i.endpoint.EventDrivenConsumer - started bean '_org.springframework.integration.errorLogger'
+2026-04-02 11:03:57 [restartedMain] INFO  o.s.i.endpoint.EventDrivenConsumer - Adding {service-activator:mqttSubscriber.handleMessage.serviceActivator} as a subscriber to the 'mqttInputChannel' channel
+2026-04-02 11:03:57 [restartedMain] INFO  o.s.i.channel.DirectChannel - Channel 'cinema-seat-management.mqttInputChannel' has 1 subscriber(s).
+2026-04-02 11:03:57 [restartedMain] INFO  o.s.i.endpoint.EventDrivenConsumer - started bean 'mqttSubscriber.handleMessage.serviceActivator'
+2026-04-02 11:03:57 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-04-02 11:03:57 [restartedMain] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2026-04-02 11:03:57 [restartedMain] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@1a624164]]
+2026-04-02 11:03:57 [restartedMain] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2026-04-02 11:03:57 [restartedMain] INFO  c.c.s.SeatmanagementApplication - Started SeatmanagementApplication in 10.558 seconds (process running for 11.151)
+2026-04-02 11:03:57 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-04-02 11:03:57 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-04-02 11:03:57 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 14 ms
+2026-04-02 11:03:58 [cinema-scheduler-2] INFO  c.c.s.w.WebSocketEventListener - [WS] Client connected — sessionId=n0yqzyca
+2026-04-02 11:04:14 [http-nio-8080-exec-8] DEBUG c.c.s.w.WebSocketEventListener - [WS] Client disconnected — sessionId=n0yqzyca (no showtime subscription)
+2026-04-02 11:04:30 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2026-04-02 11:04:30 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@1a624164]]
+2026-04-02 11:04:30 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2026-04-02 11:04:30 [SpringApplicationShutdownHook] INFO  o.s.i.endpoint.EventDrivenConsumer - Removing {logging-channel-adapter:_org.springframework.integration.errorLogger} as a subscriber to the 'errorChannel' channel
+2026-04-02 11:04:30 [SpringApplicationShutdownHook] INFO  o.s.i.c.PublishSubscribeChannel - Channel 'cinema-seat-management.errorChannel' has 0 subscriber(s).
+2026-04-02 11:04:30 [SpringApplicationShutdownHook] INFO  o.s.i.endpoint.EventDrivenConsumer - stopped bean '_org.springframework.integration.errorLogger'
+2026-04-02 11:04:30 [SpringApplicationShutdownHook] INFO  o.s.i.endpoint.EventDrivenConsumer - Removing {service-activator:mqttSubscriber.handleMessage.serviceActivator} as a subscriber to the 'mqttInputChannel' channel
+2026-04-02 11:04:30 [SpringApplicationShutdownHook] INFO  o.s.i.channel.DirectChannel - Channel 'cinema-seat-management.mqttInputChannel' has 0 subscriber(s).
+2026-04-02 11:04:30 [SpringApplicationShutdownHook] INFO  o.s.i.endpoint.EventDrivenConsumer - stopped bean 'mqttSubscriber.handleMessage.serviceActivator'
+2026-04-02 11:04:30 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-04-02 11:04:30 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Shutdown initiated...
+2026-04-02 11:04:30 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Shutdown completed.
+2026-04-02 11:04:32 [restartedMain] INFO  c.c.s.SeatmanagementApplication - Starting SeatmanagementApplication using Java 21.0.8 with PID 30312 (D:\github\cinema-management-system\movie-ticket-booking-system\backend\seatmanagement\target\classes started by USER in D:\github\cinema-management-system\movie-ticket-booking-system\backend\seatmanagement)
+2026-04-02 11:04:32 [restartedMain] DEBUG c.c.s.SeatmanagementApplication - Running with Spring Boot v3.3.5, Spring v6.1.14
+2026-04-02 11:04:32 [restartedMain] INFO  c.c.s.SeatmanagementApplication - The following 1 profile is active: "dev"
+2026-04-02 11:04:33 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-04-02 11:04:33 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-04-02 11:04:34 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-02 11:04:34 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 180 ms. Found 15 JPA repository interfaces.
+2026-04-02 11:04:34 [restartedMain] INFO  o.s.i.c.DefaultConfiguringBeanFactoryPostProcessor - No bean named 'errorChannel' has been explicitly defined. Therefore, a default PublishSubscribeChannel will be created.
+2026-04-02 11:04:34 [restartedMain] INFO  o.s.i.c.DefaultConfiguringBeanFactoryPostProcessor - No bean named 'integrationHeaderChannelRegistry' has been explicitly defined. Therefore, a default DefaultHeaderChannelRegistry will be created.
+2026-04-02 11:04:36 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-04-02 11:04:36 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-04-02 11:04:36 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-04-02 11:04:36 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-04-02 11:04:36 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 3439 ms
+2026-04-02 11:04:37 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Starting...
+2026-04-02 11:04:37 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - CinemaHikariPool - Added connection org.postgresql.jdbc.PgConnection@3f0b2ef3
+2026-04-02 11:04:37 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Start completed.
+2026-04-02 11:04:37 [restartedMain] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:postgresql://localhost:5432/cinema_db (PostgreSQL 18.1)
+2026-04-02 11:04:37 [restartedMain] WARN  o.f.c.i.database.base.Database - Flyway upgrade recommended: PostgreSQL 18.1 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 16.
+2026-04-02 11:04:37 [restartedMain] INFO  o.f.core.internal.command.DbValidate - Successfully validated 3 migrations (execution time 00:00.035s)
+2026-04-02 11:04:37 [restartedMain] INFO  o.f.core.internal.command.DbMigrate - Current version of schema "public": 3
+2026-04-02 11:04:37 [restartedMain] INFO  o.f.core.internal.command.DbMigrate - Schema "public" is up to date. No migration necessary.
+2026-04-02 11:04:37 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-04-02 11:04:37 [restartedMain] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.3.Final
+2026-04-02 11:04:37 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-04-02 11:04:38 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-02 11:04:38 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-04-02 11:04:39 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-02 11:04:39 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-02 11:04:40 [restartedMain] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-04-02 11:04:41 [restartedMain] DEBUG c.c.s.s.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2026-04-02 11:04:41 [restartedMain] DEBUG c.c.s.security.KioskApiKeyFilter - Filter 'kioskApiKeyFilter' configured for use
+2026-04-02 11:04:42 [restartedMain] WARN  c.c.s.mqtt.MqttPublisher - MQTT is disabled. LED commands will be logged only. Set mqtt.enabled=true in application.yml to enable ESP32 integration.
+2026-04-02 11:04:43 [restartedMain] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-04-02 11:04:43 [restartedMain] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 1 endpoint beneath base path '/actuator'
+2026-04-02 11:04:44 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2026-04-02 11:04:44 [restartedMain] INFO  o.s.i.endpoint.EventDrivenConsumer - Adding {logging-channel-adapter:_org.springframework.integration.errorLogger} as a subscriber to the 'errorChannel' channel
+2026-04-02 11:04:44 [restartedMain] INFO  o.s.i.c.PublishSubscribeChannel - Channel 'cinema-seat-management.errorChannel' has 1 subscriber(s).
+2026-04-02 11:04:44 [restartedMain] INFO  o.s.i.endpoint.EventDrivenConsumer - started bean '_org.springframework.integration.errorLogger'
+2026-04-02 11:04:44 [restartedMain] INFO  o.s.i.endpoint.EventDrivenConsumer - Adding {service-activator:mqttSubscriber.handleMessage.serviceActivator} as a subscriber to the 'mqttInputChannel' channel
+2026-04-02 11:04:44 [restartedMain] INFO  o.s.i.channel.DirectChannel - Channel 'cinema-seat-management.mqttInputChannel' has 1 subscriber(s).
+2026-04-02 11:04:44 [restartedMain] INFO  o.s.i.endpoint.EventDrivenConsumer - started bean 'mqttSubscriber.handleMessage.serviceActivator'
+2026-04-02 11:04:44 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-04-02 11:04:44 [restartedMain] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2026-04-02 11:04:44 [restartedMain] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@54dee845]]
+2026-04-02 11:04:44 [restartedMain] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2026-04-02 11:04:44 [restartedMain] INFO  c.c.s.SeatmanagementApplication - Started SeatmanagementApplication in 12.216 seconds (process running for 12.823)
+2026-04-02 11:05:22 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-04-02 11:05:22 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-04-02 11:05:22 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2026-04-02 11:05:44 [MessageBroker-1] INFO  o.s.w.s.c.WebSocketMessageBrokerStats - WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 0 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(0)-CONNECTED(0)-DISCONNECT(0)], stompBrokerRelay[null], inboundChannel[unknown], outboundChannel[unknown], sockJsScheduler[pool size = 1, active threads = 1, queued tasks = 0, completed tasks = 0]
+2026-04-02 11:08:59 [cinema-scheduler-3] INFO  c.c.s.w.WebSocketEventListener - [WS] Client connected — sessionId=x5g5zmb1
+2026-04-02 11:08:59 [http-nio-8080-exec-5] INFO  c.c.s.w.WebSocketEventListener - [WS] Session x5g5zmb1 subscribed to showtimeId=1 | viewers=1
+2026-04-02 11:09:05 [http-nio-8080-exec-8] INFO  c.c.s.w.WebSocketEventListener - [WS] Session x5g5zmb1 unsubscribed from showtimeId=1
+2026-04-02 11:09:05 [http-nio-8080-exec-9] DEBUG c.c.s.w.WebSocketEventListener - [WS] Client disconnected — sessionId=x5g5zmb1 (no showtime subscription)
+2026-04-02 11:35:44 [MessageBroker-16] INFO  o.s.w.s.c.WebSocketMessageBrokerStats - WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 1 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(1)-CONNECTED(1)-DISCONNECT(1)], stompBrokerRelay[null], inboundChannel[unknown], outboundChannel[unknown], sockJsScheduler[pool size = 16, active threads = 1, queued tasks = 1, completed tasks = 323]
+2026-04-02 12:05:44 [MessageBroker-11] INFO  o.s.w.s.c.WebSocketMessageBrokerStats - WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 1 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(1)-CONNECTED(1)-DISCONNECT(1)], stompBrokerRelay[null], inboundChannel[unknown], outboundChannel[unknown], sockJsScheduler[pool size = 16, active threads = 1, queued tasks = 1, completed tasks = 684]
+2026-04-02 12:35:44 [MessageBroker-13] INFO  o.s.w.s.c.WebSocketMessageBrokerStats - WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 1 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(1)-CONNECTED(1)-DISCONNECT(1)], stompBrokerRelay[null], inboundChannel[unknown], outboundChannel[unknown], sockJsScheduler[pool size = 16, active threads = 1, queued tasks = 1, completed tasks = 1045]
+2026-04-02 13:05:44 [MessageBroker-3] INFO  o.s.w.s.c.WebSocketMessageBrokerStats - WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 1 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(1)-CONNECTED(1)-DISCONNECT(1)], stompBrokerRelay[null], inboundChannel[unknown], outboundChannel[unknown], sockJsScheduler[pool size = 16, active threads = 1, queued tasks = 1, completed tasks = 1406]
+2026-04-02 13:35:44 [MessageBroker-13] INFO  o.s.w.s.c.WebSocketMessageBrokerStats - WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 1 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(1)-CONNECTED(1)-DISCONNECT(1)], stompBrokerRelay[null], inboundChannel[unknown], outboundChannel[unknown], sockJsScheduler[pool size = 16, active threads = 1, queued tasks = 1, completed tasks = 1767]
+2026-04-02 14:05:44 [MessageBroker-3] INFO  o.s.w.s.c.WebSocketMessageBrokerStats - WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 1 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(1)-CONNECTED(1)-DISCONNECT(1)], stompBrokerRelay[null], inboundChannel[unknown], outboundChannel[unknown], sockJsScheduler[pool size = 16, active threads = 1, queued tasks = 1, completed tasks = 2128]
+2026-04-02 14:35:44 [MessageBroker-10] INFO  o.s.w.s.c.WebSocketMessageBrokerStats - WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 1 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(1)-CONNECTED(1)-DISCONNECT(1)], stompBrokerRelay[null], inboundChannel[unknown], outboundChannel[unknown], sockJsScheduler[pool size = 16, active threads = 1, queued tasks = 1, completed tasks = 2489]
+2026-04-02 14:42:20 [http-nio-8080-exec-9] DEBUG c.c.s.e.GlobalExceptionHandler - Validation failed: {phone=Invalid phone number format}
+2026-04-02 14:42:20 [http-nio-8080-exec-9] WARN  o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Resolved [org.springframework.web.bind.MethodArgumentNotValidException: Validation failed for argument [0] in public org.springframework.http.ResponseEntity<com.cinema.seatmanagement.view.dto.response.AuthResponse> com.cinema.seatmanagement.controller.AuthController.register(com.cinema.seatmanagement.view.dto.request.RegisterRequest): [Field error in object 'registerRequest' on field 'phone': rejected value []; codes [Pattern.registerRequest.phone,Pattern.phone,Pattern.java.lang.String,Pattern]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [registerRequest.phone,phone]; arguments []; default message [phone],[Ljakarta.validation.constraints.Pattern$Flag;@4c3912e8,^\+?[0-9\s\-()]{7,20}$]; default message [Invalid phone number format]] ]
+2026-04-02 14:45:20 [http-nio-8080-exec-3] DEBUG c.c.s.e.GlobalExceptionHandler - Authentication failed: Email already registered
+2026-04-02 14:45:20 [http-nio-8080-exec-3] WARN  o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Resolved [com.cinema.seatmanagement.exception.AuthenticationFailedException: Email already registered]
+2026-04-02 14:46:59 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 169 class path changes (0 additions, 168 deletions, 1 modification)
+2026-04-02 14:46:59 [Thread-5] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2026-04-02 14:46:59 [Thread-5] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@54dee845]]
+2026-04-02 14:46:59 [Thread-5] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2026-04-02 14:46:59 [Thread-5] INFO  o.s.i.endpoint.EventDrivenConsumer - Removing {logging-channel-adapter:_org.springframework.integration.errorLogger} as a subscriber to the 'errorChannel' channel
+2026-04-02 14:46:59 [Thread-5] INFO  o.s.i.c.PublishSubscribeChannel - Channel 'cinema-seat-management.errorChannel' has 0 subscriber(s).
+2026-04-02 14:46:59 [Thread-5] INFO  o.s.i.endpoint.EventDrivenConsumer - stopped bean '_org.springframework.integration.errorLogger'
+2026-04-02 14:46:59 [Thread-5] INFO  o.s.i.endpoint.EventDrivenConsumer - Removing {service-activator:mqttSubscriber.handleMessage.serviceActivator} as a subscriber to the 'mqttInputChannel' channel
+2026-04-02 14:46:59 [Thread-5] INFO  o.s.i.channel.DirectChannel - Channel 'cinema-seat-management.mqttInputChannel' has 0 subscriber(s).
+2026-04-02 14:46:59 [Thread-5] INFO  o.s.i.endpoint.EventDrivenConsumer - stopped bean 'mqttSubscriber.handleMessage.serviceActivator'
+2026-04-02 14:46:59 [Thread-5] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-04-02 14:46:59 [Thread-5] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Shutdown initiated...
+2026-04-02 14:46:59 [Thread-5] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Shutdown completed.
+2026-04-02 14:47:00 [restartedMain] INFO  c.c.s.SeatmanagementApplication - Starting SeatmanagementApplication using Java 21.0.8 with PID 30312 (D:\github\cinema-management-system\movie-ticket-booking-system\backend\seatmanagement\target\classes started by USER in D:\github\cinema-management-system\movie-ticket-booking-system\backend\seatmanagement)
+2026-04-02 14:47:00 [restartedMain] DEBUG c.c.s.SeatmanagementApplication - Running with Spring Boot v3.3.5, Spring v6.1.14
+2026-04-02 14:47:00 [restartedMain] INFO  c.c.s.SeatmanagementApplication - The following 1 profile is active: "dev"
+2026-04-02 14:47:01 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-02 14:47:01 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 1 ms. Found 0 JPA repository interfaces.
+2026-04-02 14:47:01 [restartedMain] INFO  o.s.i.c.DefaultConfiguringBeanFactoryPostProcessor - No bean named 'errorChannel' has been explicitly defined. Therefore, a default PublishSubscribeChannel will be created.
+2026-04-02 14:47:01 [restartedMain] INFO  o.s.i.c.DefaultConfiguringBeanFactoryPostProcessor - No bean named 'integrationHeaderChannelRegistry' has been explicitly defined. Therefore, a default DefaultHeaderChannelRegistry will be created.
+2026-04-02 14:47:01 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-04-02 14:47:01 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-04-02 14:47:01 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-04-02 14:47:01 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-04-02 14:47:01 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1765 ms
+2026-04-02 14:47:02 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Starting...
+2026-04-02 14:47:02 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - CinemaHikariPool - Added connection org.postgresql.jdbc.PgConnection@1b4dc3e1
+2026-04-02 14:47:02 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Start completed.
+2026-04-02 14:47:02 [restartedMain] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:postgresql://localhost:5432/cinema_db (PostgreSQL 18.1)
+2026-04-02 14:47:02 [restartedMain] WARN  o.f.c.i.database.base.Database - Flyway upgrade recommended: PostgreSQL 18.1 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 16.
+2026-04-02 14:47:02 [restartedMain] INFO  o.f.core.internal.command.DbValidate - Successfully validated 3 migrations (execution time 00:00.067s)
+2026-04-02 14:47:02 [restartedMain] INFO  o.f.core.internal.command.DbMigrate - Current version of schema "public": 3
+2026-04-02 14:47:02 [restartedMain] INFO  o.f.core.internal.command.DbMigrate - Schema "public" is up to date. No migration necessary.
+2026-04-02 14:47:02 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-04-02 14:47:02 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-04-02 14:47:02 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-02 14:47:02 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-04-02 14:47:02 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-02 14:47:02 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-02 14:47:03 [restartedMain] WARN  o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
+
+Using generated security password: 4042708f-c1c1-4769-b488-bcea5ab7817c
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-04-02 14:47:04 [restartedMain] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-04-02 14:47:04 [restartedMain] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 1 endpoint beneath base path '/actuator'
+2026-04-02 14:47:04 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2026-04-02 14:47:04 [restartedMain] INFO  o.s.i.endpoint.EventDrivenConsumer - Adding {logging-channel-adapter:_org.springframework.integration.errorLogger} as a subscriber to the 'errorChannel' channel
+2026-04-02 14:47:04 [restartedMain] INFO  o.s.i.c.PublishSubscribeChannel - Channel 'cinema-seat-management.errorChannel' has 1 subscriber(s).
+2026-04-02 14:47:04 [restartedMain] INFO  o.s.i.endpoint.EventDrivenConsumer - started bean '_org.springframework.integration.errorLogger'
+2026-04-02 14:47:04 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-04-02 14:47:04 [restartedMain] INFO  c.c.s.SeatmanagementApplication - Started SeatmanagementApplication in 4.774 seconds (process running for 13352.776)
+2026-04-02 14:47:04 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation delta:
+
+
+==========================
+CONDITION EVALUATION DELTA
+==========================
+
+
+Positive matches:
+-----------------
+
+   ManagementWebSecurityAutoConfiguration matched:
+      - found 'session' scope (OnWebApplicationCondition)
+      - AllNestedConditions 2 matched 0 did not; NestedCondition on DefaultWebSecurityCondition.Beans @ConditionalOnMissingBean (types: org.springframework.security.web.SecurityFilterChain; SearchStrategy: all) did not find any beans; NestedCondition on DefaultWebSecurityCondition.Classes @ConditionalOnClass found required classes 'org.springframework.security.web.SecurityFilterChain', 'org.springframework.security.config.annotation.web.builders.HttpSecurity' (DefaultWebSecurityCondition)
+
+   SpringBootWebSecurityConfiguration.WebSecurityEnablerConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.security.config.annotation.web.configuration.EnableWebSecurity' (OnClassCondition)
+      - @ConditionalOnMissingBean (names: springSecurityFilterChain; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   TaskExecutorConfigurations.TaskExecutorConfiguration matched:
+      - @ConditionalOnMissingBean (types: java.util.concurrent.Executor; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   TaskExecutorConfigurations.TaskExecutorConfiguration#applicationTaskExecutor matched:
+      - @ConditionalOnThreading found PLATFORM (OnThreadingCondition)
+
+   TaskSchedulingConfigurations.TaskSchedulerConfiguration matched:
+      - @ConditionalOnBean (names: org.springframework.context.annotation.internalScheduledAnnotationProcessor; SearchStrategy: all) found bean 'org.springframework.context.annotation.internalScheduledAnnotationProcessor'; @ConditionalOnMissingBean (types: org.springframework.scheduling.TaskScheduler,java.util.concurrent.ScheduledExecutorService; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   TaskSchedulingConfigurations.TaskSchedulerConfiguration#taskScheduler matched:
+      - @ConditionalOnThreading found PLATFORM (OnThreadingCondition)
+
+   UserDetailsServiceAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.security.authentication.AuthenticationManager' (OnClassCondition)
+      - AnyNestedCondition 1 matched 2 did not; NestedCondition on UserDetailsServiceAutoConfiguration.MissingAlternativeOrUserPropertiesConfigured.PasswordConfigured @ConditionalOnProperty (spring.security.user.password) did not find property 'password'; NestedCondition on UserDetailsServiceAutoConfiguration.MissingAlternativeOrUserPropertiesConfigured.NameConfigured @ConditionalOnProperty (spring.security.user.name) did not find property 'name'; NestedCondition on UserDetailsServiceAutoConfiguration.MissingAlternativeOrUserPropertiesConfigured.MissingAlternative @ConditionalOnMissingClass did not find unwanted classes 'org.springframework.security.oauth2.client.registration.ClientRegistrationRepository', 'org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector', 'org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository' (UserDetailsServiceAutoConfiguration.MissingAlternativeOrUserPropertiesConfigured)
+      - @ConditionalOnBean (types: org.springframework.security.config.annotation.ObjectPostProcessor; SearchStrategy: all) found bean 'objectPostProcessor'; @ConditionalOnMissingBean (types: org.springframework.security.authentication.AuthenticationManager,org.springframework.security.authentication.AuthenticationProvider,org.springframework.security.core.userdetails.UserDetailsService,org.springframework.security.authentication.AuthenticationManagerResolver,org.springframework.security.oauth2.jwt.JwtDecoder; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+
+Negative matches:
+-----------------
+
+   CacheMetricsAutoConfiguration:
+      Did not match:
+         - @ConditionalOnBean (types: org.springframework.cache.CacheManager; SearchStrategy: all) did not find any beans of type org.springframework.cache.CacheManager (OnBeanCondition)
+
+   IntegrationAutoConfiguration.IntegrationTaskSchedulerConfiguration:
+      Did not match:
+         - @ConditionalOnMissingBean (names: taskScheduler; SearchStrategy: all) found beans named taskScheduler (OnBeanCondition)
+
+   TaskExecutorConfigurations.TaskExecutorConfiguration#applicationTaskExecutorVirtualThreads:
+      Did not match:
+         - @ConditionalOnThreading did not find VIRTUAL (OnThreadingCondition)
+
+   TaskSchedulingConfigurations.TaskSchedulerConfiguration#taskSchedulerVirtualThreads:
+      Did not match:
+         - @ConditionalOnThreading did not find VIRTUAL (OnThreadingCondition)
+
+   WebSocketMessagingAutoConfiguration.WebSocketMessageConverterConfiguration:
+      Did not match:
+         - @ConditionalOnBean (types: org.springframework.web.socket.config.annotation.DelegatingWebSocketMessageBrokerConfiguration,com.fasterxml.jackson.databind.ObjectMapper; SearchStrategy: all) did not find any beans of type org.springframework.web.socket.config.annotation.DelegatingWebSocketMessageBrokerConfiguration (OnBeanCondition)
+      Matched:
+         - @ConditionalOnClass found required classes 'com.fasterxml.jackson.databind.ObjectMapper', 'org.springframework.messaging.simp.config.AbstractMessageBrokerConfiguration' (OnClassCondition)
+
+
+Exclusions:
+-----------
+
+    None
+
+
+Unconditional classes:
+----------------------
+
+    None
+
+
+
+2026-04-02 14:47:18 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 168 class path changes (168 additions, 0 deletions, 0 modifications)
+2026-04-02 14:47:18 [Thread-8] INFO  o.s.i.endpoint.EventDrivenConsumer - Removing {logging-channel-adapter:_org.springframework.integration.errorLogger} as a subscriber to the 'errorChannel' channel
+2026-04-02 14:47:18 [Thread-8] INFO  o.s.i.c.PublishSubscribeChannel - Channel 'cinema-seat-management.errorChannel' has 0 subscriber(s).
+2026-04-02 14:47:18 [Thread-8] INFO  o.s.i.endpoint.EventDrivenConsumer - stopped bean '_org.springframework.integration.errorLogger'
+2026-04-02 14:47:18 [Thread-8] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-04-02 14:47:18 [Thread-8] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Shutdown initiated...
+2026-04-02 14:47:18 [Thread-8] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Shutdown completed.
+2026-04-02 14:47:18 [restartedMain] INFO  c.c.s.SeatmanagementApplication - Starting SeatmanagementApplication using Java 21.0.8 with PID 30312 (D:\github\cinema-management-system\movie-ticket-booking-system\backend\seatmanagement\target\classes started by USER in D:\github\cinema-management-system\movie-ticket-booking-system\backend\seatmanagement)
+2026-04-02 14:47:18 [restartedMain] DEBUG c.c.s.SeatmanagementApplication - Running with Spring Boot v3.3.5, Spring v6.1.14
+2026-04-02 14:47:18 [restartedMain] INFO  c.c.s.SeatmanagementApplication - The following 1 profile is active: "dev"
+2026-04-02 14:47:19 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-02 14:47:19 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 231 ms. Found 15 JPA repository interfaces.
+2026-04-02 14:47:19 [restartedMain] INFO  o.s.i.c.DefaultConfiguringBeanFactoryPostProcessor - No bean named 'errorChannel' has been explicitly defined. Therefore, a default PublishSubscribeChannel will be created.
+2026-04-02 14:47:19 [restartedMain] INFO  o.s.i.c.DefaultConfiguringBeanFactoryPostProcessor - No bean named 'integrationHeaderChannelRegistry' has been explicitly defined. Therefore, a default DefaultHeaderChannelRegistry will be created.
+2026-04-02 14:47:20 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-04-02 14:47:20 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-04-02 14:47:20 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-04-02 14:47:20 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-04-02 14:47:20 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1651 ms
+2026-04-02 14:47:20 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Starting...
+2026-04-02 14:47:20 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - CinemaHikariPool - Added connection org.postgresql.jdbc.PgConnection@21c170b1
+2026-04-02 14:47:20 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Start completed.
+2026-04-02 14:47:20 [restartedMain] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:postgresql://localhost:5432/cinema_db (PostgreSQL 18.1)
+2026-04-02 14:47:20 [restartedMain] WARN  o.f.c.i.database.base.Database - Flyway upgrade recommended: PostgreSQL 18.1 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 16.
+2026-04-02 14:47:20 [restartedMain] INFO  o.f.core.internal.command.DbValidate - Successfully validated 3 migrations (execution time 00:00.009s)
+2026-04-02 14:47:20 [restartedMain] INFO  o.f.core.internal.command.DbMigrate - Current version of schema "public": 3
+2026-04-02 14:47:20 [restartedMain] INFO  o.f.core.internal.command.DbMigrate - Schema "public" is up to date. No migration necessary.
+2026-04-02 14:47:20 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-04-02 14:47:20 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-04-02 14:47:20 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-02 14:47:20 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-04-02 14:47:21 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-02 14:47:21 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-02 14:47:22 [restartedMain] DEBUG c.c.s.s.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2026-04-02 14:47:22 [restartedMain] DEBUG c.c.s.security.KioskApiKeyFilter - Filter 'kioskApiKeyFilter' configured for use
+2026-04-02 14:47:22 [restartedMain] WARN  c.c.s.mqtt.MqttPublisher - MQTT is disabled. LED commands will be logged only. Set mqtt.enabled=true in application.yml to enable ESP32 integration.
+2026-04-02 14:47:23 [restartedMain] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-04-02 14:47:23 [restartedMain] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 1 endpoint beneath base path '/actuator'
+2026-04-02 14:47:24 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2026-04-02 14:47:24 [restartedMain] INFO  o.s.i.endpoint.EventDrivenConsumer - Adding {logging-channel-adapter:_org.springframework.integration.errorLogger} as a subscriber to the 'errorChannel' channel
+2026-04-02 14:47:24 [restartedMain] INFO  o.s.i.c.PublishSubscribeChannel - Channel 'cinema-seat-management.errorChannel' has 1 subscriber(s).
+2026-04-02 14:47:24 [restartedMain] INFO  o.s.i.endpoint.EventDrivenConsumer - started bean '_org.springframework.integration.errorLogger'
+2026-04-02 14:47:24 [restartedMain] INFO  o.s.i.endpoint.EventDrivenConsumer - Adding {service-activator:mqttSubscriber.handleMessage.serviceActivator} as a subscriber to the 'mqttInputChannel' channel
+2026-04-02 14:47:24 [restartedMain] INFO  o.s.i.channel.DirectChannel - Channel 'cinema-seat-management.mqttInputChannel' has 1 subscriber(s).
+2026-04-02 14:47:24 [restartedMain] INFO  o.s.i.endpoint.EventDrivenConsumer - started bean 'mqttSubscriber.handleMessage.serviceActivator'
+2026-04-02 14:47:24 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-04-02 14:47:24 [restartedMain] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Starting...
+2026-04-02 14:47:24 [restartedMain] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=true, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@1155e6af]]
+2026-04-02 14:47:24 [restartedMain] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Started.
+2026-04-02 14:47:24 [restartedMain] INFO  c.c.s.SeatmanagementApplication - Started SeatmanagementApplication in 6.189 seconds (process running for 13372.809)
+2026-04-02 14:47:24 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation delta:
+
+
+==========================
+CONDITION EVALUATION DELTA
+==========================
+
+
+Positive matches:
+-----------------
+
+   CacheMetricsAutoConfiguration matched:
+      - @ConditionalOnBean (types: org.springframework.cache.CacheManager; SearchStrategy: all) found bean 'cacheManager' (OnBeanCondition)
+
+   CacheMetricsRegistrarConfiguration matched:
+      - @ConditionalOnBean (types: org.springframework.boot.actuate.metrics.cache.CacheMeterBinderProvider,io.micrometer.core.instrument.MeterRegistry; SearchStrategy: all) found beans 'caffeineCacheMeterBinderProvider', 'simpleMeterRegistry' (OnBeanCondition)
+
+   IntegrationAutoConfiguration.IntegrationTaskSchedulerConfiguration matched:
+      - @ConditionalOnBean (types: org.springframework.boot.task.TaskSchedulerBuilder; SearchStrategy: all) found bean 'taskSchedulerBuilder'; @ConditionalOnMissingBean (names: taskScheduler; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   WebSocketMessagingAutoConfiguration.WebSocketMessageConverterConfiguration matched:
+      - @ConditionalOnClass found required classes 'com.fasterxml.jackson.databind.ObjectMapper', 'org.springframework.messaging.simp.config.AbstractMessageBrokerConfiguration' (OnClassCondition)
+      - @ConditionalOnBean (types: org.springframework.web.socket.config.annotation.DelegatingWebSocketMessageBrokerConfiguration,com.fasterxml.jackson.databind.ObjectMapper; SearchStrategy: all) found beans 'jacksonObjectMapper', 'org.springframework.web.socket.config.annotation.DelegatingWebSocketMessageBrokerConfiguration' (OnBeanCondition)
+
+
+Negative matches:
+-----------------
+
+   ManagementWebSecurityAutoConfiguration:
+      Did not match:
+         - AllNestedConditions 1 matched 1 did not; NestedCondition on DefaultWebSecurityCondition.Beans @ConditionalOnMissingBean (types: org.springframework.security.web.SecurityFilterChain; SearchStrategy: all) found beans of type 'org.springframework.security.web.SecurityFilterChain' securityFilterChain; NestedCondition on DefaultWebSecurityCondition.Classes @ConditionalOnClass found required classes 'org.springframework.security.web.SecurityFilterChain', 'org.springframework.security.config.annotation.web.builders.HttpSecurity' (DefaultWebSecurityCondition)
+      Matched:
+         - found 'session' scope (OnWebApplicationCondition)
+
+   MqttConfig:
+      Did not match:
+         - @ConditionalOnProperty (mqtt.enabled=true) found different value in property 'mqtt.enabled' (OnPropertyCondition)
+
+   MqttConnectionManager:
+      Did not match:
+         - @ConditionalOnProperty (mqtt.enabled=true) found different value in property 'mqtt.enabled' (OnPropertyCondition)
+
+   SpringBootWebSecurityConfiguration.WebSecurityEnablerConfiguration:
+      Did not match:
+         - @ConditionalOnMissingBean (names: springSecurityFilterChain; SearchStrategy: all) found beans named springSecurityFilterChain (OnBeanCondition)
+      Matched:
+         - @ConditionalOnClass found required class 'org.springframework.security.config.annotation.web.configuration.EnableWebSecurity' (OnClassCondition)
+
+   TaskExecutorConfigurations.TaskExecutorConfiguration:
+      Did not match:
+         - @ConditionalOnMissingBean (types: java.util.concurrent.Executor; SearchStrategy: all) found beans of type 'java.util.concurrent.Executor' auditTaskExecutor, emailTaskExecutor, clientInboundChannelExecutor, clientOutboundChannelExecutor, brokerChannelExecutor (OnBeanCondition)
+
+   TaskSchedulingConfigurations.TaskSchedulerConfiguration:
+      Did not match:
+         - @ConditionalOnMissingBean (types: org.springframework.scheduling.TaskScheduler,java.util.concurrent.ScheduledExecutorService; SearchStrategy: all) found beans of type 'org.springframework.scheduling.TaskScheduler' messageBrokerTaskScheduler (OnBeanCondition)
+
+   UserDetailsServiceAutoConfiguration:
+      Did not match:
+         - @ConditionalOnMissingBean (types: org.springframework.security.authentication.AuthenticationManager,org.springframework.security.authentication.AuthenticationProvider,org.springframework.security.core.userdetails.UserDetailsService,org.springframework.security.authentication.AuthenticationManagerResolver,org.springframework.security.oauth2.jwt.JwtDecoder; SearchStrategy: all) found beans of type 'org.springframework.security.authentication.AuthenticationManager' authenticationManager and found beans of type 'org.springframework.security.core.userdetails.UserDetailsService' customUserDetailsService (OnBeanCondition)
+      Matched:
+         - @ConditionalOnClass found required class 'org.springframework.security.authentication.AuthenticationManager' (OnClassCondition)
+         - AnyNestedCondition 1 matched 2 did not; NestedCondition on UserDetailsServiceAutoConfiguration.MissingAlternativeOrUserPropertiesConfigured.PasswordConfigured @ConditionalOnProperty (spring.security.user.password) did not find property 'password'; NestedCondition on UserDetailsServiceAutoConfiguration.MissingAlternativeOrUserPropertiesConfigured.NameConfigured @ConditionalOnProperty (spring.security.user.name) did not find property 'name'; NestedCondition on UserDetailsServiceAutoConfiguration.MissingAlternativeOrUserPropertiesConfigured.MissingAlternative @ConditionalOnMissingClass did not find unwanted classes 'org.springframework.security.oauth2.client.registration.ClientRegistrationRepository', 'org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector', 'org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository' (UserDetailsServiceAutoConfiguration.MissingAlternativeOrUserPropertiesConfigured)
+
+
+Exclusions:
+-----------
+
+    None
+
+
+Unconditional classes:
+----------------------
+
+    None
+
+
+
+2026-04-02 14:47:28 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-04-02 14:47:28 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-04-02 14:47:28 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-04-02 14:47:28 [http-nio-8080-exec-1] WARN  c.c.s.e.GlobalExceptionHandler - Business rule violation: Email already registered
+2026-04-02 14:47:28 [http-nio-8080-exec-1] WARN  o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Resolved [java.lang.IllegalStateException: Email already registered]
+2026-04-02 14:47:55 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 169 class path changes (0 additions, 168 deletions, 1 modification)
+2026-04-02 14:47:55 [Thread-12] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2026-04-02 14:47:55 [Thread-12] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@1155e6af]]
+2026-04-02 14:47:55 [Thread-12] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2026-04-02 14:47:55 [Thread-12] INFO  o.s.i.endpoint.EventDrivenConsumer - Removing {logging-channel-adapter:_org.springframework.integration.errorLogger} as a subscriber to the 'errorChannel' channel
+2026-04-02 14:47:55 [Thread-12] INFO  o.s.i.c.PublishSubscribeChannel - Channel 'cinema-seat-management.errorChannel' has 0 subscriber(s).
+2026-04-02 14:47:55 [Thread-12] INFO  o.s.i.endpoint.EventDrivenConsumer - stopped bean '_org.springframework.integration.errorLogger'
+2026-04-02 14:47:55 [Thread-12] INFO  o.s.i.endpoint.EventDrivenConsumer - Removing {service-activator:mqttSubscriber.handleMessage.serviceActivator} as a subscriber to the 'mqttInputChannel' channel
+2026-04-02 14:47:55 [Thread-12] INFO  o.s.i.channel.DirectChannel - Channel 'cinema-seat-management.mqttInputChannel' has 0 subscriber(s).
+2026-04-02 14:47:55 [Thread-12] INFO  o.s.i.endpoint.EventDrivenConsumer - stopped bean 'mqttSubscriber.handleMessage.serviceActivator'
+2026-04-02 14:47:55 [Thread-12] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-04-02 14:47:55 [Thread-12] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Shutdown initiated...
+2026-04-02 14:47:55 [Thread-12] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Shutdown completed.
+2026-04-02 14:47:56 [restartedMain] INFO  c.c.s.SeatmanagementApplication - Starting SeatmanagementApplication using Java 21.0.8 with PID 30312 (D:\github\cinema-management-system\movie-ticket-booking-system\backend\seatmanagement\target\classes started by USER in D:\github\cinema-management-system\movie-ticket-booking-system\backend\seatmanagement)
+2026-04-02 14:47:56 [restartedMain] DEBUG c.c.s.SeatmanagementApplication - Running with Spring Boot v3.3.5, Spring v6.1.14
+2026-04-02 14:47:56 [restartedMain] INFO  c.c.s.SeatmanagementApplication - The following 1 profile is active: "dev"
+2026-04-02 14:47:56 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-02 14:47:56 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 0 ms. Found 0 JPA repository interfaces.
+2026-04-02 14:47:56 [restartedMain] INFO  o.s.i.c.DefaultConfiguringBeanFactoryPostProcessor - No bean named 'errorChannel' has been explicitly defined. Therefore, a default PublishSubscribeChannel will be created.
+2026-04-02 14:47:56 [restartedMain] INFO  o.s.i.c.DefaultConfiguringBeanFactoryPostProcessor - No bean named 'integrationHeaderChannelRegistry' has been explicitly defined. Therefore, a default DefaultHeaderChannelRegistry will be created.
+2026-04-02 14:47:57 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-04-02 14:47:57 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-04-02 14:47:57 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-04-02 14:47:57 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-04-02 14:47:57 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1098 ms
+2026-04-02 14:47:57 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Starting...
+2026-04-02 14:47:57 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - CinemaHikariPool - Added connection org.postgresql.jdbc.PgConnection@73bd62e
+2026-04-02 14:47:57 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Start completed.
+2026-04-02 14:47:57 [restartedMain] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:postgresql://localhost:5432/cinema_db (PostgreSQL 18.1)
+2026-04-02 14:47:57 [restartedMain] WARN  o.f.c.i.database.base.Database - Flyway upgrade recommended: PostgreSQL 18.1 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 16.
+2026-04-02 14:47:57 [restartedMain] INFO  o.f.core.internal.command.DbValidate - Successfully validated 3 migrations (execution time 00:00.029s)
+2026-04-02 14:47:57 [restartedMain] INFO  o.f.core.internal.command.DbMigrate - Current version of schema "public": 3
+2026-04-02 14:47:57 [restartedMain] INFO  o.f.core.internal.command.DbMigrate - Schema "public" is up to date. No migration necessary.
+2026-04-02 14:47:57 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-04-02 14:47:57 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-04-02 14:47:57 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-02 14:47:57 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-04-02 14:47:57 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-02 14:47:57 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-02 14:47:58 [restartedMain] WARN  o.s.b.a.s.s.UserDetailsServiceAutoConfiguration - 
+
+Using generated security password: 7f13521f-3128-43fb-b871-5ac3cc28b121
+
+This generated password is for development use only. Your security configuration must be updated before running your application in production.
+
+2026-04-02 14:47:58 [restartedMain] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name inMemoryUserDetailsManager
+2026-04-02 14:47:58 [restartedMain] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 1 endpoint beneath base path '/actuator'
+2026-04-02 14:47:58 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2026-04-02 14:47:58 [restartedMain] INFO  o.s.i.endpoint.EventDrivenConsumer - Adding {logging-channel-adapter:_org.springframework.integration.errorLogger} as a subscriber to the 'errorChannel' channel
+2026-04-02 14:47:58 [restartedMain] INFO  o.s.i.c.PublishSubscribeChannel - Channel 'cinema-seat-management.errorChannel' has 1 subscriber(s).
+2026-04-02 14:47:58 [restartedMain] INFO  o.s.i.endpoint.EventDrivenConsumer - started bean '_org.springframework.integration.errorLogger'
+2026-04-02 14:47:58 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2026-04-02 14:47:58 [restartedMain] INFO  c.c.s.SeatmanagementApplication - Started SeatmanagementApplication in 2.951 seconds (process running for 13406.983)
+2026-04-02 14:47:58 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation delta:
+
+
+==========================
+CONDITION EVALUATION DELTA
+==========================
+
+
+Positive matches:
+-----------------
+
+   ManagementWebSecurityAutoConfiguration matched:
+      - found 'session' scope (OnWebApplicationCondition)
+      - AllNestedConditions 2 matched 0 did not; NestedCondition on DefaultWebSecurityCondition.Beans @ConditionalOnMissingBean (types: org.springframework.security.web.SecurityFilterChain; SearchStrategy: all) did not find any beans; NestedCondition on DefaultWebSecurityCondition.Classes @ConditionalOnClass found required classes 'org.springframework.security.web.SecurityFilterChain', 'org.springframework.security.config.annotation.web.builders.HttpSecurity' (DefaultWebSecurityCondition)
+
+   SpringBootWebSecurityConfiguration.WebSecurityEnablerConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.security.config.annotation.web.configuration.EnableWebSecurity' (OnClassCondition)
+      - @ConditionalOnMissingBean (names: springSecurityFilterChain; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   TaskExecutorConfigurations.TaskExecutorConfiguration matched:
+      - @ConditionalOnMissingBean (types: java.util.concurrent.Executor; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   TaskExecutorConfigurations.TaskExecutorConfiguration#applicationTaskExecutor matched:
+      - @ConditionalOnThreading found PLATFORM (OnThreadingCondition)
+
+   TaskSchedulingConfigurations.TaskSchedulerConfiguration matched:
+      - @ConditionalOnBean (names: org.springframework.context.annotation.internalScheduledAnnotationProcessor; SearchStrategy: all) found bean 'org.springframework.context.annotation.internalScheduledAnnotationProcessor'; @ConditionalOnMissingBean (types: org.springframework.scheduling.TaskScheduler,java.util.concurrent.ScheduledExecutorService; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+   TaskSchedulingConfigurations.TaskSchedulerConfiguration#taskScheduler matched:
+      - @ConditionalOnThreading found PLATFORM (OnThreadingCondition)
+
+   UserDetailsServiceAutoConfiguration matched:
+      - @ConditionalOnClass found required class 'org.springframework.security.authentication.AuthenticationManager' (OnClassCondition)
+      - AnyNestedCondition 1 matched 2 did not; NestedCondition on UserDetailsServiceAutoConfiguration.MissingAlternativeOrUserPropertiesConfigured.PasswordConfigured @ConditionalOnProperty (spring.security.user.password) did not find property 'password'; NestedCondition on UserDetailsServiceAutoConfiguration.MissingAlternativeOrUserPropertiesConfigured.NameConfigured @ConditionalOnProperty (spring.security.user.name) did not find property 'name'; NestedCondition on UserDetailsServiceAutoConfiguration.MissingAlternativeOrUserPropertiesConfigured.MissingAlternative @ConditionalOnMissingClass did not find unwanted classes 'org.springframework.security.oauth2.client.registration.ClientRegistrationRepository', 'org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector', 'org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository' (UserDetailsServiceAutoConfiguration.MissingAlternativeOrUserPropertiesConfigured)
+      - @ConditionalOnBean (types: org.springframework.security.config.annotation.ObjectPostProcessor; SearchStrategy: all) found bean 'objectPostProcessor'; @ConditionalOnMissingBean (types: org.springframework.security.authentication.AuthenticationManager,org.springframework.security.authentication.AuthenticationProvider,org.springframework.security.core.userdetails.UserDetailsService,org.springframework.security.authentication.AuthenticationManagerResolver,org.springframework.security.oauth2.jwt.JwtDecoder; SearchStrategy: all) did not find any beans (OnBeanCondition)
+
+
+Negative matches:
+-----------------
+
+   CacheMetricsAutoConfiguration:
+      Did not match:
+         - @ConditionalOnBean (types: org.springframework.cache.CacheManager; SearchStrategy: all) did not find any beans of type org.springframework.cache.CacheManager (OnBeanCondition)
+
+   IntegrationAutoConfiguration.IntegrationTaskSchedulerConfiguration:
+      Did not match:
+         - @ConditionalOnMissingBean (names: taskScheduler; SearchStrategy: all) found beans named taskScheduler (OnBeanCondition)
+
+   TaskExecutorConfigurations.TaskExecutorConfiguration#applicationTaskExecutorVirtualThreads:
+      Did not match:
+         - @ConditionalOnThreading did not find VIRTUAL (OnThreadingCondition)
+
+   TaskSchedulingConfigurations.TaskSchedulerConfiguration#taskSchedulerVirtualThreads:
+      Did not match:
+         - @ConditionalOnThreading did not find VIRTUAL (OnThreadingCondition)
+
+   WebSocketMessagingAutoConfiguration.WebSocketMessageConverterConfiguration:
+      Did not match:
+         - @ConditionalOnBean (types: org.springframework.web.socket.config.annotation.DelegatingWebSocketMessageBrokerConfiguration,com.fasterxml.jackson.databind.ObjectMapper; SearchStrategy: all) did not find any beans of type org.springframework.web.socket.config.annotation.DelegatingWebSocketMessageBrokerConfiguration (OnBeanCondition)
+      Matched:
+         - @ConditionalOnClass found required classes 'com.fasterxml.jackson.databind.ObjectMapper', 'org.springframework.messaging.simp.config.AbstractMessageBrokerConfiguration' (OnClassCondition)
+
+
+Exclusions:
+-----------
+
+    None
+
+
+Unconditional classes:
+----------------------
+
+    None
+
+
+
+2026-04-02 14:48:03 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 168 class path changes (168 additions, 0 deletions, 0 modifications)
+2026-04-02 14:48:03 [Thread-16] INFO  o.s.i.endpoint.EventDrivenConsumer - Removing {logging-channel-adapter:_org.springframework.integration.errorLogger} as a subscriber to the 'errorChannel' channel
+2026-04-02 14:48:03 [Thread-16] INFO  o.s.i.c.PublishSubscribeChannel - Channel 'cinema-seat-management.errorChannel' has 0 subscriber(s).
+2026-04-02 14:48:03 [Thread-16] INFO  o.s.i.endpoint.EventDrivenConsumer - stopped bean '_org.springframework.integration.errorLogger'
+2026-04-02 14:48:03 [Thread-16] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-04-02 14:48:03 [Thread-16] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Shutdown initiated...
+2026-04-02 14:48:03 [Thread-16] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Shutdown completed.
+2026-04-02 14:48:04 [restartedMain] INFO  c.c.s.SeatmanagementApplication - Starting SeatmanagementApplication using Java 21.0.8 with PID 30312 (D:\github\cinema-management-system\movie-ticket-booking-system\backend\seatmanagement\target\classes started by USER in D:\github\cinema-management-system\movie-ticket-booking-system\backend\seatmanagement)
+2026-04-02 14:48:04 [restartedMain] DEBUG c.c.s.SeatmanagementApplication - Running with Spring Boot v3.3.5, Spring v6.1.14
+2026-04-02 14:48:04 [restartedMain] INFO  c.c.s.SeatmanagementApplication - The following 1 profile is active: "dev"
+2026-04-02 14:48:04 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-02 14:48:04 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 103 ms. Found 15 JPA repository interfaces.
+2026-04-02 14:48:04 [restartedMain] INFO  o.s.i.c.DefaultConfiguringBeanFactoryPostProcessor - No bean named 'errorChannel' has been explicitly defined. Therefore, a default PublishSubscribeChannel will be created.
+2026-04-02 14:48:04 [restartedMain] INFO  o.s.i.c.DefaultConfiguringBeanFactoryPostProcessor - No bean named 'integrationHeaderChannelRegistry' has been explicitly defined. Therefore, a default DefaultHeaderChannelRegistry will be created.
+2026-04-02 14:48:05 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2026-04-02 14:48:05 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-04-02 14:48:05 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.31]
+2026-04-02 14:48:05 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-04-02 14:48:05 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1253 ms
+2026-04-02 14:48:05 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Starting...
+2026-04-02 14:48:05 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - CinemaHikariPool - Added connection org.postgresql.jdbc.PgConnection@1a560018
+2026-04-02 14:48:05 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Start completed.
+2026-04-02 14:48:05 [restartedMain] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:postgresql://localhost:5432/cinema_db (PostgreSQL 18.1)
+2026-04-02 14:48:05 [restartedMain] WARN  o.f.c.i.database.base.Database - Flyway upgrade recommended: PostgreSQL 18.1 is newer than this version of Flyway and support has not been tested. The latest supported version of PostgreSQL is 16.
+2026-04-02 14:48:05 [restartedMain] INFO  o.f.core.internal.command.DbValidate - Successfully validated 3 migrations (execution time 00:00.012s)
+2026-04-02 14:48:05 [restartedMain] INFO  o.f.core.internal.command.DbMigrate - Current version of schema "public": 3
+2026-04-02 14:48:05 [restartedMain] INFO  o.f.core.internal.command.DbMigrate - Schema "public" is up to date. No migration necessary.
+2026-04-02 14:48:05 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-04-02 14:48:05 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-04-02 14:48:05 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-02 14:48:05 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-04-02 14:48:06 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-02 14:48:06 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-02 14:48:07 [restartedMain] DEBUG c.c.s.s.JwtAuthenticationFilter - Filter 'jwtAuthenticationFilter' configured for use
+2026-04-02 14:48:07 [restartedMain] DEBUG c.c.s.security.KioskApiKeyFilter - Filter 'kioskApiKeyFilter' configured for use
+2026-04-02 14:48:07 [restartedMain] WARN  c.c.s.mqtt.MqttPublisher - MQTT is disabled. LED commands will be logged only. Set mqtt.enabled=true in application.yml to enable ESP32 integration.
+2026-04-02 14:48:08 [restartedMain] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-04-02 14:48:08 [restartedMain] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 1 endpoint beneath base path '/actuator'

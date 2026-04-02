@@ -15,7 +15,13 @@ export const RegisterPage: React.FC = () => {
   useEffect(() => { if (isAuthenticated) navigate('/movies', { replace: true }); }, [isAuthenticated, navigate]);
   useEffect(() => { if (error) { showToast(error, 'error'); clearError(); } }, [error, showToast, clearError]);
 
-  const onSubmit = (data: RegisterRequest) => registerUser(data);
+  const onSubmit = (data: RegisterRequest) => {
+    const payload = { ...data };
+    if (!payload.phone || payload.phone.trim() === '') {
+      delete payload.phone;
+    }
+    registerUser(payload);
+  };
 
   return (
     <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">

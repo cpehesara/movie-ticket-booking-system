@@ -19,6 +19,10 @@ axiosInstance.interceptors.response.use(
   (res) => res,
   async (error) => {
     const original = error.config;
+    // Do not intercept auth endpoints
+    if (original.url?.includes('/auth/')) {
+      return Promise.reject(error);
+    }
     if ((error.response?.status === 401 || error.response?.status === 403) && !original._retry) {
       original._retry = true;
       const refreshToken = localStorage.getItem('refreshToken');

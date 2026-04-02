@@ -47,7 +47,7 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new AuthenticationFailedException("Email already registered");
+            throw new IllegalStateException("Email already registered");
         }
         
         boolean hasUsers = userRepository.count() > 0;
@@ -115,7 +115,7 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public AuthResponse registerStaff(RegisterRequest request, UserRole role, Long cinemaId) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new AuthenticationFailedException("Email already registered");
+            throw new IllegalStateException("Email already registered");
         }
 
         // Role is already the correct enum type — no valueOf conversion needed.
