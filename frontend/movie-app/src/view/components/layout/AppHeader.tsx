@@ -22,7 +22,7 @@ export const Header: React.FC = () => {
   const customerLinks = [
     { to: '/', label: 'Home' },
     { to: '/movies', label: 'Movies' },
-    { to: '/profile', label: 'Cinemas' },
+    { to: '/cinemas', label: 'Cinemas' },
     { to: '/experience', label: 'Experience' },
   ];
 

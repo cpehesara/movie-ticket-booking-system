@@ -380,7 +380,7 @@ export const HomePage: React.FC = () => {
             <h3 className="text-white font-semibold mb-3">Quick Links</h3>
             <div className="flex flex-col gap-2 text-sm">
               <Link to="/movies" style={{ color: '#9ca3af', textDecoration: 'none' }}>Movies</Link>
-              <Link to="/" style={{ color: '#9ca3af', textDecoration: 'none' }}>Cinemas</Link>
+              <Link to="/cinemas" style={{ color: '#9ca3af', textDecoration: 'none' }}>Cinemas</Link>
               <Link to="/experience" style={{ color: '#9ca3af', textDecoration: 'none' }}>Experience</Link>
             </div>
           </div>
