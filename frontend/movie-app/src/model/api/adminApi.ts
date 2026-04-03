@@ -26,11 +26,29 @@ export const adminApi = {
 
   // ── Showtimes ───────────────────────────────────────────────────────────────
   createShowtime: (data: Partial<ShowtimeResponse>) => {
-    const payload = { ...data, movie: { id: data.movieId }, screen: { id: data.screenId } };
+    const ensureSeconds = (dt: string | undefined) =>
+      dt ? (dt.length === 16 ? dt + ':00' : dt) : dt;
+    const payload = {
+      movie:     { id: data.movieId },
+      screen:    { id: data.screenId },
+      startTime: ensureSeconds(data.startTime as string | undefined),
+      endTime:   ensureSeconds(data.endTime as string | undefined),
+      basePrice: data.basePrice,
+    };
     return axiosInstance.post<ShowtimeResponse>('/admin/showtimes', payload).then(r => r.data);
   },
   updateShowtime: (id: number, data: Partial<ShowtimeResponse>) => {
-    const payload = { ...data, movie: { id: data.movieId }, screen: { id: data.screenId } };
+    const ensureSeconds = (dt: string | undefined) =>
+      dt ? (dt.length === 16 ? dt + ':00' : dt) : dt;
+
+    const payload = {
+      movie:     { id: data.movieId },
+      screen:    { id: data.screenId },
+      startTime: ensureSeconds(data.startTime as string | undefined),
+      endTime:   ensureSeconds(data.endTime as string | undefined),
+      basePrice: data.basePrice,
+      status:    data.status,
+    };
     return axiosInstance.put<ShowtimeResponse>(`/admin/showtimes/${id}`, payload).then(r => r.data);
   },
   cancelShowtime: (id: number) =>

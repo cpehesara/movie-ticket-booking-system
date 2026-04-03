@@ -79,7 +79,12 @@ public class ShowtimeServiceImpl implements ShowtimeService {
 
         showtime.setStatus(ShowtimeStatus.SCHEDULED);
         Showtime saved = showtimeRepository.save(showtime);
-        return showtimeMapper.toResponse(saved);
+        
+        Showtime full = showtimeRepository.findById(saved.getId())
+        .orElseThrow(() -> new EntityNotFoundException(
+                "Showtime disappeared after save: " + saved.getId()));
+
+        return showtimeMapper.toResponse(full);
     }
 
     @Override

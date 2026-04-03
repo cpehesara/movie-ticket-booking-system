@@ -26,6 +26,7 @@ import { StaffManagementPage }    from '../pages/admin/StaffManagementPage';
 import { KioskManagementPage }    from '../pages/admin/KioskManagementPage';
 import { SeatQrManagementPage }   from '../pages/admin/SeatQrManagementPage';
 import { UserManualPage }         from '../pages/admin/UserManualPage';
+import { BookingsManagementPage } from '../pages/admin/BookingsManagementPage';
 
 // Display board (mounted on a large screen outside each hall — public route)
 import { HallDisplayPage } from '../pages/display/HallDisplayPage';
@@ -89,7 +90,7 @@ export const AppRoutes: React.FC = () => (
     } />
     <Route path="/admin/bookings" element={
       <RoleBasedRoute allowedRoles={['ADMIN', 'MANAGER']}>
-        <AdminDashboard />
+        <BookingsManagementPage />
       </RoleBasedRoute>
     } />
     <Route path="/admin/staff" element={
