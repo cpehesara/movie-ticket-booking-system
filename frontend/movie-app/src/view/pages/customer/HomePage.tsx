@@ -266,7 +266,7 @@ export const HomePage: React.FC = () => {
                     Watch Trailer
                   </a>
                   <Link
-                    to="/movies"
+                    to={featuredMovie ? `/movies/${featuredMovie.id}/showtimes` : '/movies'}
                     className="px-5 py-3 rounded-xl text-sm font-semibold"
                     style={{
                       backgroundColor: '#dc2626',
@@ -323,7 +323,7 @@ export const HomePage: React.FC = () => {
                       key={movie.id}
                       movie={movie}
                       actionLabel="Book Now"
-                      onClick={() => navigate('/movies')}
+                      onClick={() => navigate(`/movies/${movie.id}/showtimes`)}
                     />
                   ))}
                 </div>
