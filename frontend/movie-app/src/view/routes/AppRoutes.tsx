@@ -8,6 +8,7 @@ import { LoginPage }    from '../pages/auth/LoginPage';
 import { RegisterPage } from '../pages/auth/RegisterPage';
 
 // Customer
+import { HomePage }           from '../pages/customer/HomePage';
 import { MovieListPage }      from '../pages/customer/MovieListPage';
 import { BookingPage }        from '../pages/customer/BookingPage';
 import { BookingHistoryPage } from '../pages/customer/BookingHistoryPage';
@@ -33,7 +34,7 @@ import { HallDisplayPage } from '../pages/display/HallDisplayPage';
 export const AppRoutes: React.FC = () => (
   <Routes>
     {/* ── Public ──────────────────────────────────────────────────── */}
-    <Route path="/"         element={<Navigate to="/movies" replace />} />
+    <Route path="/"         element={<HomePage />} />
     <Route path="/login"    element={<LoginPage />} />
     <Route path="/register" element={<RegisterPage />} />
     <Route path="/movies"   element={<MovieListPage />} />

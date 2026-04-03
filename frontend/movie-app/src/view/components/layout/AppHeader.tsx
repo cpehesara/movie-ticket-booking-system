@@ -55,7 +55,9 @@ export const Header: React.FC = () => {
 
               <nav className="flex items-center gap-1 flex-wrap">
                 {customerLinks.map((link) => {
-                  const active = location.pathname === link.to;
+                  const active = link.to === '/'
+                    ? location.pathname === '/'
+                    : location.pathname.startsWith(link.to);
                   return (
                     <CustomerNavLink key={link.label} to={link.to} active={active}>
                       {link.label}
