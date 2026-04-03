@@ -23,7 +23,7 @@ export const Header: React.FC = () => {
     { to: '/', label: 'Home' },
     { to: '/movies', label: 'Movies' },
     { to: '/profile', label: 'Cinemas' },
-    { to: '/bookings', label: 'Experience' },
+    { to: '/experience', label: 'Experience' },
   ];
 
   return (

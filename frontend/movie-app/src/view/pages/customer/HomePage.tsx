@@ -381,7 +381,7 @@ export const HomePage: React.FC = () => {
             <div className="flex flex-col gap-2 text-sm">
               <Link to="/movies" style={{ color: '#9ca3af', textDecoration: 'none' }}>Movies</Link>
               <Link to="/" style={{ color: '#9ca3af', textDecoration: 'none' }}>Cinemas</Link>
-              <Link to="/bookings" style={{ color: '#9ca3af', textDecoration: 'none' }}>Experience</Link>
+              <Link to="/experience" style={{ color: '#9ca3af', textDecoration: 'none' }}>Experience</Link>
             </div>
           </div>
 
