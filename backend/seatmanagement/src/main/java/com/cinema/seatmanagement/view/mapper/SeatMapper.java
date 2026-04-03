@@ -7,7 +7,6 @@ import com.cinema.seatmanagement.model.enums.SeatState;
 import com.cinema.seatmanagement.view.dto.response.SeatMapResponse;
 import org.springframework.stereotype.Component;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;

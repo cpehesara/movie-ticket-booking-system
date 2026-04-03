@@ -6,7 +6,6 @@ import com.cinema.seatmanagement.model.entity.BookingSeat;
 import com.cinema.seatmanagement.model.enums.BookingStatus;
 import com.cinema.seatmanagement.model.enums.SeatState;
 import com.cinema.seatmanagement.model.repository.BookingRepository;
-import com.cinema.seatmanagement.model.repository.BookingSeatRepository;
 import com.cinema.seatmanagement.model.service.interfaces.CheckinService;
 import com.cinema.seatmanagement.mqtt.MqttPublisher;
 import com.cinema.seatmanagement.view.dto.request.CheckinRequest;
@@ -45,7 +44,6 @@ import java.util.Map;
 public class CheckinServiceImpl implements CheckinService {
 
     private final BookingRepository bookingRepository;
-    private final BookingSeatRepository bookingSeatRepository;
     private final BookingMapper bookingMapper;
     private final SimpMessagingTemplate messagingTemplate;
     private final MqttPublisher mqttPublisher;

@@ -40,7 +40,6 @@ public class MqttPublisher {
 
     private final MqttPahoMessageHandler mqttOutboundHandler;
 
-    @Autowired
     public MqttPublisher(
             @Autowired(required = false) MqttPahoMessageHandler mqttOutboundHandler
     ) {

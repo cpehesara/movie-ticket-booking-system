@@ -1,7 +1,6 @@
 package com.cinema.seatmanagement.mqtt;
 
 import com.cinema.seatmanagement.model.repository.KioskRepository;
-import com.cinema.seatmanagement.util.AppConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.integration.annotation.ServiceActivator;

@@ -1,0 +1,114 @@
+{
+  "properties": [
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "description": "Base64-encoded JWT secret key."
+    },
+    {
+      "name": "jwt.expiration-ms",
+      "type": "java.lang.Long",
+      "description": "JWT access token expiration in milliseconds."
+    },
+    {
+      "name": "jwt.refresh-expiration-days",
+      "type": "java.lang.Integer",
+      "description": "JWT refresh token expiration in days."
+    },
+    {
+      "name": "mqtt.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enables MQTT integration."
+    },
+    {
+      "name": "mqtt.broker-url",
+      "type": "java.lang.String",
+      "description": "MQTT broker URL."
+    },
+    {
+      "name": "mqtt.client-id",
+      "type": "java.lang.String",
+      "description": "MQTT client identifier."
+    },
+    {
+      "name": "mqtt.username",
+      "type": "java.lang.String",
+      "description": "MQTT username."
+    },
+    {
+      "name": "mqtt.password",
+      "type": "java.lang.String",
+      "description": "MQTT password."
+    },
+    {
+      "name": "mqtt.qos",
+      "type": "java.lang.Integer",
+      "description": "MQTT QoS level."
+    },
+    {
+      "name": "mqtt.connection-timeout",
+      "type": "java.lang.Integer",
+      "description": "MQTT connection timeout in seconds."
+    },
+    {
+      "name": "mqtt.keep-alive-interval",
+      "type": "java.lang.Integer",
+      "description": "MQTT keep-alive interval in seconds."
+    },
+    {
+      "name": "mqtt.topics.seat-command",
+      "type": "java.lang.String",
+      "description": "MQTT topic format for seat commands."
+    },
+    {
+      "name": "mqtt.topics.seat-status",
+      "type": "java.lang.String",
+      "description": "MQTT topic for seat status updates."
+    },
+    {
+      "name": "mqtt.topics.heartbeat",
+      "type": "java.lang.String",
+      "description": "MQTT topic for device heartbeat."
+    },
+    {
+      "name": "booking.reservation-ttl-minutes",
+      "type": "java.lang.Integer",
+      "description": "Booking reservation hold time in minutes."
+    },
+    {
+      "name": "booking.expiry-check-interval-ms",
+      "type": "java.lang.Long",
+      "description": "Interval for reservation expiry checks in milliseconds."
+    },
+    {
+      "name": "booking.max-seats-per-booking",
+      "type": "java.lang.Integer",
+      "description": "Maximum seats allowed per booking."
+    },
+    {
+      "name": "showtime.status-check-interval-ms",
+      "type": "java.lang.Long",
+      "description": "Interval for scheduler status checks in milliseconds."
+    },
+    {
+      "name": "notification.email.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable email notifications."
+    },
+    {
+      "name": "notification.email.from-name",
+      "type": "java.lang.String",
+      "description": "Display name for outgoing email sender."
+    },
+    {
+      "name": "notification.email.from-address",
+      "type": "java.lang.String",
+      "description": "Email address used as sender."
+    },
+    {
+      "name": "cors.allowed-origins",
+      "type": "java.lang.String",
+      "description": "Comma-separated allowed origins for CORS."
+    }
+  ]
+}

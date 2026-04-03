@@ -2,7 +2,6 @@ package com.cinema.seatmanagement.model.service.impl;
 
 import com.cinema.seatmanagement.model.entity.Showtime;
 import com.cinema.seatmanagement.model.enums.AuditAction;
-import com.cinema.seatmanagement.model.enums.SeatState;
 import com.cinema.seatmanagement.model.enums.ShowtimeStatus;
 import com.cinema.seatmanagement.model.repository.BookingSeatRepository;
 import com.cinema.seatmanagement.model.repository.MovieRepository;

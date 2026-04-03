@@ -6,7 +6,6 @@ import com.cinema.seatmanagement.model.entity.Screen;
 import com.cinema.seatmanagement.model.entity.Showtime;
 import com.cinema.seatmanagement.model.enums.UserRole;
 import com.cinema.seatmanagement.model.repository.KioskRepository;
-import com.cinema.seatmanagement.model.repository.MovieRepository;
 import com.cinema.seatmanagement.model.repository.ScreenRepository;
 import com.cinema.seatmanagement.model.repository.UserRepository;
 import com.cinema.seatmanagement.model.service.interfaces.*;
@@ -47,7 +46,6 @@ public class AdminController {
     private final AuthService authService;
     private final KioskRepository kioskRepository;
     private final ScreenRepository screenRepository;
-    private final MovieRepository movieRepository;
     private final UserRepository userRepository;
 
     // ── Movie Management ──────────────────────────────────────────────────────

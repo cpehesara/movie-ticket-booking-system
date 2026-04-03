@@ -1,5 +1,5 @@
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.ApplicationContext;
+package com.cinema.seatmanagement;
+
 import com.cinema.seatmanagement.security.JwtTokenProvider;
 import com.cinema.seatmanagement.model.repository.UserRepository;
 import com.cinema.seatmanagement.model.entity.User;

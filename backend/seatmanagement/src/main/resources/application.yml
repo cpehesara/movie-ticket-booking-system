@@ -7,9 +7,9 @@ spring:
 
   # ── Database ──────────────────────────────────────────────────────────────
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/cinema_db}
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/cinemadb}
     username: ${DB_USER:postgres}
-    password: ${DB_PASSWORD:Hello@3126}
+    password: ${DB_PASSWORD:1234}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 20
@@ -28,14 +28,13 @@ spring:
     open-in-view: false
     properties:
       hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        "[format_sql]": true
         jdbc:
-          time_zone: UTC
-          batch_size: 20
-        order_inserts: true
-        order_updates: true
-        generate_statistics: false
+          "[time_zone]": UTC
+          "[batch_size]": 20
+        "[order_inserts]": true
+        "[order_updates]": true
+        "[generate_statistics]": false
 
   # ── Flyway ────────────────────────────────────────────────────────────────
   flyway:
@@ -49,8 +48,8 @@ spring:
   mail:
     host: ${MAIL_HOST:smtp.gmail.com}
     port: ${MAIL_PORT:587}
-    username: ${MAIL_USERNAME:chanmunekp@gmail.com}
-    password: ${MAIL_PASSWORD:qjvy hijf wsws gxkt}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
     properties:
       mail:
         smtp:
@@ -154,12 +153,12 @@ cors:
 # ── Logging ───────────────────────────────────────────────────────────────────
 logging:
   level:
-    com.cinema.seatmanagement: DEBUG
-    org.springframework.security: INFO
-    org.hibernate.SQL: WARN
-    org.springframework.web.socket: INFO
-    org.springframework.integration.mqtt: INFO
-    org.springframework.mail: DEBUG
+    "[com.cinema.seatmanagement]": DEBUG
+    "[org.springframework.security]": INFO
+    "[org.hibernate.SQL]": WARN
+    "[org.springframework.web.socket]": INFO
+    "[org.springframework.integration.mqtt]": INFO
+    "[org.springframework.mail]": DEBUG
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
     file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
