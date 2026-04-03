@@ -136,7 +136,15 @@ public class AdminController {
         );
         return ResponseEntity.ok().build();
     }
-
+    @PostMapping("/screens/{screenId}/resync-leds")
+    public ResponseEntity<Void> resyncLeds(
+            @PathVariable Long screenId,
+            @RequestParam Long showtimeId
+    ) {
+        // We only receive the showtimeId here to resync the LEDs for the particular showtime
+        seatService.resyncLedsForShowtime(showtimeId);
+        return ResponseEntity.ok().build();
+    }
     // ── Booking Overview ──────────────────────────────────────────────────────
 
     @GetMapping("/bookings")
