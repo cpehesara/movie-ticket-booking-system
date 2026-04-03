@@ -12,6 +12,7 @@ import { HomePage }           from '../pages/customer/HomePage';
 import { CinemaPage }         from '../pages/customer/CinemaPage';
 import { ExperiencePage }     from '../pages/customer/ExperiencePage';
 import { MovieListPage }      from '../pages/customer/MovieListPage';
+import { MovieShowtimesPage } from '../pages/customer/MovieShowtimesPage';
 import { BookingPage }        from '../pages/customer/BookingPage';
 import { BookingHistoryPage } from '../pages/customer/BookingHistoryPage';
 import { ProfilePage }        from '../pages/customer/ProfilePage';
@@ -42,6 +43,7 @@ export const AppRoutes: React.FC = () => (
     <Route path="/login"    element={<LoginPage />} />
     <Route path="/register" element={<RegisterPage />} />
     <Route path="/movies"   element={<MovieListPage />} />
+    <Route path="/movies/:movieId/showtimes" element={<MovieShowtimesPage />} />
 
     {/*
       Hall display board — intentionally public so a Raspberry Pi or
