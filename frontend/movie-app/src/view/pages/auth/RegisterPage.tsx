@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../../../viewmodel/hooks/useAuth';
@@ -10,10 +10,19 @@ export const RegisterPage: React.FC = () => {
   const { register: registerUser, loading, error, isAuthenticated, clearError } = useAuth();
   const { showToast } = useToast();
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm<RegisterRequest>();
 
-  useEffect(() => { if (isAuthenticated) navigate('/movies', { replace: true }); }, [isAuthenticated, navigate]);
-  useEffect(() => { if (error) { showToast(error, 'error'); clearError(); } }, [error, showToast, clearError]);
+  useEffect(() => {
+    if (isAuthenticated) navigate('/movies', { replace: true });
+  }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
+    if (error) {
+      showToast(error, 'error');
+      clearError();
+    }
+  }, [error, showToast, clearError]);
 
   const onSubmit = (data: RegisterRequest) => {
     const payload = { ...data };
@@ -30,28 +39,63 @@ export const RegisterPage: React.FC = () => {
         <p className="text-gray-500 text-sm mb-6">Join CinePlex today</p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-          {[
-            { name: 'fullName' as const, label: 'Full Name', type: 'text', placeholder: 'Your name',
-              rules: { required: 'Full name is required' } },
-            { name: 'email' as const, label: 'Email', type: 'email', placeholder: 'you@email.com',
-              rules: { required: 'Email is required' } },
-            { name: 'password' as const, label: 'Password', type: 'password', placeholder: '8+ characters',
-              rules: { required: 'Password is required', minLength: { value: 8, message: 'Min 8 characters' } } },
-            { name: 'phone' as const, label: 'Phone (optional)', type: 'tel', placeholder: '+94771234567',
-              rules: {} },
-          ].map(({ name, label, type, placeholder, rules }) => (
-            <div key={name}>
-              <label className="text-gray-400 text-xs mb-1 block">{label}</label>
+          <div>
+            <label className="text-gray-400 text-xs mb-1 block">Full Name</label>
+            <input
+              {...register('fullName', { required: 'Full name is required' })}
+              type="text"
+              placeholder="Your name"
+              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-red-500"
+            />
+            {errors.fullName && <p className="text-red-400 text-xs mt-1">{errors.fullName.message}</p>}
+          </div>
+
+          <div>
+            <label className="text-gray-400 text-xs mb-1 block">Email</label>
+            <input
+              {...register('email', { required: 'Email is required' })}
+              type="email"
+              placeholder="you@email.com"
+              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-red-500"
+            />
+            {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email.message}</p>}
+          </div>
+
+          <div>
+            <label className="text-gray-400 text-xs mb-1 block">Password</label>
+            <div className="w-full bg-gray-800 border border-gray-700 rounded-lg flex items-center focus-within:border-red-500">
               <input
-                {...register(name, rules)}
-                type={type}
-                placeholder={placeholder}
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5
-                  text-white text-sm focus:outline-none focus:border-red-500"
+                {...register('password', {
+                  required: 'Password is required',
+                  minLength: { value: 8, message: 'Min 8 characters' },
+                })}
+                type={showPassword ? 'text' : 'password'}
+                placeholder="8+ characters"
+                className="w-full bg-transparent px-4 py-2.5 text-white text-sm focus:outline-none"
               />
-              {errors[name] && <p className="text-red-400 text-xs mt-1">{errors[name]?.message}</p>}
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="px-4 text-xs font-semibold transition-colors"
+                style={{ color: '#9ca3af' }}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? 'Hide' : 'Show'}
+              </button>
             </div>
-          ))}
+            {errors.password && <p className="text-red-400 text-xs mt-1">{errors.password.message}</p>}
+          </div>
+
+          <div>
+            <label className="text-gray-400 text-xs mb-1 block">Phone (optional)</label>
+            <input
+              {...register('phone')}
+              type="tel"
+              placeholder="+94771234567"
+              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-red-500"
+            />
+            {errors.phone && <p className="text-red-400 text-xs mt-1">{errors.phone.message}</p>}
+          </div>
 
           <Button type="submit" loading={loading} fullWidth className="mt-2">Create Account</Button>
         </form>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../../../viewmodel/hooks/useAuth';
@@ -16,6 +16,7 @@ export const LoginPage: React.FC = () => {
   const { login, loading, error, isAuthenticated, user, clearError } = useAuth();
   const { showToast } = useToast();
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
   const {
     register,
     handleSubmit,
@@ -29,7 +30,10 @@ export const LoginPage: React.FC = () => {
   }, [isAuthenticated, user, navigate]);
 
   useEffect(() => {
-    if (error) { showToast(error, 'error'); clearError(); }
+    if (error) {
+      showToast(error, 'error');
+      clearError();
+    }
   }, [error, showToast, clearError]);
 
   const onSubmit = (data: LoginRequest) => login(data);
@@ -39,7 +43,6 @@ export const LoginPage: React.FC = () => {
       className="min-h-screen flex items-center justify-center p-4"
       style={{ backgroundColor: '#080b10' }}
     >
-      {/* Background grain */}
       <div
         className="fixed inset-0 pointer-events-none"
         style={{
@@ -48,7 +51,6 @@ export const LoginPage: React.FC = () => {
       />
 
       <div className="w-full max-w-sm relative">
-        {/* Brand */}
         <div className="text-center mb-8">
           <p
             className="font-black tracking-widest uppercase"
@@ -61,7 +63,6 @@ export const LoginPage: React.FC = () => {
           </p>
         </div>
 
-        {/* Card */}
         <div
           className="rounded-2xl p-8"
           style={{ backgroundColor: '#0d1117', border: '1px solid #1f2937' }}
@@ -72,7 +73,6 @@ export const LoginPage: React.FC = () => {
           </p>
 
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-            {/* Email */}
             <div>
               <label
                 className="block text-xs font-medium mb-1.5"
@@ -83,8 +83,8 @@ export const LoginPage: React.FC = () => {
               <div
                 className="rounded-lg overflow-hidden transition-all duration-150"
                 style={{ border: '1px solid #1f2937', backgroundColor: '#111827' }}
-                onFocusCapture={e => (e.currentTarget.style.borderColor = '#dc2626')}
-                onBlurCapture={e => (e.currentTarget.style.borderColor = errors.email ? '#f87171' : '#1f2937')}
+                onFocusCapture={(e) => (e.currentTarget.style.borderColor = '#dc2626')}
+                onBlurCapture={(e) => (e.currentTarget.style.borderColor = errors.email ? '#f87171' : '#1f2937')}
               >
                 <input
                   {...register('email', { required: 'Email is required' })}
@@ -99,7 +99,6 @@ export const LoginPage: React.FC = () => {
               )}
             </div>
 
-            {/* Password */}
             <div>
               <label
                 className="block text-xs font-medium mb-1.5"
@@ -108,18 +107,27 @@ export const LoginPage: React.FC = () => {
                 Password
               </label>
               <div
-                className="rounded-lg overflow-hidden transition-all duration-150"
+                className="rounded-lg overflow-hidden transition-all duration-150 flex items-center"
                 style={{ border: '1px solid #1f2937', backgroundColor: '#111827' }}
-                onFocusCapture={e => (e.currentTarget.style.borderColor = '#dc2626')}
-                onBlurCapture={e => (e.currentTarget.style.borderColor = errors.password ? '#f87171' : '#1f2937')}
+                onFocusCapture={(e) => (e.currentTarget.style.borderColor = '#dc2626')}
+                onBlurCapture={(e) => (e.currentTarget.style.borderColor = errors.password ? '#f87171' : '#1f2937')}
               >
                 <input
                   {...register('password', { required: 'Password is required' })}
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   className={inputClass}
-                  placeholder="••••••••"
+                  placeholder="........"
                   autoComplete="current-password"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="px-4 text-xs font-semibold transition-colors"
+                  style={{ color: '#9ca3af' }}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? 'Hide' : 'Show'}
+                </button>
               </div>
               {errors.password && (
                 <p className="text-xs mt-1" style={{ color: '#f87171' }}>{errors.password.message}</p>
@@ -140,8 +148,8 @@ export const LoginPage: React.FC = () => {
               <Link
                 to="/register"
                 style={{ color: '#f87171', textDecoration: 'none' }}
-                onMouseEnter={e => (e.currentTarget.style.color = '#fca5a5')}
-                onMouseLeave={e => (e.currentTarget.style.color = '#f87171')}
+                onMouseEnter={(e) => (e.currentTarget.style.color = '#fca5a5')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = '#f87171')}
               >
                 Create one
               </Link>
@@ -150,7 +158,7 @@ export const LoginPage: React.FC = () => {
         </div>
 
         <p className="text-center mt-6" style={{ color: '#111827', fontSize: '0.65rem' }}>
-          IT 3052 — Programming Frameworks
+          IT 3052 - Programming Frameworks
         </p>
       </div>
     </div>
