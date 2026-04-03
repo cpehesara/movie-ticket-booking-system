@@ -32,5 +32,10 @@ build/
 ### VS Code ###
 .vscode/
 
+
+# Logs
+*.log
+
 ### Runtime logs ###
 logs/
+
