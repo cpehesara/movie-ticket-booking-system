@@ -55,3 +55,20 @@
 2026-04-03 17:27:38 [http-nio-8080-exec-3] DEBUG c.c.s.e.GlobalExceptionHandler - Authentication failed: Invalid email or password
 2026-04-03 17:27:38 [http-nio-8080-exec-3] WARN  o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Resolved [com.cinema.seatmanagement.exception.AuthenticationFailedException: Invalid email or password]
 2026-04-03 17:27:54 [MessageBroker-8] INFO  o.s.w.s.c.WebSocketMessageBrokerStats - WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 1 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(1)-CONNECTED(1)-DISCONNECT(1)], stompBrokerRelay[null], inboundChannel[unknown], outboundChannel[unknown], sockJsScheduler[pool size = 12, active threads = 1, queued tasks = 1, completed tasks = 7]
+2026-04-03 17:45:33 [cinema-scheduler-3] INFO  c.c.s.w.WebSocketEventListener - [WS] Client connected — sessionId=lxjcmmfm
+2026-04-03 17:45:33 [http-nio-8080-exec-5] INFO  c.c.s.w.WebSocketEventListener - [WS] Session lxjcmmfm subscribed to showtimeId=1 | viewers=1
+2026-04-03 17:45:39 [http-nio-8080-exec-3] INFO  c.c.s.w.WebSocketEventListener - [WS] Session lxjcmmfm unsubscribed from showtimeId=1
+2026-04-03 17:45:39 [http-nio-8080-exec-4] DEBUG c.c.s.w.WebSocketEventListener - [WS] Client disconnected — sessionId=lxjcmmfm (no showtime subscription)
+2026-04-03 17:57:54 [MessageBroker-14] INFO  o.s.w.s.c.WebSocketMessageBrokerStats - WebSocketSession[0 current WS(0)-HttpStream(0)-HttpPoll(0), 2 total, 0 closed abnormally (0 connect failure, 0 send limit, 0 transport error)], stompSubProtocol[processed CONNECT(2)-CONNECTED(2)-DISCONNECT(2)], stompBrokerRelay[null], inboundChannel[unknown], outboundChannel[unknown], sockJsScheduler[pool size = 16, active threads = 1, queued tasks = 1, completed tasks = 368]
+2026-04-03 18:27:52 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopping...
+2026-04-03 18:27:52 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - BrokerAvailabilityEvent[available=false, SimpleBrokerMessageHandler [org.springframework.messaging.simp.broker.DefaultSubscriptionRegistry@367face6]]
+2026-04-03 18:27:52 [SpringApplicationShutdownHook] INFO  o.s.m.s.b.SimpleBrokerMessageHandler - Stopped.
+2026-04-03 18:27:52 [SpringApplicationShutdownHook] INFO  o.s.i.endpoint.EventDrivenConsumer - Removing {logging-channel-adapter:_org.springframework.integration.errorLogger} as a subscriber to the 'errorChannel' channel
+2026-04-03 18:27:52 [SpringApplicationShutdownHook] INFO  o.s.i.c.PublishSubscribeChannel - Channel 'cinema-seat-management.errorChannel' has 0 subscriber(s).
+2026-04-03 18:27:52 [SpringApplicationShutdownHook] INFO  o.s.i.endpoint.EventDrivenConsumer - stopped bean '_org.springframework.integration.errorLogger'
+2026-04-03 18:27:52 [SpringApplicationShutdownHook] INFO  o.s.i.endpoint.EventDrivenConsumer - Removing {service-activator:mqttSubscriber.handleMessage.serviceActivator} as a subscriber to the 'mqttInputChannel' channel
+2026-04-03 18:27:52 [SpringApplicationShutdownHook] INFO  o.s.i.channel.DirectChannel - Channel 'cinema-seat-management.mqttInputChannel' has 0 subscriber(s).
+2026-04-03 18:27:52 [SpringApplicationShutdownHook] INFO  o.s.i.endpoint.EventDrivenConsumer - stopped bean 'mqttSubscriber.handleMessage.serviceActivator'
+2026-04-03 18:27:52 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-04-03 18:27:52 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Shutdown initiated...
+2026-04-03 18:27:52 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - CinemaHikariPool - Shutdown completed.
