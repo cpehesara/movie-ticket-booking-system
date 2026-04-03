@@ -11,7 +11,7 @@ import { SeatGrid } from '../../components/seat-map/SeatGrid';
 import { SeatLegend } from '../../components/seat-map/SeatLegend';
 import { Button } from '../../components/common/Button';
 import { Loading } from '../../components/common/Loading';
-import { Header } from '../../components/layout/Header';
+import { Header } from '../../components/layout';
 import { Modal } from '../../components/common/Modal';
 
 export const BookingPage: React.FC = () => {

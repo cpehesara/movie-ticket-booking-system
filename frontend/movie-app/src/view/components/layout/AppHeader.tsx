@@ -48,7 +48,7 @@ export const Header: React.FC = () => {
                   className="w-8 h-8 rounded-lg flex items-center justify-center"
                   style={{ backgroundColor: '#111827', border: '1px solid #1f2937' }}
                 >
-                  <span className="text-sm">◫</span>
+                  <span className="text-sm">[]</span>
                 </span>
                 CinePlex
               </Link>
@@ -89,7 +89,7 @@ export const Header: React.FC = () => {
                   className="w-full bg-transparent text-sm outline-none"
                   style={{ color: '#f3f4f6' }}
                 />
-                <span style={{ color: '#6b7280', fontSize: '1rem' }}>⌕</span>
+                <span style={{ color: '#6b7280', fontSize: '1rem' }}>Q</span>
               </div>
 
               <div className="px-1 hidden md:block">

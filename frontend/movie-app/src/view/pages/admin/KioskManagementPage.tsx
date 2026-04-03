@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { adminApi } from '../../../model/api/adminApi';
 import { useToast } from '../../components/common/Toast';
-import { Header } from '../../components/layout/Header';
-import { Sidebar } from '../../components/layout/Sidebar';
+import { Header, Sidebar } from '../../components/layout';
 import { Button } from '../../components/common/Button';
 
 export const KioskManagementPage: React.FC = () => {

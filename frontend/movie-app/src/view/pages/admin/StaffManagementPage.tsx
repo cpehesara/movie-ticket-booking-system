@@ -5,8 +5,7 @@ import { fetchAllStaff } from '../../../viewmodel/slices/adminSlice';
 import { adminApi } from '../../../model/api/adminApi';
 import { UserResponse } from '../../../model/types/user.types';
 import { useToast } from '../../components/common/Toast';
-import { Header } from '../../components/layout/Header';
-import { Sidebar } from '../../components/layout/Sidebar';
+import { Header, Sidebar } from '../../components/layout';
 import { Button } from '../../components/common/Button';
 import { Loading } from '../../components/common/Loading';
 

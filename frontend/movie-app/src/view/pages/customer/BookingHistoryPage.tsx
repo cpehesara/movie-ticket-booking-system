@@ -26,8 +26,7 @@ import { fetchMyBookings, cancelBooking } from '../../../viewmodel/slices/bookin
 import { BookingResponse, BookedSeatInfo } from '../../../model/types/booking.types';
 import { seatArrivalApi } from '../../../model/api/seatArrivalApi';
 import { useToast } from '../../components/common/Toast';
-import { Header } from '../../components/layout/Header';
-import { Footer } from '../../components/layout/Footer';
+import { Footer, Header } from '../../components/layout';
 import { Loading } from '../../components/common/Loading';
 import { Button } from '../../components/common/Button';
 import { Modal } from '../../components/common/Modal';

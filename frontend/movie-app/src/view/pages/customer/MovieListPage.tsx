@@ -5,8 +5,7 @@ import { AppDispatch, RootState } from '../../../viewmodel/store';
 import { fetchMovies } from '../../../viewmodel/slices/movieSlice';
 import { MovieResponse } from '../../../model/types/movie.types';
 import { ShowtimeResponse } from '../../../model/types/showtime.types';
-import { Header } from '../../components/layout/Header';
-import { Footer } from '../../components/layout/Footer';
+import { Footer, Header } from '../../components/layout';
 import { Loading } from '../../components/common/Loading';
 import { showtimeApi } from '../../../model/api/showtimeApi';
 

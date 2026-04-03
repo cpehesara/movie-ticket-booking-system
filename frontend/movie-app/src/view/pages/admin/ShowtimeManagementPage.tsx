@@ -18,8 +18,7 @@ import { showtimeApi } from '../../../model/api/showtimeApi';
 import { MovieResponse } from '../../../model/types/movie.types';
 import { ShowtimeResponse } from '../../../model/types/showtime.types';
 import { useToast } from '../../components/common/Toast';
-import { Header } from '../../components/layout/Header';
-import { Sidebar } from '../../components/layout/Sidebar';
+import { Header, Sidebar } from '../../components/layout';
 import { Button } from '../../components/common/Button';
 import { Modal } from '../../components/common/Modal';
 

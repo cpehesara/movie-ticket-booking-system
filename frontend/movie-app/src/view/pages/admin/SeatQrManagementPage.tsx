@@ -27,8 +27,7 @@ import { fetchAllBookings } from '../../../viewmodel/slices/adminSlice';
 import { adminApi, ScreenSummary } from '../../../model/api/adminApi';
 import { seatApi } from '../../../model/api/seatApi';
 import { SeatInfo } from '../../../model/types/seat.types';
-import { Header } from '../../components/layout/Header';
-import { Sidebar } from '../../components/layout/Sidebar';
+import { Header, Sidebar } from '../../components/layout';
 import { Button } from '../../components/common/Button';
 import { Loading } from '../../components/common/Loading';
 

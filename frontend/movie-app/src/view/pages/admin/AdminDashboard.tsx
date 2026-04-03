@@ -4,8 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../../viewmodel/store';
 import { fetchAllBookings } from '../../../viewmodel/slices/adminSlice';
 import { BookingResponse } from '../../../model/types/booking.types';
-import { Sidebar } from '../../components/layout/Sidebar';
-import { Header } from '../../components/layout/Header';
+import { Header, Sidebar } from '../../components/layout';
 import { Loading } from '../../components/common/Loading';
 
 const statusBadge: Record<string, { bg: string; text: string }> = {
