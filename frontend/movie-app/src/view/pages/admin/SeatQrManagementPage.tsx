@@ -162,7 +162,7 @@ export const SeatQrManagementPage: React.FC = () => {
     dispatch(fetchAllBookings());
   }, [dispatch]);
 
-  // When screen is selected, derive showtimeId from any existing booking for that screen
+  // When screen is selected, load its physical seats
   useEffect(() => {
     if (!selectedScreenId) { setSeats([]); setSeatsError(null); return; }
 
@@ -172,24 +172,13 @@ export const SeatQrManagementPage: React.FC = () => {
     setScreenName(screen.name);
     setCinemaName(screen.cinemaName);
 
-    // Find any booking whose screenName matches — seat IDs are stable across showtimes
-    const matchingBooking = bookings.find(
-      b => b.screenName === screen.name && b.cinemaName === screen.cinemaName
-    );
-
-    if (!matchingBooking) {
-      setSeats([]);
-      setSeatsError('no_bookings');
-      return;
-    }
-
     setSeatsLoading(true);
     setSeatsError(null);
-    seatApi.getSeatMap(matchingBooking.showtimeId)
-      .then(data => setSeats(data.seats.filter(s => s.isActive)))
+    adminApi.getSeatsByScreen(Number(selectedScreenId))
+      .then(data => setSeats(data.filter(s => s.isActive)))
       .catch(() => setSeatsError('load_failed'))
       .finally(() => setSeatsLoading(false));
-  }, [selectedScreenId, screens, bookings]);
+  }, [selectedScreenId, screens]);
 
   // Seat type counts
   const typeCounts = React.useMemo(() => {
@@ -382,19 +371,7 @@ export const SeatQrManagementPage: React.FC = () => {
             <div className="flex justify-center py-16"><Loading message="Loading seat layout…" /></div>
           )}
 
-          {selectedScreenId && !seatsLoading && seatsError === 'no_bookings' && (
-            <div
-              className="rounded-2xl p-10 text-center"
-              style={{ backgroundColor: '#0d1117', border: '1px solid rgba(251,191,36,0.2)' }}
-            >
-              <p className="text-base font-bold text-white mb-2">No Booking Data Found</p>
-              <p style={{ color: '#6b7280', fontSize: '0.82rem', maxWidth: 380, margin: '0 auto' }}>
-                To load seat IDs for <strong style={{ color: '#d1d5db' }}>{screenName}</strong>, at least one booking must
-                exist for a showtime on this screen. Create a showtime and make a test booking first,
-                then return here to print the stickers.
-              </p>
-            </div>
-          )}
+          {/* (Removed no_bookings check as we now load directly from screen) */}
 
           {selectedScreenId && !seatsLoading && seatsError === 'load_failed' && (
             <div className="rounded-2xl p-10 text-center" style={{ backgroundColor: '#0d1117', border: '1px solid rgba(239,68,68,0.2)' }}>

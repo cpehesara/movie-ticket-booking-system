@@ -94,4 +94,6 @@ export const adminApi = {
   getAllCinemas: () => axiosInstance.get<any[]>('/cinemas').then(r => r.data),
   getScreens: () =>
     axiosInstance.get<ScreenSummary[]>('/screens').then(r => r.data),
+  getSeatsByScreen: (screenId: number) =>
+    axiosInstance.get<any[]>(`/screens/${screenId}/seats`).then(r => r.data),
 };

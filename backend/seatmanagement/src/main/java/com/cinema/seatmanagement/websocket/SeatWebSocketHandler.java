@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -93,6 +94,17 @@ public class SeatWebSocketHandler {
 
         messagingTemplate.convertAndSend(AppConstants.ADMIN_ALERT_TOPIC, (Object) payload);
         log.warn("[WS] Admin alert: type={}", alertType);
+    }
+
+    public void broadcastIoTEvent(Long showtimeId, String type, Map<String, Object> data) {
+        Map<String, Object> payload = new HashMap<>(data);
+        payload.put("type", type);
+        payload.put("showtimeId", showtimeId);
+        payload.put("timestamp", System.currentTimeMillis());
+        payload.put("id", UUID.randomUUID().toString());
+
+        messagingTemplate.convertAndSend(AppConstants.IOT_TOPIC_PREFIX + showtimeId, (Object) payload);
+        log.debug("[WS] IoT Event → type={} showtime={}", type, showtimeId);
     }
 
     // ── Subscriber tracking ───────────────────────────────────────────────

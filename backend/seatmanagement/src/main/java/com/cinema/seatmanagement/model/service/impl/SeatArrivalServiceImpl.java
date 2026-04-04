@@ -172,6 +172,15 @@ public class SeatArrivalServiceImpl implements SeatArrivalService {
         seatWebSocketHandler.broadcastShowtimeEvent(showtimeId, "CUSTOMER_SEATED", extras);
         seatWebSocketHandler.broadcastAdminAlert("CUSTOMER_SEATED", extras);
 
+        // ── Broadcast IoT Seat Scan for Admin Monitor ──
+        Map<String, Object> iotData = new HashMap<>();
+        iotData.put("bookingCode", bs.getBooking().getBookingCode());
+        iotData.put("seatId", seat.getId());
+        iotData.put("seatLabel", seat.getLabel());
+        iotData.put("customerName", bs.getBooking().getUser().getFullName());
+        iotData.put("eventTime", LocalDateTime.now().toString());
+        seatWebSocketHandler.broadcastIoTEvent(showtimeId, "SEAT_SCAN", iotData);
+
         // ── Step 10: Audit log ────────────────────────────────────────────────
         auditLogService.record(
                 seat.getId(), showtimeId, bs.getBooking().getId(),

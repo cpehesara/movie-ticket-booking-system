@@ -51,10 +51,8 @@ public class BookingController {
         if (request.getPaymentMethod() != null && !request.getPaymentMethod().isBlank()) {
             paymentService.processPayment(response.getId(), PaymentMethod.valueOf(request.getPaymentMethod().toUpperCase()));
             // Re-fetch after payment so status = CONFIRMED and QR is included
+            // BookingServiceImpl.getBookingById now handles the QR code generation internally
             response = bookingService.getBookingById(response.getId());
-            // Attach QR for the immediate post-payment response
-            String qr = qrCodeGenerator.generateQrCodeBase64(response.getBookingCode());
-            response.setQrCodeBase64(qr);
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -77,13 +75,14 @@ public class BookingController {
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<BookingResponse> getBookingById(@PathVariable Long id) {
+        // BookingServiceImpl now naturally attaches the QR code to the DTO
+        // during getBookingById mapping.
         BookingResponse response = bookingService.getBookingById(id);
 
-        // Attach QR only for statuses where the customer still needs to scan
-        if ("CONFIRMED".equals(response.getStatus())
-                || "CHECKED_IN".equals(response.getStatus())) {
-            String qr = qrCodeGenerator.generateQrCodeBase64(response.getBookingCode());
-            response.setQrCodeBase64(qr);
+        // If the booking is not active, clear the qrCodeBase64
+        if (!"CONFIRMED".equals(response.getStatus())
+                && !"CHECKED_IN".equals(response.getStatus())) {
+            response.setQrCodeBase64(null);
         }
 
         return ResponseEntity.ok(response);

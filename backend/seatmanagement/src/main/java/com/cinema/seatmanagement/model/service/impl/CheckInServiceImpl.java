@@ -141,6 +141,17 @@ public class CheckInServiceImpl implements CheckInService {
         // Also broadcast to admin alert topic for the hall display dashboard
         seatWebSocketHandler.broadcastAdminAlert("CUSTOMER_ENTERED", extras);
 
+        // ── Broadcast IoT Door Scan for Admin Monitor ──
+        for (BookingSeat bs : booking.getBookingSeats()) {
+            Map<String, Object> iotData = new HashMap<>();
+            iotData.put("bookingCode", booking.getBookingCode());
+            iotData.put("seatId", bs.getSeat().getId());
+            iotData.put("seatLabel", bs.getSeat().getLabel());
+            iotData.put("customerName", booking.getUser().getFullName());
+            iotData.put("eventTime", LocalDateTime.now().toString());
+            seatWebSocketHandler.broadcastIoTEvent(showtimeId, "DOOR_SCAN", iotData);
+        }
+
         // ── Step 7: Update booking ───────────────────────────────────────────
         booking.setCheckedInAt(LocalDateTime.now());
         if (booking.getStatus() == BookingStatus.PENDING) {

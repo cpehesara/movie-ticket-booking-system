@@ -20,6 +20,7 @@ public final class AppConstants {
     public static final String WS_ENDPOINT        = "/ws";
     public static final String SEAT_TOPIC_PREFIX  = "/topic/seats/";
     public static final String ADMIN_ALERT_TOPIC  = "/topic/admin/alerts";
+    public static final String IOT_TOPIC_PREFIX   = "/topic/iot/";
 
     // ── MQTT Topics (use String.format with screenId) ─────────────────────
     public static final String MQTT_SEAT_COMMAND_TOPIC = "cinema/screen/%s/seat/command";
