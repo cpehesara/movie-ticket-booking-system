@@ -146,7 +146,9 @@ public class BookingServiceImpl implements BookingService {
     public BookingResponse getBookingById(Long id) {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Booking not found: " + id));
-        return bookingMapper.toResponse(booking);
+        String qr = qrCodeService.generateBookingQrCode(
+                booking.getBookingCode(), booking.getShowtime().getId(), booking.getUser().getId());
+        return bookingMapper.toResponseWithQr(booking, qr);
     }
 
     @Override
@@ -154,7 +156,9 @@ public class BookingServiceImpl implements BookingService {
     public BookingResponse getBookingByCode(String bookingCode) {
         Booking booking = bookingRepository.findByBookingCode(bookingCode)
                 .orElseThrow(() -> new EntityNotFoundException("Booking not found: " + bookingCode));
-        return bookingMapper.toResponse(booking);
+        String qr = qrCodeService.generateBookingQrCode(
+                booking.getBookingCode(), booking.getShowtime().getId(), booking.getUser().getId());
+        return bookingMapper.toResponseWithQr(booking, qr);
     }
 
     @Override

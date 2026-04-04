@@ -69,6 +69,9 @@ export const adminApi = {
       .post('/admin/staff', data, { params: { role, cinemaId } })
       .then(r => r.data),
 
+  updateStaffRole: (userId: number, role: string) =>
+    axiosInstance.put<UserResponse>(`/admin/staff/${userId}/role`, null, { params: { role } }).then(r => r.data),
+
   deactivateStaff: (userId: number) =>
     axiosInstance.delete(`/admin/staff/${userId}`),
 
@@ -88,6 +91,7 @@ export const adminApi = {
       .then(r => r.data),
 
   // ── Screens ──
+  getAllCinemas: () => axiosInstance.get<any[]>('/cinemas').then(r => r.data),
   getScreens: () =>
     axiosInstance.get<ScreenSummary[]>('/screens').then(r => r.data),
 };

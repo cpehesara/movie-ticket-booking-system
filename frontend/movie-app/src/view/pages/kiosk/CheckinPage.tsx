@@ -255,10 +255,10 @@ export const CheckinPage: React.FC = () => {
 
   // When result arrives, mark seats as in-transit in Redux
   useEffect(() => {
-    if (result?.seats) {
+    if (result && 'seats' in result && result.seats) {
       const seatIds = result.seats
-        .map(s => s.seatId)
-        .filter((id): id is number => id != null);
+        .map((s: BookedSeatInfo) => s.seatId)
+        .filter((id: number | undefined): id is number => id != null);
       if (seatIds.length > 0) dispatch(markInTransit(seatIds));
     }
   }, [result, dispatch]);
@@ -416,9 +416,11 @@ export const CheckinPage: React.FC = () => {
               ✓
             </div>
             <h2 className="text-xl font-bold text-white mb-1">Booking Verified!</h2>
-            <p style={{ color: '#9ca3af', fontSize: '0.8rem' }}>{result.movieTitle}</p>
-            <p className="font-mono text-xs mt-1" style={{ color: '#374151' }}>
-              {result.bookingCode}
+            <p style={{ color: '#9ca3af', fontSize: '0.8rem' }}>
+                {('movieTitle' in result) ? (result as any).movieTitle : ('showtime' in result ? (result as any).showtime.movie.title : 'Movie')}
+              </p>
+              <p className="font-mono text-xs mt-1" style={{ color: '#374151' }}>
+                {('bookingCode' in result) ? (result as any).bookingCode : ''}
             </p>
           </div>
 
@@ -451,14 +453,16 @@ export const CheckinPage: React.FC = () => {
           </div>
 
           {/* Seat navigation cards */}
-          <div className="flex flex-col gap-2">
-            <p style={{ color: '#4b5563', fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
-              Your Seat{result.seats.length > 1 ? 's' : ''}
-            </p>
-            {result.seats.map((s, i) => (
-              <SeatNavCard key={s.seatId} seat={s} index={i} />
-            ))}
-          </div>
+{('seats' in result) && result.seats && (
+            <div className="flex flex-col gap-2">
+              <p style={{ color: '#4b5563', fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>
+                Your Seat{result.seats.length > 1 ? 's' : ''}
+              </p>
+              {result.seats.map((s: BookedSeatInfo, i: number) => (
+                <SeatNavCard key={s.seatId} seat={s} index={i} />
+              ))}
+            </div>
+          )}
 
           {/* Instructions */}
           <div

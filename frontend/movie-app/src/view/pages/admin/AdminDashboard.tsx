@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Ticket, CheckCircle, Users, Film, Clapperboard, Calendar, AppWindow, Cpu, Network, Lightbulb } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../../viewmodel/store';
@@ -12,12 +13,12 @@ import { useToast } from '../../components/common/Toast';
 // ── Quick stat card ───────────────────────────────────────────────────────────
 
 const StatCard: React.FC<{
-  label: string; value: number | string; color: string; icon: string;
+  label: string; value: number | string; color: string; icon: React.ReactNode;
 }> = ({ label, value, color, icon }) => (
   <div className={`bg-gray-900 border ${color} rounded-xl p-5`}>
     <div className="flex items-center justify-between mb-2">
       <p className="text-gray-500 text-xs uppercase tracking-wider">{label}</p>
-      <span className="text-xl">{icon}</span>
+      <span className="text-gray-300">{icon}</span>
     </div>
     <p className="text-3xl font-bold text-white">{value}</p>
   </div>
@@ -26,13 +27,13 @@ const StatCard: React.FC<{
 // ── Nav card ─────────────────────────────────────────────────────────────────
 
 const NavCard: React.FC<{
-  to: string; title: string; desc: string; icon: string;
+  to: string; title: string; desc: string; icon: React.ReactNode;
   badge?: string; badgeColor?: string;
 }> = ({ to, title, desc, icon, badge, badgeColor }) => (
   <Link to={to}
     className="bg-gray-900 border border-gray-800 hover:border-red-700 rounded-xl p-5
       transition-all duration-200 flex items-start gap-4 group">
-    <span className="text-3xl group-hover:scale-110 transition-transform">{icon}</span>
+    <span className="group-hover:scale-110 transition-transform text-gray-300">{icon}</span>
     <div className="min-w-0">
       <div className="flex items-center gap-2">
         <p className="text-white font-semibold group-hover:text-red-400 transition-colors">
@@ -82,7 +83,7 @@ export const AdminDashboard: React.FC = () => {
     try {
       setResyncLoading(true);
       const result = await adminApi.resyncLeds(screenId, showtimeId);
-      showToast(`✅ ${result.message}`, 'success');
+      showToast(`${result.message}`, 'success');
     } catch {
       showToast('LED resync failed. Check MQTT connection.', 'error');
     } finally {
@@ -107,26 +108,28 @@ export const AdminDashboard: React.FC = () => {
             {/* Stats */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
               <StatCard label="Total Bookings" value={bookings.length}
-                color="border-gray-700" icon="🎟️" />
+                color="border-gray-700" icon={<Ticket size={24} />} />
               <StatCard label="Confirmed"      value={confirmedCount}
-                color="border-blue-800"  icon="✅" />
+                color="border-blue-800" icon={<CheckCircle size={24} />} />
               <StatCard label="In Hall"        value={checkedInCount}
-                color="border-purple-800" icon="🚶" />
+                color="border-purple-800" icon={<Users size={24} />} />
               <StatCard label="Completed"      value={completedCount}
-                color="border-green-800" icon="🎬" />
+                color="border-green-800" icon={<Film size={24} />} />
             </div>
 
             {/* Management links */}
             <h2 className="text-gray-500 text-xs uppercase tracking-wider mb-3">Management</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
-              <NavCard to="/admin/movies"    icon="🎥"
-                title="Movies"    desc="Add, edit and remove movies" />
-              <NavCard to="/admin/showtimes" icon="📅"
-                title="Showtimes" desc="Schedule and manage screenings" />
-              <NavCard to="/admin/staff"     icon="👥"
-                title="Staff"     desc="Register and manage staff accounts" />
-              <NavCard to="/admin/kiosks"    icon="📟"
-                title="Kiosks"    desc="Register kiosk devices and API keys" />
+              <NavCard to="/admin/bookings"  icon={<Ticket size={28} />}
+              title="Bookings"  desc="View and manage all customer bookings" />
+              <NavCard to="/admin/movies"    icon={<Clapperboard size={28} />}
+              title="Movies"    desc="Add, edit and remove movies" />
+              <NavCard to="/admin/showtimes" icon={<Calendar size={28} />}
+              title="Showtimes" desc="Schedule and manage screenings" />
+              <NavCard to="/admin/staff"     icon={<Users size={28} />}
+              title="Staff"     desc="Register and manage staff accounts" />
+              <NavCard to="/admin/kiosks"    icon={<AppWindow size={28} />}
+              title="Kiosks"    desc="Register kiosk devices and API keys" />
             </div>
 
             {/* Live tracking section */}
@@ -138,7 +141,7 @@ export const AdminDashboard: React.FC = () => {
               {/* Navigate to tracking */}
               <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
                 <div className="flex items-start gap-3 mb-4">
-                  <span className="text-3xl">📡</span>
+                  <span className="text-gray-300"><Network size={32} /></span>
                   <div>
                     <p className="text-white font-semibold">Live Customer Tracking</p>
                     <p className="text-gray-500 text-sm">
@@ -167,7 +170,7 @@ export const AdminDashboard: React.FC = () => {
               {/* LED Resync */}
               <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
                 <div className="flex items-start gap-3 mb-4">
-                  <span className="text-3xl">💡</span>
+                  <span className="text-gray-300"><Lightbulb size={32} /></span>
                   <div>
                     <p className="text-white font-semibold">Resync LED States</p>
                     <p className="text-gray-500 text-sm">

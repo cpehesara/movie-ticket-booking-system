@@ -4,13 +4,22 @@ import { BookingResponse } from '../../model/types/booking.types';
 import { UserResponse } from '../../model/types/user.types';
 
 interface AdminState {
+  cinemas: any[];
   bookings: BookingResponse[];
   staff: UserResponse[];
   loading: boolean;
   error: string | null;
 }
 
-const initialState: AdminState = { bookings: [], staff: [], loading: false, error: null };
+const initialState: AdminState = { bookings: [], staff: [], cinemas: [], loading: false, error: null };
+
+export const fetchAllCinemas = createAsyncThunk(
+  'admin/fetchCinemas',
+  async (_, { rejectWithValue }) => {
+    try { return await adminApi.getAllCinemas(); }
+    catch (e: any) { return rejectWithValue(e.response?.data?.message || 'Failed'); }
+  }
+);
 
 export const fetchAllBookings = createAsyncThunk(
   'admin/fetchBookings',
@@ -43,6 +52,9 @@ const adminSlice = createSlice({
       })
       .addCase(fetchAllStaff.fulfilled, (state, action) => {
         state.staff = action.payload;
+      })
+      .addCase(fetchAllCinemas.fulfilled, (state, action) => {
+        state.cinemas = action.payload;
       });
   },
 });

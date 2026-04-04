@@ -31,7 +31,7 @@ public class RegisterRequest {
      * Max 20 chars matches the DB column length.
      */
     @Size(max = 20, message = "Phone number must not exceed 20 characters")
-    @Pattern(regexp = "^\\+?[0-9\\s\\-()]{7,20}$",
+    @Pattern(regexp = "^(\\+?[0-9\\s\\-()]{7,20})?$",
             message = "Invalid phone number format",
             flags = Pattern.Flag.UNICODE_CASE)
     private String phone;

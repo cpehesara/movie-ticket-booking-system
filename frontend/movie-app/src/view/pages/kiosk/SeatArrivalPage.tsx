@@ -218,7 +218,7 @@ export const SeatArrivalPage: React.FC = () => {
   const handleSeatScan = async (rawQr: string) => {
     setSeatScannerActive(false);
     try {
-      const action = await confirmArrival(bookingCode, rawQr);
+      const action = await confirmArrival(rawQr);
       // @ts-ignore
       if (action?.payload?.seats) {
         // @ts-ignore
@@ -236,7 +236,7 @@ export const SeatArrivalPage: React.FC = () => {
     setSeatScannerActive(false);
   };
 
-  const completed = result?.status === 'COMPLETED';
+  const completed = (result as any)?.status === 'COMPLETED' || (result as any)?.success === true;
   const stepIndex = completed ? 2 : step === 'seat' ? 1 : 0;
 
   return (
@@ -430,7 +430,7 @@ export const SeatArrivalPage: React.FC = () => {
         >
           {/* LED off animation per seat */}
           <div className="flex gap-6 justify-center">
-            {result.seats.map((s: BookedSeatInfo) => (
+            {((result as any)?.seats || []).map((s: BookedSeatInfo) => (
               <LedOffDot key={s.seatId} label={`${s.rowLabel}${s.colNumber}`} />
             ))}
           </div>
@@ -444,12 +444,12 @@ export const SeatArrivalPage: React.FC = () => {
               🎬
             </div>
             <h2 className="text-2xl font-black text-white">Enjoy the show!</h2>
-            <p style={{ color: '#9ca3af', fontSize: '0.82rem', marginTop: '4px' }}>{result.movieTitle}</p>
+            <p style={{ color: '#9ca3af', fontSize: '0.82rem', marginTop: '4px' }}>{(result as any)?.movieTitle}</p>
           </div>
 
           {/* Confirmed seats list */}
           <div className="w-full flex flex-col gap-2">
-            {result.seats.map((s: BookedSeatInfo) => (
+            {((result as any)?.seats || []).map((s: BookedSeatInfo) => (
               <div
                 key={s.seatId}
                 className="flex items-center gap-3 rounded-xl px-4 py-3"

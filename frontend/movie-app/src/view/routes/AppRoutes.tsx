@@ -12,6 +12,7 @@ import { MovieListPage }      from '../pages/customer/MovieListPage';
 import { BookingPage }        from '../pages/customer/BookingPage';
 import { BookingHistoryPage } from '../pages/customer/BookingHistoryPage';
 import { ProfilePage }        from '../pages/customer/ProfilePage';
+import { SeatScanPage }       from '../pages/customer/SeatScanPage';
 
 // Kiosk — no JWT required; X-API-Key header sent by the kiosk device
 import { CheckinPage }     from '../pages/kiosk/CheckinPage';
@@ -24,6 +25,10 @@ import { ShowtimeManagementPage} from '../pages/admin/ShowtimeManagementPage';
 import { StaffManagementPage }   from '../pages/admin/StaffManagementPage';
 import { KioskManagementPage }   from '../pages/admin/KioskManagementPage';
 import { LiveTrackingPage }      from '../pages/admin/LiveTrackingPage';
+import { BookingsManagementPage }from '../pages/admin/BookingsManagementPage';
+import { IoTMonitorPage }        from '../pages/admin/IoTMonitorPage';
+import { SeatQrManagementPage }  from '../pages/admin/SeatQrManagementPage';
+import { UserManualPage }        from '../pages/admin/UserManualPage';
 
 // Display — public read-only (shown on hall TV screens)
 import { HallDisplayPage } from '../pages/display/HallDisplayPage';
@@ -55,6 +60,9 @@ export const AppRoutes: React.FC = () => (
     <Route path="/profile" element={
       <ProtectedRoute><ProfilePage /></ProtectedRoute>
     } />
+    <Route path="/scan-seat" element={
+      <ProtectedRoute><SeatScanPage /></ProtectedRoute>
+    } />
 
     {/* ── Admin / Manager ──────────────────────────────────────────────── */}
     <Route path="/admin" element={
@@ -80,6 +88,26 @@ export const AppRoutes: React.FC = () => (
     <Route path="/admin/kiosks" element={
       <RoleBasedRoute allowedRoles={['ADMIN']}>
         <KioskManagementPage />
+      </RoleBasedRoute>
+    } />
+    <Route path="/admin/bookings" element={
+      <RoleBasedRoute allowedRoles={['ADMIN', 'MANAGER']}>
+        <BookingsManagementPage />
+      </RoleBasedRoute>
+    } />
+    <Route path="/admin/iot-monitor" element={
+      <RoleBasedRoute allowedRoles={['ADMIN', 'MANAGER']}>
+        <IoTMonitorPage />
+      </RoleBasedRoute>
+    } />
+    <Route path="/admin/seat-qr-codes" element={
+      <RoleBasedRoute allowedRoles={['ADMIN']}>
+        <SeatQrManagementPage />
+      </RoleBasedRoute>
+    } />
+    <Route path="/admin/manual" element={
+      <RoleBasedRoute allowedRoles={['ADMIN', 'MANAGER', 'OPERATOR']}>
+        <UserManualPage />
       </RoleBasedRoute>
     } />
 

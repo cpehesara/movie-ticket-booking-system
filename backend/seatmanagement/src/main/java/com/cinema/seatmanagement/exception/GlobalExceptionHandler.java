@@ -5,6 +5,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.OptimisticLockException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import com.cinema.seatmanagement.exception.InvalidQrCodeException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
@@ -36,6 +37,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleTokenRefresh(TokenRefreshException ex) {
         log.debug("Token refresh failed: {}", ex.getMessage());
         return buildResponse(HttpStatus.UNAUTHORIZED, "TOKEN_REFRESH_FAILED", ex.getMessage());
+    }
+
+    @ExceptionHandler(InvalidQrCodeException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidQrCode(InvalidQrCodeException ex) {
+        log.warn("Invalid QR code scanned: {}", ex.getMessage());
+        return buildResponse(HttpStatus.BAD_REQUEST, "INVALID_QR_CODE", ex.getMessage());
     }
 
     @ExceptionHandler(SeatAlreadyBookedException.class)
@@ -90,7 +97,7 @@ public class GlobalExceptionHandler {
             fieldErrors.put(error.getField(), error.getDefaultMessage());
         }
 
-        log.debug("Validation failed: {}", fieldErrors);
+        log.info("Validation failed: {}", fieldErrors);
 
         Map<String, Object> body = new HashMap<>();
         body.put("code",      "VALIDATION_FAILED");

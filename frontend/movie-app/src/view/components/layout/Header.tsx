@@ -47,11 +47,16 @@ export const Header: React.FC = () => {
                   <NavLink to="/movies">Movies</NavLink>
                   <NavLink to="/bookings">My Bookings</NavLink>
                   <NavLink to="/profile">Profile</NavLink>
-                </>
-              )}
+                    <NavLink to="/scan-seat">
+                      <span className="flex items-center gap-1">
+                        📷 Scan Seat
+                      </span>
+                    </NavLink>
+                  </>
+                )}
 
-              {isAdmin && (
-                <>
+                {isAdmin && (
+                  <>
                   <NavLink to="/admin">Dashboard</NavLink>
                   <NavLink to="/admin/iot-monitor">
                     <span className="flex items-center gap-1.5">

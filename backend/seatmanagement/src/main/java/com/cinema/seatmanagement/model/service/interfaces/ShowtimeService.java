@@ -2,6 +2,7 @@ package com.cinema.seatmanagement.model.service.interfaces;
 
 import com.cinema.seatmanagement.model.entity.Showtime;
 import com.cinema.seatmanagement.view.dto.response.ShowtimeResponse;
+import com.cinema.seatmanagement.view.dto.request.ShowtimeRequest;
 
 import java.util.List;
 
@@ -15,9 +16,9 @@ public interface ShowtimeService {
 
     List<ShowtimeResponse> getShowtimesByScreen(Long screenId);
 
-    ShowtimeResponse createShowtime(Showtime showtime);
+    ShowtimeResponse createShowtime(ShowtimeRequest request);
 
-    ShowtimeResponse updateShowtime(Long id, Showtime showtime);
+    ShowtimeResponse updateShowtime(Long id, ShowtimeRequest request);
 
     void cancelShowtime(Long id);
 

@@ -11,6 +11,7 @@ import com.cinema.seatmanagement.view.dto.request.SeatStateUpdateRequest;
 import com.cinema.seatmanagement.view.dto.response.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import com.cinema.seatmanagement.view.dto.request.ShowtimeRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -78,15 +79,15 @@ public class AdminController {
     // ── Showtime Management ───────────────────────────────────────────────────
 
     @PostMapping("/showtimes")
-    public ResponseEntity<ShowtimeResponse> createShowtime(@RequestBody Showtime showtime) {
+    public ResponseEntity<ShowtimeResponse> createShowtime(@RequestBody ShowtimeRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(showtimeService.createShowtime(showtime));
+                .body(showtimeService.createShowtime(request));
     }
 
     @PutMapping("/showtimes/{id}")
     public ResponseEntity<ShowtimeResponse> updateShowtime(
-            @PathVariable Long id, @RequestBody Showtime showtime) {
-        return ResponseEntity.ok(showtimeService.updateShowtime(id, showtime));
+            @PathVariable Long id, @RequestBody ShowtimeRequest request) {
+        return ResponseEntity.ok(showtimeService.updateShowtime(id, request));
     }
 
     @DeleteMapping("/showtimes/{id}")
@@ -216,6 +217,14 @@ public class AdminController {
     @GetMapping("/staff/cinema/{cinemaId}")
     public ResponseEntity<List<UserResponse>> getStaffByCinema(@PathVariable Long cinemaId) {
         return ResponseEntity.ok(userService.getStaffByCinema(cinemaId));
+    }
+
+    @PutMapping("/staff/{userId}/role")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<UserResponse> updateStaffRole(
+            @PathVariable Long userId,
+            @RequestParam String role) {
+        return ResponseEntity.ok(userService.updateRole(userId, role));
     }
 
     @DeleteMapping("/staff/{userId}")

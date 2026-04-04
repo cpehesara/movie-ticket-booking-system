@@ -1,6 +1,8 @@
 package com.cinema.seatmanagement.model.service.impl;
 
 import com.cinema.seatmanagement.model.entity.Showtime;
+import com.cinema.seatmanagement.model.entity.Movie;
+import com.cinema.seatmanagement.model.entity.Screen;
 import com.cinema.seatmanagement.model.enums.AuditAction;
 import com.cinema.seatmanagement.model.enums.SeatState;
 import com.cinema.seatmanagement.model.enums.ShowtimeStatus;
@@ -10,6 +12,7 @@ import com.cinema.seatmanagement.model.repository.ScreenRepository;
 import com.cinema.seatmanagement.model.repository.ShowtimeRepository;
 import com.cinema.seatmanagement.model.service.interfaces.AuditLogService;
 import com.cinema.seatmanagement.model.service.interfaces.ShowtimeService;
+import com.cinema.seatmanagement.view.dto.request.ShowtimeRequest;
 import com.cinema.seatmanagement.view.dto.response.ShowtimeResponse;
 import com.cinema.seatmanagement.view.mapper.ShowtimeMapper;
 import jakarta.persistence.EntityNotFoundException;
@@ -67,17 +70,24 @@ public class ShowtimeServiceImpl implements ShowtimeService {
 
     @Override
     @Transactional
-    public ShowtimeResponse createShowtime(Showtime showtime) {
-        if (!movieRepository.existsById(showtime.getMovie().getId())) {
-            throw new EntityNotFoundException(
-                    "Movie not found with id: " + showtime.getMovie().getId());
-        }
-        if (!screenRepository.existsById(showtime.getScreen().getId())) {
-            throw new EntityNotFoundException(
-                    "Screen not found with id: " + showtime.getScreen().getId());
-        }
+    public ShowtimeResponse createShowtime(ShowtimeRequest request) {
+        Movie movie = movieRepository.findById(request.getMovieId())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Movie not found with id: " + request.getMovieId()));
+        
+        Screen screen = screenRepository.findById(request.getScreenId())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Screen not found with id: " + request.getScreenId()));
 
-        showtime.setStatus(ShowtimeStatus.SCHEDULED);
+        Showtime showtime = Showtime.builder()
+                .movie(movie)
+                .screen(screen)
+                .startTime(request.getStartTime())
+                .endTime(request.getEndTime())
+                .basePrice(request.getBasePrice())
+                .status(ShowtimeStatus.SCHEDULED)
+                .build();
+                
         Showtime saved = showtimeRepository.save(showtime);
         
         Showtime full = showtimeRepository.findById(saved.getId())
@@ -89,13 +99,21 @@ public class ShowtimeServiceImpl implements ShowtimeService {
 
     @Override
     @Transactional
-    public ShowtimeResponse updateShowtime(Long id, Showtime updated) {
+    public ShowtimeResponse updateShowtime(Long id, ShowtimeRequest request) {
         Showtime existing = findShowtimeOrThrow(id);
 
-        existing.setStartTime(updated.getStartTime());
-        existing.setEndTime(updated.getEndTime());
-        existing.setBasePrice(updated.getBasePrice());
-        existing.setStatus(updated.getStatus());
+        if (request.getStartTime() != null) {
+            existing.setStartTime(request.getStartTime());
+        }
+        if (request.getEndTime() != null) {
+            existing.setEndTime(request.getEndTime());
+        }
+        if (request.getBasePrice() != null) {
+            existing.setBasePrice(request.getBasePrice());
+        }
+        if (request.getStatus() != null) {
+            existing.setStatus(ShowtimeStatus.valueOf(request.getStatus()));
+        }
 
         return mapWithAvailability(showtimeRepository.save(existing));
     }

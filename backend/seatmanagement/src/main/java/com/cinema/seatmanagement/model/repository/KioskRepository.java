@@ -31,6 +31,7 @@ public interface KioskRepository extends JpaRepository<Kiosk, Long> {
     List<Kiosk> findByScreenMqttRef(@Param("mqttScreenRef") String mqttScreenRef);
 
     /** Single-column UPDATE — stamps the heartbeat timestamp without loading the entity */
+    @org.springframework.transaction.annotation.Transactional
     @Modifying
     @Query("UPDATE Kiosk k SET k.lastSeenAt = :now WHERE k.id = :id")
     void updateLastSeenAt(@Param("id") Long id, @Param("now") LocalDateTime now);

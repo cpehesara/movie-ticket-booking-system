@@ -15,5 +15,7 @@ public interface UserService {
 
     List<UserResponse> getStaffByCinema(Long cinemaId);
 
+    UserResponse updateRole(Long userId, String role);
+
     void deactivateUser(Long userId);
 }

@@ -81,6 +81,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    public UserResponse updateRole(Long userId, String role) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+        user.setRole(UserRole.valueOf(role.toUpperCase()));
+        return userMapper.toResponse(userRepository.save(user));
+    }
+
+    @Override
+    @Transactional
     public void deactivateUser(Long userId) {
         if (!userRepository.existsById(userId)) {
             throw new EntityNotFoundException("User not found with id: " + userId);

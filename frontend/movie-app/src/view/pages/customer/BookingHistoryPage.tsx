@@ -23,6 +23,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../../viewmodel/store';
 import { fetchMyBookings, cancelBooking } from '../../../viewmodel/slices/bookingSlice';
+import { bookingApi } from '../../../model/api/bookingApi';
 import { BookingResponse, BookedSeatInfo } from '../../../model/types/booking.types';
 import { seatArrivalApi } from '../../../model/api/seatArrivalApi';
 import { useToast } from '../../components/common/Toast';
@@ -52,7 +53,6 @@ const sessionPassed = (startTime: string): boolean =>
 
 /** Returns true if the booking QR is still valid (can be used for entry). */
 const qrIsValid = (b: BookingResponse): boolean =>
-  !!b.qrCodeBase64 &&
   (b.status === 'CONFIRMED' || b.status === 'CHECKED_IN') &&
   !sessionPassed(b.startTime);
 
@@ -62,6 +62,21 @@ interface QrModalProps { booking: BookingResponse; onClose: () => void; }
 
 const QrModal: React.FC<QrModalProps> = ({ booking, onClose }) => {
   const expired = sessionPassed(booking.startTime) || booking.status === 'EXPIRED';
+  const [fullBooking, setFullBooking] = useState<BookingResponse | null>(booking.qrCodeBase64 ? booking : null);
+  const [loading, setLoading] = useState(!booking.qrCodeBase64);
+
+  useEffect(() => {
+    if (!booking.qrCodeBase64 && !expired) {
+      bookingApi.getById(booking.id).then(res => {
+        setFullBooking(res);
+        setLoading(false);
+      }).catch(() => {
+        setLoading(false);
+      });
+    }
+  }, [booking.id, booking.qrCodeBase64, expired]);
+
+  const displayBooking = fullBooking || booking;
 
   return (
     <Modal open onClose={onClose} title="Entrance Ticket">
@@ -79,7 +94,9 @@ const QrModal: React.FC<QrModalProps> = ({ booking, onClose }) => {
               This booking QR is no longer valid. The showtime has already passed.
             </p>
           </div>
-        ) : booking.qrCodeBase64 ? (
+        ) : loading ? (
+          <div className="p-8"><Loading /></div>
+        ) : displayBooking.qrCodeBase64 ? (
           <>
             {/* Tag: entrance ticket */}
             <div
@@ -96,7 +113,7 @@ const QrModal: React.FC<QrModalProps> = ({ booking, onClose }) => {
               style={{ backgroundColor: '#fff', boxShadow: '0 0 0 1px #1f2937, 0 0 32px rgba(220,38,38,0.12)' }}
             >
               <img
-                src={`data:image/png;base64,${booking.qrCodeBase64}`}
+                src={`data:image/png;base64,${displayBooking.qrCodeBase64}`}
                 alt="Booking QR"
                 style={{ width: 200, height: 200, display: 'block' }}
               />
@@ -105,19 +122,19 @@ const QrModal: React.FC<QrModalProps> = ({ booking, onClose }) => {
             {/* Booking details */}
             <div className="w-full rounded-xl px-5 py-4 flex flex-col gap-2"
               style={{ backgroundColor: '#0d1117', border: '1px solid #1f2937' }}>
-              <DR label="Code"   value={booking.bookingCode} mono />
-              <DR label="Movie"  value={booking.movieTitle} />
-              <DR label="Screen" value={booking.screenName} />
+              <DR label="Code"   value={displayBooking.bookingCode} mono />
+              <DR label="Movie"  value={displayBooking.movieTitle} />
+              <DR label="Screen" value={displayBooking.screenName} />
               <DR
                 label="Seats"
-                value={booking.seats.map((s: BookedSeatInfo) => `${s.rowLabel}${s.colNumber}`).join(', ')}
+                value={displayBooking.seats.map((s: BookedSeatInfo) => `${s.rowLabel}${s.colNumber}`).join(', ')}
                 mono
               />
               <DR
                 label="Show Time"
-                value={new Date(booking.startTime).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
+                value={new Date(displayBooking.startTime).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
               />
-              <DR label="Amount" value={`LKR ${booking.totalAmount}`} accent="#f87171" />
+              <DR label="Amount" value={`LKR ${displayBooking.totalAmount}`} accent="#f87171" />
             </div>
 
             <p style={{ color: '#4b5563', fontSize: '0.72rem', textAlign: 'center' }}>
