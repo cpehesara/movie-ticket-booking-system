@@ -1,38 +1,40 @@
 package com.cinema.seatmanagement.controller;
 
-import com.cinema.seatmanagement.model.entity.Kiosk;
-import com.cinema.seatmanagement.model.entity.Movie;
-import com.cinema.seatmanagement.model.entity.Screen;
-import com.cinema.seatmanagement.model.entity.Showtime;
-import com.cinema.seatmanagement.model.enums.UserRole;
-import com.cinema.seatmanagement.model.repository.KioskRepository;
-import com.cinema.seatmanagement.model.repository.MovieRepository;
-import com.cinema.seatmanagement.model.repository.ScreenRepository;
-import com.cinema.seatmanagement.model.repository.UserRepository;
+import com.cinema.seatmanagement.model.entity.*;
+import com.cinema.seatmanagement.model.enums.SeatState;
+import com.cinema.seatmanagement.model.repository.*;
 import com.cinema.seatmanagement.model.service.interfaces.*;
+import com.cinema.seatmanagement.mqtt.MqttPublisher;
+import com.cinema.seatmanagement.model.enums.UserRole;
 import com.cinema.seatmanagement.view.dto.request.RegisterRequest;
 import com.cinema.seatmanagement.view.dto.request.SeatStateUpdateRequest;
-import com.cinema.seatmanagement.view.dto.response.AuthResponse;
-import com.cinema.seatmanagement.view.dto.response.BookingResponse;
-import com.cinema.seatmanagement.view.dto.response.MovieResponse;
-import com.cinema.seatmanagement.view.dto.response.ShowtimeResponse;
-import com.cinema.seatmanagement.view.dto.response.UserResponse;
+import com.cinema.seatmanagement.view.dto.response.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.*;
 
+/**
+ * AdminController — privileged operations for ADMIN and MANAGER roles.
+ *
+ * NEW ENDPOINTS:
+ *
+ *   GET  /api/admin/tracking/{showtimeId}/snapshot
+ *        Returns a list of bookings currently in CHECKED_IN state (i.e. customers
+ *        who scanned at the door but haven't reached their seat yet). The staff
+ *        tracking display uses this as the initial HTTP load before subscribing
+ *        to the WebSocket topic for live updates.
+ *
+ *   POST /api/admin/screens/{screenId}/resync-leds
+ *        Iterates every seat in the screen, reads its current state from the DB,
+ *        and publishes the corresponding MQTT SET_LED command. Used after an ESP32
+ *        reboot or WiFi drop — the ESP32 loses its LED state on restart.
+ */
 @RestController
 @RequestMapping("/api/admin")
 @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
@@ -48,7 +50,10 @@ public class AdminController {
     private final KioskRepository kioskRepository;
     private final ScreenRepository screenRepository;
     private final MovieRepository movieRepository;
-    private final UserRepository userRepository;
+    private final SeatRepository seatRepository;
+    private final BookingSeatRepository bookingSeatRepository;
+    private final BookingRepository bookingRepository;
+    private final MqttPublisher mqttPublisher;
 
     // ── Movie Management ──────────────────────────────────────────────────────
 
@@ -90,61 +95,17 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
-    // ── Screen Listing ────────────────────────────────────────────────────────
-
-    @GetMapping("/screens")
-    @org.springframework.transaction.annotation.Transactional(readOnly = true)
-    public ResponseEntity<List<Map<String, Object>>> getAllScreens() {
-        List<Map<String, Object>> screens = screenRepository.findAllWithCinema()
-                .stream()
-                .map(screen -> {
-                    Map<String, Object> dto = new HashMap<>();
-                    dto.put("id",         screen.getId());
-                    dto.put("name",       screen.getName());
-                    dto.put("totalSeats", screen.getTotalSeats());
-                    
-                    if (screen.getCinema() != null) {
-                        dto.put("cinemaName", screen.getCinema().getName());
-                        dto.put("cinemaId",   screen.getCinema().getId());
-                    } else {
-                        dto.put("cinemaName", "Unknown Cinema");
-                        dto.put("cinemaId",   null);
-                    }
-                    return dto;
-                })
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(screens);
-    }
-
     // ── Seat State Override ───────────────────────────────────────────────────
 
     @PatchMapping("/seats/{seatId}/state")
     public ResponseEntity<Void> updateSeatState(
             @PathVariable Long seatId,
-            @Valid @RequestBody SeatStateUpdateRequest request,
-            @AuthenticationPrincipal UserDetails principal
+            @Valid @RequestBody SeatStateUpdateRequest request
     ) {
-        Long actingUserId = userRepository.findByEmail(principal.getUsername())
-                .map(u -> u.getId())
-                .orElse(null);
+        seatService.updateSeatState(seatId, request.getShowtimeId(), request.getNewState(), null);
+        return ResponseEntity.ok().build();
+    }
 
-        seatService.updateSeatState(
-                seatId,
-                request.getShowtimeId(),
-                request.getNewState(),
-                actingUserId
-        );
-        return ResponseEntity.ok().build();
-    }
-    @PostMapping("/screens/{screenId}/resync-leds")
-    public ResponseEntity<Void> resyncLeds(
-            @PathVariable Long screenId,
-            @RequestParam Long showtimeId
-    ) {
-        // We only receive the showtimeId here to resync the LEDs for the particular showtime
-        seatService.resyncLedsForShowtime(showtimeId);
-        return ResponseEntity.ok().build();
-    }
     // ── Booking Overview ──────────────────────────────────────────────────────
 
     @GetMapping("/bookings")
@@ -158,6 +119,82 @@ public class AdminController {
         return ResponseEntity.ok(bookingService.getBookingsByShowtime(showtimeId));
     }
 
+    // ── Live Tracking ─────────────────────────────────────────────────────────
+
+    /**
+     * GET /api/admin/tracking/{showtimeId}/snapshot
+     *
+     * Returns all bookings in CHECKED_IN status for a given showtime.
+     * These are customers who have passed the entrance door but whose seat
+     * arrival hasn't been confirmed yet (seat state = GUIDING).
+     *
+     * This endpoint provides the INITIAL STATE for the LiveTrackingPage.
+     * After loading this snapshot, the page subscribes to:
+     *   WebSocket /topic/tracking/{showtimeId}
+     * to receive real-time DOOR_SCANNED and SEATED events.
+     */
+    @GetMapping("/tracking/{showtimeId}/snapshot")
+    public ResponseEntity<List<BookingResponse>> getCheckedInSnapshot(
+            @PathVariable Long showtimeId
+    ) {
+        List<BookingResponse> checkedIn = bookingService
+                .getBookingsByShowtime(showtimeId)
+                .stream()
+                .filter(b -> "CHECKED_IN".equals(b.getStatus())
+                        || "COMPLETED".equals(b.getStatus()))
+                .toList();
+        return ResponseEntity.ok(checkedIn);
+    }
+
+    // ── IoT LED Resync ────────────────────────────────────────────────────────
+
+    /**
+     * POST /api/admin/screens/{screenId}/resync-leds
+     *
+     * Republishes MQTT SET_LED commands for every seat in the screen, based
+     * on the current seat_state in the database.
+     *
+     * USE CASE: The ESP32 reboots or loses WiFi and forgets all LED states.
+     * The admin clicks "Resync LEDs" in the dashboard, and this endpoint
+     * restores the correct pattern for all 6 (or N) LEDs instantly.
+     *
+     * The method requires a showtimeId to know which seat_state records to read.
+     */
+    @PostMapping("/screens/{screenId}/resync-leds")
+    public ResponseEntity<Map<String, Object>> resyncLeds(
+            @PathVariable Long screenId,
+            @RequestParam Long showtimeId
+    ) {
+        Screen screen = screenRepository.findById(screenId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Screen not found with id: " + screenId));
+
+        List<Seat> seats = seatRepository
+                .findByScreenIdOrderByRowLabelAscColNumberAsc(screenId);
+
+        int synced = 0;
+        for (Seat seat : seats) {
+            if (seat.getLedIndex() == null || !seat.getIsActive()) continue;
+
+            // Find current state for this seat in the given showtime
+            SeatState currentState = bookingSeatRepository
+                    .findBySeatAndShowtimeForUpdate(seat.getId(), showtimeId)
+                    .map(bs -> bs.getSeatState())
+                    .orElse(SeatState.AVAILABLE);
+
+            mqttPublisher.resyncLed(screenId, seat.getLedIndex(), currentState);
+            synced++;
+        }
+
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("screenId",   screenId);
+        result.put("screenName", screen.getName());
+        result.put("synced",     synced);
+        result.put("message",    "Resync commands sent for " + synced + " LEDs");
+
+        return ResponseEntity.ok(result);
+    }
+
     // ── Staff Management ──────────────────────────────────────────────────────
 
     @PostMapping("/staff")
@@ -167,13 +204,8 @@ public class AdminController {
             @RequestParam String role,
             @RequestParam Long cinemaId
     ) {
-        // The compiled AuthService interface requires UserRole, not String.
-        // Convert here so the call site matches the interface exactly.
-        // valueOf() throws IllegalArgumentException for unknown values,
-        // which Spring maps to 400 Bad Request automatically.
-        UserRole userRole = UserRole.valueOf(role.toUpperCase());
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(authService.registerStaff(request, userRole, cinemaId));
+        AuthResponse response = authService.registerStaff(request, UserRole.valueOf(role.toUpperCase()), cinemaId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/staff")
@@ -193,7 +225,7 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
-    // ── Kiosk Management ─────────────────────────────────────────────────────
+    // ── Kiosk Management ──────────────────────────────────────────────────────
 
     @PostMapping("/kiosks")
     @PreAuthorize("hasRole('ADMIN')")
@@ -202,7 +234,8 @@ public class AdminController {
             @RequestParam(required = false) String name
     ) {
         Screen screen = screenRepository.findById(screenId)
-                .orElseThrow(() -> new EntityNotFoundException("Screen not found: " + screenId));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Screen not found with id: " + screenId));
 
         String apiKey = "KIOSK-" + UUID.randomUUID();
 
@@ -214,11 +247,29 @@ public class AdminController {
                 .build();
         kiosk = kioskRepository.save(kiosk);
 
-        Map<String, Object> response = new HashMap<>();
+        Map<String, Object> response = new LinkedHashMap<>();
         response.put("kioskId",  kiosk.getId());
         response.put("screenId", screenId);
         response.put("apiKey",   apiKey);
         response.put("name",     kiosk.getName());
+
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping("/kiosks")
+    public ResponseEntity<List<Map<String, Object>>> getAllKiosks() {
+        return ResponseEntity.ok(
+                kioskRepository.findAll().stream().map(k -> {
+                    Map<String, Object> m = new LinkedHashMap<>();
+                    m.put("id",       k.getId());
+                    m.put("name",     k.getName());
+                    m.put("screenId", k.getScreen().getId());
+                    m.put("screen",   k.getScreen().getName());
+                    m.put("isActive", k.getIsActive());
+                    m.put("apiKey",   k.getApiKey());
+                    m.put("lastSeen", k.getLastSeenAt() != null ? k.getLastSeenAt().toString() : null);
+                    return m;
+                }).toList()
+        );
     }
 }

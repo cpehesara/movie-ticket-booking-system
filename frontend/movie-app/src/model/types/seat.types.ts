@@ -2,7 +2,8 @@ export type SeatState =
   | 'AVAILABLE'
   | 'RESERVED'
   | 'BOOKED'
-  | 'OCCUPIED'
+  | 'GUIDING'        // Step 1 done: customer at door, LED blinks fast to guide to seat
+  | 'OCCUPIED'       // Step 2 done: customer confirmed at physical seat, LED off
   | 'CANCELLED'
   | 'MAINTENANCE';
 
@@ -35,5 +36,5 @@ export interface SeatWebSocketUpdate {
   rowLabel: string;
   colNumber: number;
   seatState: SeatState;
-  timestamp: number;
+  timestamp: string;
 }

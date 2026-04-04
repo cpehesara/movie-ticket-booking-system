@@ -2,7 +2,8 @@ package com.cinema.seatmanagement.model.service.impl;
 
 import com.cinema.seatmanagement.model.enums.SeatState;
 import com.cinema.seatmanagement.model.service.interfaces.SeatStateHandler;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * STATE PATTERN — Context class.
@@ -20,8 +21,9 @@ import lombok.extern.slf4j.Slf4j;
  * Not a Spring bean — created per transition, used once, then discarded.
  * State handler objects are stateless so they can be instantiated freely.
  */
-@Slf4j
 public final class SeatStateContext {
+
+    private static final Logger log = LoggerFactory.getLogger(SeatStateContext.class);
 
     private SeatStateHandler current;
 
@@ -38,6 +40,7 @@ public final class SeatStateContext {
             case AVAILABLE   -> new AvailableState();
             case RESERVED    -> new ReservedState();
             case BOOKED      -> new BookedState();
+            case GUIDING     -> new GuidingState();
             case OCCUPIED    -> new OccupiedState();
             case CANCELLED   -> new CancelledState();
             case MAINTENANCE -> new MaintenanceState();
@@ -49,6 +52,7 @@ public final class SeatStateContext {
 
     public SeatState reserve()          { return current.reserve(this); }
     public SeatState book()             { return current.book(this); }
+    public SeatState guide()            { return current.guide(this); }
     public SeatState occupy()           { return current.occupy(this); }
     public SeatState cancel()           { return current.cancel(this); }
     public SeatState release()          { return current.release(this); }

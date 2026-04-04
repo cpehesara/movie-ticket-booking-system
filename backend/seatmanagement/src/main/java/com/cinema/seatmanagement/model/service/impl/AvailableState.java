@@ -94,7 +94,7 @@ class ReservedState implements SeatStateHandler {
 
 // ══════════════════════════════════════════════════════════════════════════
 //  BOOKED — payment confirmed, QR ticket issued; LED = BLUE
-//  Exits: → OCCUPIED, → CANCELLED, → MAINTENANCE
+//  Exits: → GUIDING (door scan), → OCCUPIED, → CANCELLED, → MAINTENANCE
 // ══════════════════════════════════════════════════════════════════════════
 class BookedState implements SeatStateHandler {
 
@@ -126,7 +126,55 @@ class BookedState implements SeatStateHandler {
         return SeatState.MAINTENANCE;
     }
 
+    /** Step 1 door scan: BOOKED → GUIDING (LED blinks white to guide customer). */
+    @Override public SeatState guide(SeatStateContext ctx) {
+        ctx.transitionTo(new GuidingState());
+        return SeatState.GUIDING;
+    }
+
     @Override public SeatState getState() { return SeatState.BOOKED; }
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+//  GUIDING — customer scanned door QR, LED blinks white to lead them to seat
+//  Exits: → OCCUPIED (seat scan), → CANCELLED, → MAINTENANCE
+// ══════════════════════════════════════════════════════════════════════════
+class GuidingState implements SeatStateHandler {
+
+    @Override public SeatState reserve(SeatStateContext ctx) {
+        throw new InvalidSeatStateTransitionException("Seat is currently GUIDING a customer.");
+    }
+
+    @Override public SeatState book(SeatStateContext ctx) {
+        throw new InvalidSeatStateTransitionException("Seat is already in GUIDING state.");
+    }
+
+    @Override public SeatState occupy(SeatStateContext ctx) {
+        ctx.transitionTo(new OccupiedState());
+        return SeatState.OCCUPIED;
+    }
+
+    @Override public SeatState cancel(SeatStateContext ctx) {
+        ctx.transitionTo(new CancelledState());
+        return SeatState.CANCELLED;
+    }
+
+    @Override public SeatState release(SeatStateContext ctx) {
+        throw new InvalidSeatStateTransitionException(
+                "Cannot release a GUIDING seat — customer is in transit.");
+    }
+
+    @Override public SeatState putInMaintenance(SeatStateContext ctx) {
+        ctx.transitionTo(new MaintenanceState());
+        return SeatState.MAINTENANCE;
+    }
+
+    /** Idempotent — double door scan is harmless. */
+    @Override public SeatState guide(SeatStateContext ctx) {
+        return SeatState.GUIDING;
+    }
+
+    @Override public SeatState getState() { return SeatState.GUIDING; }
 }
 
 // ══════════════════════════════════════════════════════════════════════════

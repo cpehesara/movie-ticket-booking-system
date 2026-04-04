@@ -1,10 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { checkinApi } from '../../model/api/checkinApi';
-import { seatArrivalApi } from '../../model/api/seatArrivalApi';
+import { seatArrivalApi, SeatArrivalResult } from '../../model/api/seatArrivalApi';
+
 import { BookingResponse } from '../../model/types/booking.types';
 
 interface CheckinState {
-  result: BookingResponse | null;
+  result: BookingResponse | SeatArrivalResult | null;
   loading: boolean;
   error: string | null;
 }
@@ -21,8 +22,8 @@ export const performCheckin = createAsyncThunk(
 
 export const confirmSeatArrival = createAsyncThunk(
   'checkin/seatArrival',
-  async ({ bookingCode, seatId }: { bookingCode: string; seatId: number }, { rejectWithValue }) => {
-    try { return await seatArrivalApi.confirm(bookingCode, seatId); }
+  async (qrPayload: string, { rejectWithValue }) => {
+    try { return await seatArrivalApi.confirm(qrPayload); }
     catch (e: any) { return rejectWithValue(e.response?.data?.message || 'Seat confirmation failed'); }
   }
 );

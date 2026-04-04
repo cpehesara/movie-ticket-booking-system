@@ -1,20 +1,25 @@
 package com.cinema.seatmanagement.model.service.impl;
 
-import com.cinema.seatmanagement.model.entity.Booking;
+import com.cinema.seatmanagement.exception.InvalidQrCodeException;
 import com.cinema.seatmanagement.model.entity.BookingSeat;
-import com.cinema.seatmanagement.model.enums.BookingStatus;
+import com.cinema.seatmanagement.model.entity.Seat;
+import com.cinema.seatmanagement.model.entity.Showtime;
+import com.cinema.seatmanagement.model.enums.AuditAction;
+import com.cinema.seatmanagement.model.enums.ShowtimeStatus;
 import com.cinema.seatmanagement.model.enums.SeatState;
-import com.cinema.seatmanagement.model.repository.BookingRepository;
 import com.cinema.seatmanagement.model.repository.BookingSeatRepository;
+import com.cinema.seatmanagement.model.repository.SeatRepository;
+import com.cinema.seatmanagement.model.repository.ShowtimeRepository;
+import com.cinema.seatmanagement.model.service.interfaces.AuditLogService;
+import com.cinema.seatmanagement.model.service.interfaces.QrCodeService;
+import com.cinema.seatmanagement.model.service.interfaces.QrCodeService.QrValidationResult;
 import com.cinema.seatmanagement.model.service.interfaces.SeatArrivalService;
 import com.cinema.seatmanagement.mqtt.MqttPublisher;
-import com.cinema.seatmanagement.view.dto.request.SeatArrivalRequest;
-import com.cinema.seatmanagement.view.dto.response.BookingResponse;
-import com.cinema.seatmanagement.view.mapper.BookingMapper;
+import com.cinema.seatmanagement.view.dto.response.SeatArrivalResponse;
+import com.cinema.seatmanagement.websocket.SeatWebSocketHandler;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,137 +27,168 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
- * SeatArrivalServiceImpl — STEP 2 of the IoT two-scan flow.
+ * SeatArrivalServiceImpl — handles the permanent seat QR scan.
  *
- * The customer scans the QR code physically attached to their seat.
- * This service:
- *   1. Parses seatId from QR data (format: "SEAT-{seatId}" or just "{seatId}")
- *   2. Verifies the seat belongs to this booking (security check)
- *   3. Transitions BookingSeat state: BOOKED → OCCUPIED
- *   4. MQTT: publishes OFF command → LED extinguishes (customer confirmed seated ✓)
- *   5. WebSocket: broadcasts CUSTOMER_SEATED event (staff dashboard clears animation)
- *   6. If all seats confirmed → booking CHECKED_IN → COMPLETED
+ * KEY BEHAVIOUR:
  *
- * Design Patterns:
- *   - State Pattern: BOOKED → OCCUPIED transition validated here
- *   - Observer Pattern: WebSocket broadcast notifies all subscribers
- *   - Adapter Pattern: MqttPayloadAdapter translates QR string to seat entity
+ *  CORRECT SEAT: Customer scans the QR for the seat they booked.
+ *    → BookingSeat: GUIDING → OCCUPIED
+ *    → LED OFF (LED was ON since check-in)
+ *    → WS broadcast: "Customer seated"
+ *
+ *  WRONG SEAT: Customer scans a seat QR that is NOT theirs.
+ *    → Return 400 with message "This is not your seat"
+ *    → LED for their actual booked seat keeps BLINKING (GUIDING state)
+ *    → No state change
+ *    NOTE: "blink" vs "solid ON" is controlled by the MQTT payload in MqttPublisher.
+ *    When the seat is GUIDING and the customer hasn't arrived, we publish
+ *    a BLINK command. Once OCCUPIED, we publish OFF.
+ *    The GUIDING → blink mapping is handled in MqttPublisher.publishSeatCommand().
+ *
+ *  NO ACTIVE BOOKING: The seat QR is scanned but there's no GUIDING booking.
+ *    → Return 404 with "No active booking found for this seat"
  */
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class SeatArrivalServiceImpl implements SeatArrivalService {
 
-    private final BookingRepository bookingRepository;
-    private final BookingSeatRepository bookingSeatRepository;
-    private final BookingMapper bookingMapper;
-    private final SimpMessagingTemplate messagingTemplate;
-    private final MqttPublisher mqttPublisher;
+    private final QrCodeService          qrCodeService;
+    private final SeatRepository         seatRepository;
+    private final BookingSeatRepository  bookingSeatRepository;
+    private final ShowtimeRepository     showtimeRepository;
+    private final MqttPublisher          mqttPublisher;
+    private final SeatWebSocketHandler   seatWebSocketHandler;
+    private final AuditLogService        auditLogService;
 
     @Override
     @Transactional
-    public BookingResponse confirmSeatArrival(SeatArrivalRequest request) {
+    public SeatArrivalResponse processSeatArrival(String rawSeatQrPayload, Long userId) {
 
-        // ── 1. Find booking ───────────────────────────────────────────────
-        Booking booking = bookingRepository.findByBookingCode(request.getBookingCode())
+        // ── Step 1: Validate SEAT QR ─────────────────────────────────────────
+        QrValidationResult qr = qrCodeService.validateQrPayload(rawSeatQrPayload);
+
+        if (qr.type != QrCodeService.QrType.SEAT) {
+            throw new InvalidQrCodeException(
+                    "Expected SEAT QR at seat scanner, got: " + qr.type);
+        }
+
+        // ── Step 2: Load the physical seat ──────────────────────────────────
+        Seat seat = seatRepository.findById(qr.seatId)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "Booking not found with code: " + request.getBookingCode()));
+                        "Seat not found with id: " + qr.seatId));
 
-        if (booking.getStatus() != BookingStatus.CHECKED_IN) {
+        // ── Step 3: Find the active showtime for this screen ─────────────────
+        // We look for an IN_PROGRESS showtime for the seat's screen.
+        // A seat QR scan only makes sense during an active show.
+        Long screenId = seat.getScreen().getId();
+        Optional<Showtime> activeShowtime = showtimeRepository
+                .findByScreenId(screenId)
+                .stream()
+                .filter(st -> st.getStatus() == ShowtimeStatus.IN_PROGRESS
+                        || st.getStatus() == ShowtimeStatus.SCHEDULED
+                        || st.getStatus() == ShowtimeStatus.OPEN)
+                .findFirst();
+
+        if (activeShowtime.isEmpty()) {
+            return SeatArrivalResponse.builder()
+                    .success(false)
+                    .message("No active show found for this screen.")
+                    .seatLabel(seat.getLabel())
+                    .build();
+        }
+
+        Long showtimeId = activeShowtime.get().getId();
+
+        // ── Step 4: Find the BookingSeat for this seat + showtime ─────────────
+        Optional<BookingSeat> bsOpt = bookingSeatRepository
+                .findBySeatIdAndShowtimeId(seat.getId(), showtimeId);
+
+        if (bsOpt.isEmpty()) {
+            return SeatArrivalResponse.builder()
+                    .success(false)
+                    .message("No booking found for seat " + seat.getLabel() + " in this show.")
+                    .seatLabel(seat.getLabel())
+                    .build();
+        }
+
+        BookingSeat bs = bsOpt.get();
+
+        // ── Step 5: Ownership check ──────────────────────────────────────────
+        Long bookingUserId = bs.getBooking().getUser().getId();
+        if (!bookingUserId.equals(userId)) {
+            // Customer is scanning the wrong seat's QR
+            log.warn("[SeatArrival] User {} tried to scan seat {} owned by user {}",
+                    userId, seat.getLabel(), bookingUserId);
+            return SeatArrivalResponse.builder()
+                    .success(false)
+                    .message("This is not your seat. Please follow your LED guide.")
+                    .seatLabel(seat.getLabel())
+                    .build();
+        }
+
+        // ── Step 6: State check ──────────────────────────────────────────────
+        if (bs.getSeatState() == SeatState.OCCUPIED) {
+            return SeatArrivalResponse.builder()
+                    .success(true)
+                    .message("You are already confirmed seated. Enjoy the show!")
+                    .seatLabel(seat.getLabel())
+                    .build();
+        }
+
+        if (bs.getSeatState() != SeatState.GUIDING) {
             throw new IllegalStateException(
-                    "Customer must scan door QR first. Current status: " + booking.getStatus());
+                    "Seat " + seat.getLabel() + " is in state " + bs.getSeatState()
+                            + ". Cannot confirm seating.");
         }
 
-        // ── 2. Parse seat ID from QR data ────────────────────────────────
-        //    Supported formats: "SEAT-14", "SEAT-14-SCREEN-1", or just "14"
-        Long targetSeatId = parseSeatId(request.getSeatQrData());
+        // ── Step 7: GUIDING → OCCUPIED ───────────────────────────────────────
+        bs.setSeatState(SeatState.OCCUPIED);
+        bookingSeatRepository.save(bs);
 
-        // ── 3. Verify seat belongs to this booking ───────────────────────
-        BookingSeat targetBookingSeat = booking.getBookingSeats().stream()
-                .filter(bs -> bs.getSeat().getId().equals(targetSeatId))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException(
-                        "Seat " + request.getSeatQrData()
-                                + " does not belong to booking " + request.getBookingCode()
-                                + ". Please check your seat assignment."));
-
-        if (targetBookingSeat.getSeatState() == SeatState.OCCUPIED) {
-            // Idempotent — customer scanned twice, just return current state
-            log.info("Seat {} already confirmed occupied for booking {}",
-                    targetSeatId, request.getBookingCode());
-            return bookingMapper.toResponse(booking);
+        // ── Step 8: MQTT LED OFF ─────────────────────────────────────────────
+        if (seat.getLedIndex() != null) {
+            mqttPublisher.publishSeatCommand(screenId, seat.getLedIndex(), SeatState.OCCUPIED);
+            log.info("[SeatArrival] LED OFF → screenId={} ledIndex={} seat={}",
+                    screenId, seat.getLedIndex(), seat.getLabel());
         }
 
-        // ── 4. Transition: BOOKED → OCCUPIED ────────────────────────────
-        targetBookingSeat.setSeatState(SeatState.OCCUPIED);
-        bookingSeatRepository.save(targetBookingSeat);
-        log.info("Seat {} confirmed occupied for booking {}",
-                targetSeatId, request.getBookingCode());
+        // ── Step 9: WebSocket broadcast ──────────────────────────────────────
+        seatWebSocketHandler.broadcastSeatStateChange(
+                showtimeId, seat.getId(),
+                seat.getRowLabel(), seat.getColNumber(),
+                SeatState.OCCUPIED);
 
-        // ── 5. MQTT: extinguish LED (customer is seated ✓) ───────────────
-        if (targetBookingSeat.getSeat().getLedIndex() != null) {
-            mqttPublisher.publishSeatCommand(
-                    targetBookingSeat.getSeat().getScreen().getId(),
-                    targetBookingSeat.getSeat().getLedIndex(),
-                    SeatState.OCCUPIED          // mapped to "OFF" in publisher
-            );
-        }
+        // Hall display: "Customer X is now seated"
+        Map<String, Object> extras = new HashMap<>();
+        extras.put("customerName", bs.getBooking().getUser().getFullName());
+        extras.put("bookingCode",  bs.getBooking().getBookingCode());
+        extras.put("seatLabel",    seat.getLabel());
+        extras.put("seatedAt",     LocalDateTime.now().toString());
+        extras.put("eventType",    "CUSTOMER_SEATED");
+        seatWebSocketHandler.broadcastShowtimeEvent(showtimeId, "CUSTOMER_SEATED", extras);
+        seatWebSocketHandler.broadcastAdminAlert("CUSTOMER_SEATED", extras);
 
-        // ── 6. WebSocket: CUSTOMER_SEATED event ──────────────────────────
-        Long showtimeId = booking.getShowtime().getId();
-        broadcastSeatedEvent(showtimeId, targetSeatId);
+        // ── Step 10: Audit log ────────────────────────────────────────────────
+        auditLogService.record(
+                seat.getId(), showtimeId, bs.getBooking().getId(),
+                userId, "USER",
+                AuditAction.SEAT_OCCUPIED, SeatState.GUIDING, SeatState.OCCUPIED,
+                "Seat arrival confirmed via permanent QR scan at " + LocalDateTime.now()
+        );
 
-        // ── 7. Check if ALL seats in this booking are now OCCUPIED ────────
-        boolean allSeated = booking.getBookingSeats().stream()
-                .allMatch(bs -> bs.getSeatState() == SeatState.OCCUPIED
-                        || bs.getId().equals(targetBookingSeat.getId()));
+        log.info("[SeatArrival] SUCCESS user={} seat={} → OCCUPIED (LED OFF)", userId, seat.getLabel());
 
-        if (allSeated) {
-            booking.setStatus(BookingStatus.COMPLETED);
-            bookingRepository.save(booking);
-            log.info("Booking {} fully completed — all seats occupied", request.getBookingCode());
-        }
-
-        return bookingMapper.toResponse(booking);
-    }
-
-    /**
-     * Parses the seat ID from QR data.
-     * Accepted formats:
-     *   "SEAT-14"          → 14
-     *   "SEAT-14-SCREEN-1" → 14
-     *   "14"               → 14
-     */
-    private Long parseSeatId(String qrData) {
-        try {
-            String normalized = qrData.trim().toUpperCase();
-            if (normalized.startsWith("SEAT-")) {
-                // "SEAT-14" or "SEAT-14-SCREEN-1"
-                String[] parts = normalized.split("-");
-                return Long.parseLong(parts[1]);
-            }
-            return Long.parseLong(normalized);
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(
-                    "Invalid seat QR format: '" + qrData
-                            + "'. Expected format: SEAT-{id} or just {id}");
-        }
-    }
-
-    /**
-     * Broadcasts CUSTOMER_SEATED event so the staff IoT dashboard can
-     * stop the walking animation and show the seat as confirmed.
-     */
-    private void broadcastSeatedEvent(Long showtimeId, Long seatId) {
-        Map<String, Object> event = new HashMap<>();
-        event.put("seatId", seatId);
-        event.put("showtimeId", showtimeId);
-        event.put("seatState", SeatState.OCCUPIED.name());
-        event.put("eventType", "CUSTOMER_SEATED");
-        event.put("timestamp", LocalDateTime.now().toString());
-
-        messagingTemplate.convertAndSend("/topic/seats/" + showtimeId, (Object) event);
+        return SeatArrivalResponse.builder()
+                .success(true)
+                .seatLabel(seat.getLabel())
+                .movieTitle(activeShowtime.get().getMovie().getTitle())
+                .startTime(activeShowtime.get().getStartTime().toString())
+                .seatedAt(LocalDateTime.now().toString())
+                .message("Seat confirmed! Enjoy the movie 🍿 LED is now off.")
+                .build();
     }
 }

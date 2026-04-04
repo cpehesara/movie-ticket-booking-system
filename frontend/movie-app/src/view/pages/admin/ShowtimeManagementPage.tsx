@@ -149,7 +149,7 @@ export const ShowtimeManagementPage: React.FC = () => {
   useEffect(() => {
     setScreensLoading(true);
     adminApi.getScreens()
-      .then(data => setScreens(data))
+      .then((data: ScreenSummary[]) => setScreens(data))
       .catch(() => showToast('Could not load screens from server', 'error'))
       .finally(() => setScreensLoading(false));
   }, []); // eslint-disable-line

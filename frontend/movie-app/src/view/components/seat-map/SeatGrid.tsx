@@ -78,10 +78,7 @@ export const SeatGrid: React.FC<SeatGridProps> = ({
                   <SeatCell
                     key={seat.seatId}
                     seat={seat}
-                    selected={selectedSeatIds.includes(seat.seatId)}
-                    onSelect={id => dispatch(toggleSeatSelection(id))}
-                    iotMode={iotMode}
-                    inTransit={inTransitSeatIds.includes(seat.seatId)}
+                    selectable={!iotMode}
                   />
                 ))}
             </div>

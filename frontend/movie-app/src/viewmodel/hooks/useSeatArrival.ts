@@ -8,15 +8,13 @@ export const useSeatArrival = () => {
 
   /**
    * Called when customer scans the physical QR label on their seat.
-   * QR content format: "SEAT:{seatId}" — this hook strips the prefix.
+   * Accepts both legacy SEAT:{id} and new HMAC format SEAT:{id}:{screenId}:{row}:{col}:{hmac}.
    */
-  const confirmArrival = (bookingCode: string, rawQr: string) => {
-    const match = rawQr.match(/^SEAT:(\d+)$/);
-    if (!match) {
-      return Promise.reject(new Error('Invalid seat QR code. Expected format: SEAT:{id}'));
+  const confirmArrival = (rawQr: string) => {
+    if (!rawQr.trim().startsWith('SEAT:')) {
+      return Promise.reject(new Error('Not a seat QR code'));
     }
-    const seatId = parseInt(match[1], 10);
-    return dispatch(confirmSeatArrival({ bookingCode, seatId }));
+    return dispatch(confirmSeatArrival(rawQr.trim()));
   };
 
   return { result, loading, error, confirmArrival, reset: () => dispatch(reset()) };

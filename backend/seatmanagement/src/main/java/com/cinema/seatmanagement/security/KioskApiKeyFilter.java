@@ -50,18 +50,22 @@ public class KioskApiKeyFilter extends OncePerRequestFilter {
 
         Kiosk kiosk = kioskOpt.get();
 
-        /**
-         * Stamp lastSeenAt on every authenticated kiosk request — not just heartbeats.
-         * Check-in calls are proof the kiosk is alive; the admin dashboard "offline" alert
-         * should not fire if check-ins are flowing. Single-column UPDATE via the repository
-         * — no entity load required.
-         */
         kioskRepository.updateLastSeenAt(kiosk.getId(), LocalDateTime.now());
+
+        /**
+         * FIX: Set "kioskScreenId" as a request attribute so CheckInController
+         * can retrieve it via httpRequest.getAttribute("kioskScreenId").
+         * Previously the filter stored screenId only as the authentication
+         * credentials, but the controller reads it from the request attribute —
+         * which was never set, causing kioskScreenId to always be null.
+         */
+        Long screenId = kiosk.getScreen().getId();
+        request.setAttribute("kioskScreenId", screenId);
 
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(
                         kiosk.getId(),
-                        kiosk.getScreen().getId(),
+                        screenId,
                         Collections.singletonList(
                                 new SimpleGrantedAuthority(AppConstants.ROLE_KIOSK))
                 );
@@ -73,7 +77,6 @@ public class KioskApiKeyFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        // Only intercept requests that carry the API key header — skip everything else
         return request.getHeader(AppConstants.API_KEY_HEADER) == null;
     }
 

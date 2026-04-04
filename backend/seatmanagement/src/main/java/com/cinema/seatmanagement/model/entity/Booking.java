@@ -1,5 +1,11 @@
 package com.cinema.seatmanagement.model.entity;
 
+// ============================================================
+// CHANGES FROM ORIGINAL:
+//  + qrCodeData     (String, col: qr_code_data)   — raw QR payload stored for "My Bookings" page
+//  + qrCodeImage    (String, col: qr_code_image)  — Base64 PNG stored for email + customer portal
+// ============================================================
+
 import com.cinema.seatmanagement.model.enums.BookingStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,11 +20,11 @@ import java.util.List;
 @Table(
         name = "booking",
         indexes = {
-                @Index(name = "idx_booking_user_id",     columnList = "user_id"),
-                @Index(name = "idx_booking_showtime_id", columnList = "showtime_id"),
-                @Index(name = "idx_booking_status",      columnList = "status"),
-                @Index(name = "idx_booking_booked_at",   columnList = "booked_at"),
-                /* Composite: expiry scheduler queries PENDING bookings older than cutoff */
+                @Index(name = "idx_booking_user_id",       columnList = "user_id"),
+                @Index(name = "idx_booking_showtime_id",   columnList = "showtime_id"),
+                @Index(name = "idx_booking_status",        columnList = "status"),
+                @Index(name = "idx_booking_booked_at",     columnList = "booked_at"),
+                @Index(name = "idx_booking_booking_code",  columnList = "booking_code"),
                 @Index(name = "idx_booking_status_booked_at", columnList = "status, booked_at")
         }
 )
@@ -73,6 +79,34 @@ public class Booking {
 
     @Column(name = "checked_in_at")
     private LocalDateTime checkedInAt;
+
+    // ── NEW: QR Code fields ──────────────────────────────────────────────────
+
+    /**
+     * The raw QR payload string (BOOKING:{bookingCode}:{showtimeId}:{userId}:{hmac}).
+     * Stored so the customer portal can display it without re-generating,
+     * and so the door scanner can decode and re-validate without image parsing.
+     *
+     * Max length 500 covers: "BOOKING:" (8) + bookingCode (20) + IDs + HMAC (43) + delimiters.
+     */
+    @Column(name = "qr_code_data", length = 500)
+    private String qrCodeData;
+
+    /**
+     * Base64-encoded PNG of the booking QR code.
+     * Stored as TEXT (mapped to CLOB/TEXT in DB).
+     * Used in:
+     *   - Booking confirmation email (inline data: URI)
+     *   - Customer portal "My Bookings" QR display
+     *   - Mobile app offline display
+     *
+     * ~50 KB per QR image is acceptable for a TEXT column.
+     * If storage is a concern, this can be generated on-the-fly and not stored.
+     */
+    @Column(name = "qr_code_image", columnDefinition = "TEXT")
+    private String qrCodeImage;
+
+    // ── End NEW ──────────────────────────────────────────────────────────────
 
     /**
      * JPA optimistic locking: prevents concurrent updates from silently overwriting

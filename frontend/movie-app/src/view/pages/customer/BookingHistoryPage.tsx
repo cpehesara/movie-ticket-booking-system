@@ -15,8 +15,8 @@
  *    • On CHECKED_IN bookings a "Confirm My Seat" button appears.
  *    • Tapping opens a camera scanner on the customer's own phone.
  *    • Customer scans the PERMANENT physical QR sticker on their seat.
- *    • Format expected by backend: SEAT:{seatId}  (e.g. "SEAT:14")
- *    • Calls POST /api/seat-arrival → booking → COMPLETED, LED turns off.
+ *    • Format sent to backend: raw QR payload (SEAT:{id} or HMAC-signed format)
+ *    • Calls POST /api/seat-arrival/scan → seat GUIDING→OCCUPIED, LED turns off.
  */
 
 import React, { useEffect, useState, useCallback } from 'react';
@@ -168,17 +168,17 @@ const SeatScanModal: React.FC<SeatScanModalProps> = ({ booking, onClose, onSucce
   const handleScan = useCallback(async (rawQr: string) => {
     setScannerActive(false);
 
-    // Parse SEAT:{seatId} format — must match useSeatArrival hook regex
-    const match = rawQr.trim().match(/^SEAT:(\d+)$/);
+    // Accept both legacy SEAT:{id} and new HMAC format SEAT:{id}:{screenId}:{row}:{col}:{hmac}
+    const match = rawQr.trim().match(/^SEAT:(\d+)/);
     if (!match) {
-      setErrorMsg(`Unrecognised QR code. Expected format: SEAT:{id}. Got: "${rawQr}"`);
+      setErrorMsg(`Unrecognised QR code. Expected a seat QR starting with SEAT:. Got: "${rawQr}"`);
       setPhase('error');
       return;
     }
 
     const seatId = parseInt(match[1], 10);
 
-    // Verify the scanned seatId belongs to this booking
+    // Client-side sanity check: scanned seatId must belong to this booking
     const belongsToBooking = booking.seats.some(s => s.seatId === seatId);
     if (!belongsToBooking) {
       setErrorMsg(
@@ -192,8 +192,8 @@ const SeatScanModal: React.FC<SeatScanModalProps> = ({ booking, onClose, onSucce
 
     setPhase('loading');
     try {
-      const result = await seatArrivalApi.confirm(booking.bookingCode, seatId);
-      setConfirmedSeats(result.seats ?? booking.seats);
+      await seatArrivalApi.confirm(rawQr.trim());
+      setConfirmedSeats(booking.seats);
       setPhase('success');
     } catch (e: any) {
       setErrorMsg(e?.response?.data?.message ?? 'Seat confirmation failed. Please try again.');

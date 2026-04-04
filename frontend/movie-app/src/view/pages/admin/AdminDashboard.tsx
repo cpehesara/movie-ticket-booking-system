@@ -1,220 +1,256 @@
-import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../../viewmodel/store';
-import { fetchAllBookings } from '../../../viewmodel/slices/adminSlice';
-import { BookingResponse } from '../../../model/types/booking.types';
-import { Sidebar } from '../../components/layout/Sidebar';
+import { fetchAllBookings, fetchAllStaff } from '../../../viewmodel/slices/adminSlice';
+import { adminApi } from '../../../model/api/adminApi';
 import { Header } from '../../components/layout/Header';
 import { Loading } from '../../components/common/Loading';
+import { Button } from '../../components/common/Button';
+import { useToast } from '../../components/common/Toast';
 
-const statusBadge: Record<string, { bg: string; text: string }> = {
-  PENDING:    { bg: 'rgba(234,179,8,0.12)',   text: '#facc15' },
-  CONFIRMED:  { bg: 'rgba(59,130,246,0.12)',  text: '#60a5fa' },
-  CHECKED_IN: { bg: 'rgba(168,85,247,0.12)',  text: '#c084fc' },
-  COMPLETED:  { bg: 'rgba(34,197,94,0.12)',   text: '#4ade80' },
-  CANCELLED:  { bg: 'rgba(75,85,99,0.15)',    text: '#6b7280' },
-  EXPIRED:    { bg: 'rgba(239,68,68,0.12)',   text: '#f87171' },
-};
+// ── Quick stat card ───────────────────────────────────────────────────────────
+
+const StatCard: React.FC<{
+  label: string; value: number | string; color: string; icon: string;
+}> = ({ label, value, color, icon }) => (
+  <div className={`bg-gray-900 border ${color} rounded-xl p-5`}>
+    <div className="flex items-center justify-between mb-2">
+      <p className="text-gray-500 text-xs uppercase tracking-wider">{label}</p>
+      <span className="text-xl">{icon}</span>
+    </div>
+    <p className="text-3xl font-bold text-white">{value}</p>
+  </div>
+);
+
+// ── Nav card ─────────────────────────────────────────────────────────────────
+
+const NavCard: React.FC<{
+  to: string; title: string; desc: string; icon: string;
+  badge?: string; badgeColor?: string;
+}> = ({ to, title, desc, icon, badge, badgeColor }) => (
+  <Link to={to}
+    className="bg-gray-900 border border-gray-800 hover:border-red-700 rounded-xl p-5
+      transition-all duration-200 flex items-start gap-4 group">
+    <span className="text-3xl group-hover:scale-110 transition-transform">{icon}</span>
+    <div className="min-w-0">
+      <div className="flex items-center gap-2">
+        <p className="text-white font-semibold group-hover:text-red-400 transition-colors">
+          {title}
+        </p>
+        {badge && (
+          <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${badgeColor}`}>
+            {badge}
+          </span>
+        )}
+      </div>
+      <p className="text-gray-500 text-sm mt-0.5">{desc}</p>
+    </div>
+  </Link>
+);
+
+// ── Component ─────────────────────────────────────────────────────────────────
 
 export const AdminDashboard: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { bookings, loading } = useSelector((s: RootState) => s.admin);
-  const { inTransitSeatIds, esp32, events } = useSelector((s: RootState) => s.iot);
+  const dispatch   = useDispatch<AppDispatch>();
+  const navigate   = useNavigate();
+  const { showToast } = useToast();
+  const { bookings, staff, loading } = useSelector((s: RootState) => s.admin);
 
-  useEffect(() => { dispatch(fetchAllBookings()); }, [dispatch]);
+  const [resyncLoading, setResyncLoading] = useState(false);
+  const [showtimeInput, setShowtimeInput] = useState('');
+  const [resyncScreenInput, setResyncScreenInput] = useState('');
 
-  const counts = bookings.reduce<Record<string, number>>(
-    (acc, b: BookingResponse) => { acc[b.status] = (acc[b.status] || 0) + 1; return acc; },
-    {}
-  );
+  useEffect(() => {
+    dispatch(fetchAllBookings());
+    dispatch(fetchAllStaff());
+  }, [dispatch]);
 
-  const revenue = bookings
-    .filter(b => b.status !== 'CANCELLED' && b.status !== 'EXPIRED')
-    .reduce((sum, b) => sum + Number(b.totalAmount), 0);
+  // Booking status counts
+  const confirmedCount  = bookings.filter(b => b.status === 'CONFIRMED').length;
+  const checkedInCount  = bookings.filter(b => b.status === 'CHECKED_IN').length;
+  const completedCount  = bookings.filter(b => b.status === 'COMPLETED').length;
+  const cancelledCount  = bookings.filter(b => b.status === 'CANCELLED' || b.status === 'EXPIRED').length;
 
-  const statCards = [
-    { label: 'Total Bookings',  value: bookings.length,          accent: '#9ca3af' },
-    { label: 'Confirmed',       value: counts['CONFIRMED'] || 0,  accent: '#60a5fa' },
-    { label: 'Checked In',      value: counts['CHECKED_IN'] || 0, accent: '#c084fc' },
-    { label: 'Revenue (LKR)',   value: `${revenue.toFixed(0)}`,   accent: '#4ade80' },
-  ];
-
-  const iotCards = [
-    {
-      label: 'In Transit',
-      value: inTransitSeatIds.length,
-      accent: inTransitSeatIds.length > 0 ? '#fb923c' : '#374151',
-      glow: inTransitSeatIds.length > 0,
-      desc: 'customers walking to seat',
-    },
-    {
-      label: 'ESP32',
-      value: esp32.online ? 'Online' : 'Offline',
-      accent: esp32.online ? '#4ade80' : '#f87171',
-      glow: false,
-      desc: esp32.lastHeartbeat
-        ? `Last ping ${new Date(esp32.lastHeartbeat).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
-        : 'No heartbeat received',
-    },
-    {
-      label: 'IoT Events',
-      value: events.length,
-      accent: '#a78bfa',
-      glow: false,
-      desc: 'in current session',
-    },
-  ];
+  const handleResync = async () => {
+    const screenId   = Number(resyncScreenInput);
+    const showtimeId = Number(showtimeInput);
+    if (!screenId || !showtimeId) {
+      showToast('Enter both Screen ID and Showtime ID to resync', 'error');
+      return;
+    }
+    try {
+      setResyncLoading(true);
+      const result = await adminApi.resyncLeds(screenId, showtimeId);
+      showToast(`✅ ${result.message}`, 'success');
+    } catch {
+      showToast('LED resync failed. Check MQTT connection.', 'error');
+    } finally {
+      setResyncLoading(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#080b10' }}>
+    <div className="min-h-screen bg-gray-950 flex flex-col">
       <Header />
-      <div className="flex flex-1">
-        <Sidebar />
 
-        <main className="flex-1 p-8" style={{ minWidth: 0 }}>
+      <main className="flex-1 max-w-6xl mx-auto w-full px-4 py-8">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-2xl font-bold text-white">Admin Dashboard</h1>
+            <p className="text-gray-500 text-sm mt-1">CinePlex management centre</p>
+          </div>
+        </div>
 
-          {/* Page header */}
-          <div className="flex items-center justify-between mb-7">
-            <div>
-              <h1 className="text-2xl font-bold text-white tracking-tight">Dashboard</h1>
-              <p style={{ color: '#4b5563', fontSize: '0.78rem', marginTop: '2px' }}>
-                {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-              </p>
+        {loading ? <Loading /> : (
+          <>
+            {/* Stats */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+              <StatCard label="Total Bookings" value={bookings.length}
+                color="border-gray-700" icon="🎟️" />
+              <StatCard label="Confirmed"      value={confirmedCount}
+                color="border-blue-800"  icon="✅" />
+              <StatCard label="In Hall"        value={checkedInCount}
+                color="border-purple-800" icon="🚶" />
+              <StatCard label="Completed"      value={completedCount}
+                color="border-green-800" icon="🎬" />
             </div>
-            <Link
-              to="/admin/iot-monitor"
-              className="flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-lg transition-all"
-              style={{
-                backgroundColor: 'rgba(220,38,38,0.12)',
-                color: '#f87171',
-                border: '1px solid rgba(220,38,38,0.25)',
-              }}
-            >
-              <span
-                className="w-2 h-2 rounded-full animate-pulse inline-block"
-                style={{ backgroundColor: '#f87171', boxShadow: '0 0 5px #f87171' }}
-              />
-              Open IoT Monitor
-            </Link>
-          </div>
 
-          {/* Booking stats */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
-            {statCards.map(s => (
-              <div
-                key={s.label}
-                className="rounded-xl p-5"
-                style={{ backgroundColor: '#0d1117', border: '1px solid #1f2937' }}
-              >
-                <p className="text-2xl font-bold font-mono" style={{ color: s.accent }}>{s.value}</p>
-                <p style={{ color: '#6b7280', fontSize: '0.75rem', marginTop: '4px' }}>{s.label}</p>
-              </div>
-            ))}
-          </div>
+            {/* Management links */}
+            <h2 className="text-gray-500 text-xs uppercase tracking-wider mb-3">Management</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
+              <NavCard to="/admin/movies"    icon="🎥"
+                title="Movies"    desc="Add, edit and remove movies" />
+              <NavCard to="/admin/showtimes" icon="📅"
+                title="Showtimes" desc="Schedule and manage screenings" />
+              <NavCard to="/admin/staff"     icon="👥"
+                title="Staff"     desc="Register and manage staff accounts" />
+              <NavCard to="/admin/kiosks"    icon="📟"
+                title="Kiosks"    desc="Register kiosk devices and API keys" />
+            </div>
 
-          {/* IoT stats */}
-          <div className="grid grid-cols-3 gap-3 mb-7">
-            {iotCards.map(s => (
-              <div
-                key={s.label}
-                className="rounded-xl p-5"
-                style={{
-                  backgroundColor: '#0d1117',
-                  border: `1px solid ${s.glow ? 'rgba(251,146,60,0.3)' : '#1f2937'}`,
-                  boxShadow: s.glow ? '0 0 20px rgba(251,146,60,0.08)' : 'none',
-                }}
-              >
-                <div className="flex items-end justify-between">
-                  <p
-                    className="text-2xl font-bold font-mono"
-                    style={{
-                      color: s.accent,
-                      textShadow: s.glow ? `0 0 12px ${s.accent}` : 'none',
-                    }}
-                  >
-                    {s.value}
-                  </p>
-                  <span
-                    className="text-xs px-2 py-0.5 rounded"
-                    style={{ backgroundColor: '#111827', color: '#374151' }}
-                  >
-                    IoT
-                  </span>
+            {/* Live tracking section */}
+            <h2 className="text-gray-500 text-xs uppercase tracking-wider mb-3">
+              Real-Time IoT Tracking
+            </h2>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
+
+              {/* Navigate to tracking */}
+              <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                <div className="flex items-start gap-3 mb-4">
+                  <span className="text-3xl">📡</span>
+                  <div>
+                    <p className="text-white font-semibold">Live Customer Tracking</p>
+                    <p className="text-gray-500 text-sm">
+                      Monitor which customers have entered the hall and who has confirmed their seat.
+                      LED status shown in real-time.
+                    </p>
+                  </div>
                 </div>
-                <p style={{ color: '#6b7280', fontSize: '0.75rem', marginTop: '4px' }}>{s.label}</p>
-                <p style={{ color: '#374151', fontSize: '0.68rem', marginTop: '2px' }}>{s.desc}</p>
+                <div className="flex gap-2">
+                  <input
+                    value={showtimeInput}
+                    onChange={e => setShowtimeInput(e.target.value)}
+                    placeholder="Showtime ID"
+                    className="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-3 py-2
+                      text-white text-sm focus:outline-none focus:border-red-500"
+                  />
+                  <Button
+                    onClick={() => showtimeInput && navigate(`/admin/tracking/${showtimeInput}`)}
+                    disabled={!showtimeInput}
+                  >
+                    Open Tracking
+                  </Button>
+                </div>
               </div>
-            ))}
-          </div>
 
-          {/* Recent bookings table */}
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-base font-semibold text-white">Recent Bookings</h2>
-            <span style={{ color: '#374151', fontSize: '0.72rem' }}>
-              Showing last {Math.min(bookings.length, 20)}
-            </span>
-          </div>
+              {/* LED Resync */}
+              <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                <div className="flex items-start gap-3 mb-4">
+                  <span className="text-3xl">💡</span>
+                  <div>
+                    <p className="text-white font-semibold">Resync LED States</p>
+                    <p className="text-gray-500 text-sm">
+                      After an ESP32 reboot or WiFi drop, republish all LED patterns
+                      from the database to restore correct hardware state.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    value={resyncScreenInput}
+                    onChange={e => setResyncScreenInput(e.target.value)}
+                    placeholder="Screen ID"
+                    className="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-3 py-2
+                      text-white text-sm focus:outline-none focus:border-red-500"
+                  />
+                  <input
+                    value={showtimeInput}
+                    onChange={e => setShowtimeInput(e.target.value)}
+                    placeholder="Showtime ID"
+                    className="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-3 py-2
+                      text-white text-sm focus:outline-none focus:border-red-500"
+                  />
+                  <Button
+                    onClick={handleResync}
+                    loading={resyncLoading}
+                    variant="secondary"
+                  >
+                    Resync
+                  </Button>
+                </div>
+              </div>
+            </div>
 
-          {loading ? <Loading /> : (
-            <div
-              className="rounded-xl overflow-hidden"
-              style={{ backgroundColor: '#0d1117', border: '1px solid #1f2937' }}
-            >
-              <table className="w-full text-sm">
-                <thead>
-                  <tr style={{ borderBottom: '1px solid #1f2937' }}>
-                    {['Code', 'Movie', 'Seats', 'Amount', 'Status'].map(h => (
-                      <th
-                        key={h}
-                        className="px-4 py-3 text-left font-medium"
-                        style={{ color: '#4b5563', fontSize: '0.72rem', letterSpacing: '0.05em' }}
-                      >
-                        {h}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {bookings.slice(0, 20).map((b: BookingResponse, i) => {
-                    const badge = statusBadge[b.status] ?? { bg: 'transparent', text: '#9ca3af' };
-                    return (
-                      <tr
-                        key={b.id}
-                        style={{
-                          borderBottom: i < 19 ? '1px solid #111827' : 'none',
-                          transition: 'background 0.15s',
-                        }}
-                        onMouseEnter={e => (e.currentTarget.style.backgroundColor = '#111827')}
-                        onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
-                      >
-                        <td className="px-4 py-3 font-mono" style={{ color: '#6b7280', fontSize: '0.8rem' }}>
+            {/* Recent bookings quick view */}
+            <h2 className="text-gray-500 text-xs uppercase tracking-wider mb-3">
+              Recent Bookings
+            </h2>
+            <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+              {bookings.length === 0 ? (
+                <p className="text-gray-600 text-sm text-center p-8">No bookings yet.</p>
+              ) : (
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="text-gray-500 text-xs uppercase tracking-wider border-b border-gray-800">
+                      <th className="px-4 py-3 text-left">Code</th>
+                      <th className="px-4 py-3 text-left">Movie</th>
+                      <th className="px-4 py-3 text-left">Screen</th>
+                      <th className="px-4 py-3 text-left">Status</th>
+                      <th className="px-4 py-3 text-right">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {bookings.slice(0, 10).map(b => (
+                      <tr key={b.id}
+                        className="border-b border-gray-800/50 hover:bg-gray-800/30 transition-colors">
+                        <td className="px-4 py-3 font-mono text-xs text-gray-400">
                           {b.bookingCode}
                         </td>
-                        <td className="px-4 py-3 text-white text-sm font-medium">{b.movieTitle}</td>
-                        <td className="px-4 py-3" style={{ color: '#9ca3af', fontSize: '0.8rem' }}>
-                          {b.seats.map(s => `${s.rowLabel}${s.colNumber}`).join(', ')}
+                        <td className="px-4 py-3 text-white text-xs">{b.movieTitle}</td>
+                        <td className="px-4 py-3 text-gray-500 text-xs">{b.screenName}</td>
+                        <td className="px-4 py-3">
+                          <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
+                            b.status === 'CONFIRMED'  ? 'bg-blue-900 text-blue-300'   :
+                            b.status === 'CHECKED_IN' ? 'bg-purple-900 text-purple-300' :
+                            b.status === 'COMPLETED'  ? 'bg-green-900 text-green-300' :
+                            b.status === 'CANCELLED'  ? 'bg-gray-800 text-gray-500'   :
+                            'bg-yellow-900 text-yellow-300'
+                          }`}>{b.status}</span>
                         </td>
-                        <td className="px-4 py-3 font-mono font-semibold" style={{ color: '#f87171', fontSize: '0.8rem' }}>
+                        <td className="px-4 py-3 text-right text-red-400 text-xs font-semibold">
                           LKR {b.totalAmount}
                         </td>
-                        <td className="px-4 py-3">
-                          <span
-                            className="px-2.5 py-0.5 rounded-full text-xs font-semibold"
-                            style={{ backgroundColor: badge.bg, color: badge.text }}
-                          >
-                            {b.status}
-                          </span>
-                        </td>
                       </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
-          )}
-        </main>
-      </div>
+
+          </>
+        )}
+      </main>
     </div>
   );
 };

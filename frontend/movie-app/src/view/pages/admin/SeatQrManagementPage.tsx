@@ -157,7 +157,7 @@ export const SeatQrManagementPage: React.FC = () => {
   useEffect(() => {
     setScreensLoading(true);
     adminApi.getScreens()
-      .then(data => setScreens(data))
+      .then((data: ScreenSummary[]) => setScreens(data))
       .finally(() => setScreensLoading(false));
     dispatch(fetchAllBookings());
   }, [dispatch]);

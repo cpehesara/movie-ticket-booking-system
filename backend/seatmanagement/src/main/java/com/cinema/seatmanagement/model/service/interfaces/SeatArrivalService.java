@@ -1,31 +1,30 @@
 package com.cinema.seatmanagement.model.service.interfaces;
 
-import com.cinema.seatmanagement.view.dto.request.SeatArrivalRequest;
-import com.cinema.seatmanagement.view.dto.response.BookingResponse;
+import com.cinema.seatmanagement.view.dto.response.SeatArrivalResponse;
 
 /**
- * SeatArrivalService — Step 2 of the IoT two-scan check-in flow.
+ * SeatArrivalService — handles Step 10/11 of the IoT flow:
  *
- * When a customer reaches their seat and scans the physical seat QR code,
- * this service:
- *   1. Parses the seat ID from the QR data.
- *   2. Validates the seat belongs to the customer's booking.
- *   3. Transitions the seat state BOOKED → OCCUPIED.
- *   4. Sends MQTT OFF command (LED extinguishes — customer confirmed seated).
- *   5. Broadcasts CUSTOMER_SEATED WebSocket event for the staff dashboard.
+ * Customer reaches their seat, scans the permanent QR code affixed to
+ * the seat via their mobile app portal.
  *
- * If ALL seats in the booking are now OCCUPIED, the booking status
- * transitions to COMPLETED.
+ * On success:
+ *   1. Validate the SEAT QR payload (HMAC check)
+ *   2. Find the BookingSeat for this seat + current showtime
+ *   3. Verify the customer scanning owns this booking seat
+ *   4. Transition: GUIDING → OCCUPIED
+ *   5. Publish MQTT LED OFF for the seat's ledIndex
+ *   6. If the customer scans the WRONG seat's QR → LED keeps blinking (GUIDING)
+ *   7. WebSocket broadcast → hall display "Customer X is now seated at B-3"
  */
 public interface SeatArrivalService {
 
     /**
-     * Confirms a customer has arrived at their seat.
+     * Customer scans the permanent QR on their physical seat.
      *
-     * @param request contains bookingCode + seat QR data
-     * @return updated BookingResponse
-     * @throws jakarta.persistence.EntityNotFoundException if booking or seat not found
-     * @throws IllegalStateException if seat does not belong to this booking
+     * @param rawSeatQrPayload the SEAT:... payload decoded from the physical seat QR
+     * @param userId           the logged-in customer's ID (from JWT in the request)
+     * @return SeatArrivalResponse with seat details + LED off confirmation
      */
-    BookingResponse confirmSeatArrival(SeatArrivalRequest request);
+    SeatArrivalResponse processSeatArrival(String rawSeatQrPayload, Long userId);
 }

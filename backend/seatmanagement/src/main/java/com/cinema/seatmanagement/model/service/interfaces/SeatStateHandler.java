@@ -34,6 +34,16 @@ public interface SeatStateHandler {
     /** Admin blocks this seat (broken, obstructed). */
     SeatState putInMaintenance(SeatStateContext ctx);
 
+    /**
+     * Customer scanned QR at entrance door (Step 1 of two-scan flow).
+     * Transitions BOOKED → GUIDING so the LED blinks to guide the customer.
+     * Default throws; only BookedState and GuidingState (idempotent) override.
+     */
+    default SeatState guide(SeatStateContext ctx) {
+        throw new com.cinema.seatmanagement.exception.InvalidSeatStateTransitionException(
+                "Cannot transition to GUIDING from state: " + getState());
+    }
+
     /** Returns the SeatState enum value this handler represents. */
     SeatState getState();
 }

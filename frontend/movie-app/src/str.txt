@@ -1,0 +1,121 @@
+Folder PATH listing
+Volume serial number is D426-A62F
+D:.
+|   App.tsx
+|   frontStr.txt
+|   index.css
+|   index.tsx
+|   netlify.toml
+|   react-app-env.d.ts
+|   str.txt
+|   
++---assets
+|   \---images
++---model
+|   +---api
+|   |       adminApi.ts
+|   |       authApi.ts
+|   |       bookingApi.ts
+|   |       checkinApi.ts
+|   |       iotApi.ts
+|   |       movieApi.ts
+|   |       seatApi.ts
+|   |       seatArrivalApi.ts
+|   |       showtimeApi.ts
+|   |       userApi.ts
+|   |       
+|   +---services
+|   |       axiosInstance.ts
+|   |       webSocketService.ts
+|   |       
+|   \---types
+|           audit.types.ts
+|           auth.types.ts
+|           booking.types.ts
+|           common.types.ts
+|           iot_types.ts
+|           movie.types.ts
+|           notification.types.ts
+|           seat.types.ts
+|           showtime.types.ts
+|           user.types.ts
+|           
++---styles
+|       index.css
+|       
++---view
+|   +---components
+|   |   +---common
+|   |   |       Button.tsx
+|   |   |       ErrorBoundary.tsx
+|   |   |       Loading.tsx
+|   |   |       Modal.tsx
+|   |   |       QrScanner.tsx
+|   |   |       Toast.tsx
+|   |   |       
+|   |   +---layout
+|   |   |       Footer.tsx
+|   |   |       Header.tsx
+|   |   |       Sidebar.tsx
+|   |   |       
+|   |   \---seat-map
+|   |           SeatCell.tsx
+|   |           SeatGrid.tsx
+|   |           SeatLegend.tsx
+|   |           SeatTooltip.tsx
+|   |           
+|   +---pages
+|   |   +---admin
+|   |   |       AdminDashboard.tsx
+|   |   |       BookingsManagementPage.tsx
+|   |   |       IoTMonitorPage.tsx
+|   |   |       KioskManagementPage.tsx
+|   |   |       MovieManagementPage.tsx
+|   |   |       SeatQrManagementPage.tsx
+|   |   |       ShowtimeManagementPage.tsx
+|   |   |       StaffManagementPage.tsx
+|   |   |       UserManualPage.tsx
+|   |   |       
+|   |   +---auth
+|   |   |       LoginPage.tsx
+|   |   |       RegisterPage.tsx
+|   |   |       
+|   |   +---customer
+|   |   |       BookingHistoryPage.tsx
+|   |   |       BookingPage.tsx
+|   |   |       MovieListPage.tsx
+|   |   |       ProfilePage.tsx
+|   |   |       
+|   |   +---display
+|   |   |       HallDisplayPage.tsx
+|   |   |       
+|   |   \---kiosk
+|   |           CheckinPage.tsx
+|   |           SeatArrivalPage.tsx
+|   |           
+|   \---routes
+|           AppRoutes.tsx
+|           ProtectedRoute.tsx
+|           RoleBasedRoute.tsx
+|           
+\---viewmodel
+    |   store.ts
+    |   
+    +---hooks
+    |       useAuth.ts
+    |       useBookingTimer.ts
+    |       useSeatArrival.ts
+    |       useWebSocket.ts
+    |       
+    \---slices
+            adminSlice.ts
+            authSlice.ts
+            bookingSlice.ts
+            checkinSlice.ts
+            iotSlice.ts
+            movieSlice.ts
+            seatArrivalSlice.ts
+            seatSlice.ts
+            showtimeSlice.ts
+            userSlice.ts
+            

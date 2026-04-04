@@ -1,11 +1,13 @@
 package com.cinema.seatmanagement.controller;
 
-import com.cinema.seatmanagement.model.enums.PaymentMethod;
+import com.cinema.seatmanagement.model.enums.BookingStatus;
 import com.cinema.seatmanagement.model.service.interfaces.BookingService;
 import com.cinema.seatmanagement.model.service.interfaces.PaymentService;
 import com.cinema.seatmanagement.security.JwtTokenProvider;
+import com.cinema.seatmanagement.util.QrCodeGenerator;
 import com.cinema.seatmanagement.view.dto.request.CreateBookingRequest;
 import com.cinema.seatmanagement.view.dto.response.BookingResponse;
+import com.cinema.seatmanagement.model.enums.PaymentMethod;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,14 +17,27 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * BookingController — customer-facing booking endpoints.
+ *
+ * CHANGE: getBookingById() now includes the QR code in the response when the
+ * booking status is CONFIRMED or CHECKED_IN. This allows BookingHistoryPage
+ * to retrieve the QR on demand without storing it in the frontend state.
+ *
+ * WHY NOT ALWAYS INCLUDE QR:
+ *   Generating a QR image is CPU-expensive. The list endpoint (getMyBookings)
+ *   returns potentially many bookings — attaching a 300×300 PNG to each would
+ *   waste significant bandwidth. Single-booking fetch is cheap.
+ */
 @RestController
 @RequestMapping("/api/bookings")
 @RequiredArgsConstructor
 public class BookingController {
 
-    private final BookingService   bookingService;
-    private final PaymentService   paymentService;
+    private final BookingService bookingService;
+    private final PaymentService paymentService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final QrCodeGenerator qrCodeGenerator;
 
     @PostMapping
     @PreAuthorize("hasRole('CUSTOMER')")
@@ -33,13 +48,13 @@ public class BookingController {
         Long userId = extractUserId(authHeader);
         BookingResponse response = bookingService.createBooking(userId, request);
 
-        // Inline payment: if a paymentMethod is provided, process immediately.
-        // Converts the String from the DTO to the typed PaymentMethod enum here —
-        // at the controller boundary — so service/repo layers never see raw strings.
         if (request.getPaymentMethod() != null && !request.getPaymentMethod().isBlank()) {
-            PaymentMethod method = parsePaymentMethod(request.getPaymentMethod());
-            paymentService.processPayment(response.getId(), method);
+            paymentService.processPayment(response.getId(), PaymentMethod.valueOf(request.getPaymentMethod().toUpperCase()));
+            // Re-fetch after payment so status = CONFIRMED and QR is included
             response = bookingService.getBookingById(response.getId());
+            // Attach QR for the immediate post-payment response
+            String qr = qrCodeGenerator.generateQrCodeBase64(response.getBookingCode());
+            response.setQrCodeBase64(qr);
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -51,13 +66,27 @@ public class BookingController {
             @RequestHeader("Authorization") String authHeader
     ) {
         Long userId = extractUserId(authHeader);
-        return ResponseEntity.ok(bookingService.getBookingsByUser(userId));
+        List<BookingResponse> bookings = bookingService.getBookingsByUser(userId);
+        return ResponseEntity.ok(bookings);
     }
 
+    /**
+     * Single booking fetch — includes QR code if booking is still active.
+     * Active = CONFIRMED or CHECKED_IN (customer may still need to scan).
+     */
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<BookingResponse> getBookingById(@PathVariable Long id) {
-        return ResponseEntity.ok(bookingService.getBookingById(id));
+        BookingResponse response = bookingService.getBookingById(id);
+
+        // Attach QR only for statuses where the customer still needs to scan
+        if ("CONFIRMED".equals(response.getStatus())
+                || "CHECKED_IN".equals(response.getStatus())) {
+            String qr = qrCodeGenerator.generateQrCodeBase64(response.getBookingCode());
+            response.setQrCodeBase64(qr);
+        }
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/{id}/cancel")
@@ -67,25 +96,12 @@ public class BookingController {
             @PathVariable Long id
     ) {
         Long userId = extractUserId(authHeader);
-        return ResponseEntity.ok(bookingService.cancelBooking(id, userId));
+        BookingResponse response = bookingService.cancelBooking(id, userId);
+        return ResponseEntity.ok(response);
     }
-
-    // ── Private helpers ───────────────────────────────────────────────────
 
     private Long extractUserId(String authHeader) {
-        return jwtTokenProvider.getUserIdFromToken(authHeader.substring(7));
-    }
-
-    /**
-     * Converts String → PaymentMethod with a meaningful error message.
-     * IllegalArgumentException is caught by GlobalExceptionHandler → 400.
-     */
-    private PaymentMethod parsePaymentMethod(String raw) {
-        try {
-            return PaymentMethod.valueOf(raw.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(
-                    "Invalid payment method: '" + raw + "'. Accepted values: CARD, CASH, MOBILE, ONLINE_BANKING, QR_CODE");
-        }
+        String token = authHeader.replace("Bearer ", "");
+        return jwtTokenProvider.getUserIdFromToken(token);
     }
 }
